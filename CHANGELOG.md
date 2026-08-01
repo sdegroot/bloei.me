@@ -42,6 +42,11 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - A standalone interactive functional design covering the product model,
   end-to-end journey, authority, lifecycle, funding logic, scope change,
   information visibility, representative scenarios, and release boundary.
+- A proposed solution architecture covering system context, module boundaries,
+  transactional workflows, persistence, authorization, evidence handling,
+  security, operations, testing, repository structure, and delivery slices.
+- An isolated local development-authentication design with seeded personas and
+  a retained OIDC contract test.
 
 ### Changed
 
@@ -92,3 +97,5 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - Added canonical hierarchical open-source components, versioned stewardship,
   formal campaign targets, private supplier formation, and optional non-isolating
   programs.
+- Proposed Exposed SQL DSL as a Kotlin-native replacement for jOOQ, pending a
+  focused PostgreSQL and transaction spike before superseding D-030.

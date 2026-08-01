@@ -19,6 +19,8 @@ pilot.
 - **Evidence needed:** observe real use before fixing a permanent rule.
 - **Legal review:** keep the current trust-based working assumption until
   specialist advice is obtained.
+- **Implementation gate:** decide before the named technical milestone; it need
+  not block unrelated product or foundation work.
 - **Deferred:** preserve room in the model, but do not build the capability in
   v1.
 
@@ -282,6 +284,134 @@ the item to the resolved log at the bottom of this document.
   and internal approvals become substantially more complex.
 - **Decision trigger:** A verified organization has a concrete need to fund one
   pledge from multiple envelopes.
+
+### Q-025 — Do modules start as Gradle subprojects or packages?
+
+- **Decision horizon:** Implementation gate — before application scaffolding
+- **Current inclination:** Use one Gradle subproject per business module so
+  compile-time dependencies reinforce Spring Modulith boundaries.
+- **Why it remains open:** Separate builds improve enforcement but add initial
+  configuration and can slow feedback if configured poorly.
+- **Decision trigger:** Create a small foundation spike with two dependent
+  modules and measure build and test ergonomics.
+
+### Q-026 — Which identifier and public-slug strategy is used?
+
+- **Decision horizon:** Implementation gate — before the first database
+  migration
+- **Current inclination:** Use opaque typed, time-sortable UUIDs internally and
+  mutable human-readable slugs with redirect history publicly.
+- **Why it remains open:** The exact UUID version, generator support, database
+  locality, enumeration risk, and canonical URL behavior need validation.
+- **Decision trigger:** Benchmark and test the identifier type with PostgreSQL
+  and the selected Kotlin libraries.
+
+### Q-027 — Which PostgreSQL baseline and migration layout are supported?
+
+- **Decision horizon:** Implementation gate — before application scaffolding
+- **Current inclination:** Select one supported PostgreSQL major version and use
+  schema-per-module, forward-only Flyway migrations.
+- **Why it remains open:** Hosted and self-hosted operational baselines and the
+  effect of cross-schema constraints on module independence need agreement.
+- **Decision trigger:** Choose the pilot deployment environment and run the
+  first cross-module transaction spike.
+
+### Q-028 — How are durable jobs and the outbox implemented?
+
+- **Decision horizon:** Implementation gate — before notification or deadline
+  work
+- **Current inclination:** Use small PostgreSQL-backed job and outbox tables with
+  leased `SKIP LOCKED` workers unless a focused maintained library clearly fits
+  the transaction and observability requirements.
+- **Why it remains open:** An in-house implementation is transparent but adds
+  retry, leasing, cleanup, and operational responsibility.
+- **Decision trigger:** Compare candidate libraries against paused timers,
+  idempotent deadline evaluation, and same-transaction outbox writes.
+
+### Q-029 — How are browser sessions stored and privileged sessions limited?
+
+- **Decision horizon:** Implementation gate — before OIDC integration
+- **Current inclination:** Use server-side PostgreSQL-backed sessions, secure
+  same-site cookies, session rotation, and a shorter inactivity limit for
+  operator work.
+- **Why it remains open:** The Authentik logout model, horizontal scaling,
+  recovery flows, remember-me behavior, and practical timeout lengths need a
+  threat model.
+- **Decision trigger:** Complete the authentication and account-takeover threat
+  model for Q-021.
+
+### Q-030 — Which authoring format and sanitizer policy are used?
+
+- **Decision horizon:** Implementation gate — before user-authored descriptions
+  and comments
+- **Current inclination:** Store a constrained source format and render through
+  a strict, versioned allowlist; avoid unrestricted HTML and embedded media.
+- **Why it remains open:** Markdown is portable but still needs sanitization,
+  while a structured editor can improve accessibility at greater complexity.
+- **Decision trigger:** Prototype campaign scope, acceptance criteria, comments,
+  and moderation redaction in Dutch and English.
+
+### Q-031 — What limits and tools govern evidence images?
+
+- **Decision horizon:** Implementation gate — before delivery evidence
+- **Current inclination:** Enforce conservative byte and dimension limits,
+  decode and re-encode JPEG, PNG, and WebP, strip metadata, and reject animated
+  or malformed content.
+- **Why it remains open:** The image library, decompression-bomb protection,
+  animation policy, malware scanning, and accessible description requirements
+  need testing.
+- **Decision trigger:** Build an adversarial image-validation spike and agree
+  pilot evidence needs.
+
+### Q-032 — Which object-storage adapters and serving model are used?
+
+- **Decision horizon:** Implementation gate — before delivery evidence
+- **Current inclination:** Use an S3-compatible port with a local test adapter,
+  private immutable objects, and authorization-aware delivery or short-lived
+  signed URLs.
+- **Why it remains open:** The pilot provider, region, encryption, versioning,
+  recovery, CORS, and retention behavior depend on Q-022 and Q-015.
+- **Decision trigger:** Select the pilot infrastructure and run backup/restore
+  plus unauthorized-access tests.
+
+### Q-033 — Which observability stack ships in v1?
+
+- **Decision horizon:** Implementation gate — before pilot deployment
+- **Current inclination:** Emit structured logs and Micrometer metrics from the
+  start; include OpenTelemetry tracing only if the chosen operations stack will
+  consume it.
+- **Why it remains open:** One process may not justify a tracing backend, but
+  job and notification correlation still benefits from trace-compatible IDs.
+- **Decision trigger:** Choose the pilot operations and alerting environment.
+
+### Q-034 — Which CI and software-supply-chain controls are required?
+
+- **Decision horizon:** Implementation gate — before the first release
+- **Current inclination:** Run formatting, module, unit, integration, migration,
+  browser, and accessibility checks; scan dependencies and images; generate an
+  SBOM; and sign release images.
+- **Why it remains open:** The CI platform, dependency update automation,
+  vulnerability policy, provenance format, signing identity, and release
+  process are not selected.
+- **Decision trigger:** Scaffold the build and define the first releasable OCI
+  artifact.
+
+### Q-035 — Should Exposed replace jOOQ?
+
+- **Decision horizon:** Implementation gate — before the first persistence
+  module
+- **Current inclination:** Replace jOOQ with the Exposed JDBC SQL DSL, do not use
+  the Exposed DAO API, and retain Flyway as the only production migration
+  authority.
+- **Why it remains open:** Exposed is Kotlin-native, has Spring Boot 4
+  integration, and supports the PostgreSQL locking modes Bloei.me needs. jOOQ
+  offers stronger schema-first code generation and broader advanced-SQL
+  coverage. D-030 currently selects jOOQ and must be explicitly superseded if
+  the spike confirms Exposed.
+- **Decision trigger:** Implement a short PostgreSQL spike covering
+  schema-per-module table definitions, Spring transactions, `FOR UPDATE`,
+  `SKIP LOCKED`, JSONB, typed IDs, Flyway validation, and a representative
+  multi-module pledge transaction.
 
 ## Resolved questions
 

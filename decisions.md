@@ -940,3 +940,22 @@ superseded.
   explicit, and rejected suppliers may challenge policy or conflict failures
   but have no right to publication. Before the first pledge a public campaign
   may be replaced with history; afterward ordinary amendment consent applies.
+
+## D-067 — Provide isolated development authentication
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** Keep production authentication behind OIDC, but provide a
+  separate development adapter that lets local developers and browser tests
+  select seeded personas without an identity provider. Exclude the adapter from
+  the production runtime classpath and OCI image rather than relying only on a
+  disabled production property.
+- **Why:** Requiring a running identity provider for every local UI or workflow
+  test would slow development and make role, suspension, supplier-conflict, and
+  continuity scenarios harder to reproduce. Sharing the authenticated-actor
+  boundary preserves realistic application authorization.
+- **Consequences:** Local pages show an unmistakable development banner, accept
+  only predefined fixture identities, and create ordinary application sessions.
+  CI still runs an OIDC contract journey, and an optional Compose profile may
+  provide Authentik for production-like smoke testing. Production packaging is
+  tested to prove the development endpoint and classes are absent.

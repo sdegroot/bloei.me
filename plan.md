@@ -8,11 +8,12 @@ This document describes the agreed product and implementation direction for
 Bloei.me. An interactive overview is available in
 [functional-design.html](functional-design.html). The reasons behind the choices
 are recorded in [decisions.md](decisions.md). Concrete end-to-end journeys are
-documented in
-[scenarios.md](scenarios.md). The trust-based pilot assumptions, unresolved
-legal questions, and future signed-contract direction are recorded separately
-in [legal.md](legal.md). Product, operational, and implementation choices that
-still need a decision are tracked in [open-questions.md](open-questions.md).
+documented in [scenarios.md](scenarios.md). The proposed software design is in
+[solution-architecture.md](solution-architecture.md). The trust-based pilot
+assumptions, unresolved legal questions, and future signed-contract direction
+are recorded separately in [legal.md](legal.md). Product, operational, and
+implementation choices that still need a decision are tracked in
+[open-questions.md](open-questions.md).
 
 ## Product summary
 
@@ -77,6 +78,12 @@ share identities or records unless federation is deliberately designed later.
 Bloei.me uses one configurable OIDC provider per deployment. The hosted
 service initially uses the central Authentik deployment. Self-hosted operators
 can configure another standards-compliant OIDC provider.
+
+Local development and browser tests may instead load a separate development
+authentication adapter with selectable seeded personas. That adapter is absent
+from the production runtime classpath and OCI image, displays a persistent
+development banner, and exercises the same authenticated-actor boundary as
+OIDC. CI retains a separate OIDC contract journey.
 
 Organizations have one identity within a Bloei.me deployment, with status
 `provisional`, `verified`, `review required`, `closed`, or `merged`. Verification
@@ -1044,7 +1051,8 @@ assumptions and review questions are maintained in [legal.md](legal.md).
 - Spring Boot 4
 - Spring Modulith modular monolith
 - Spring MVC, Thymeleaf, and HTMX
-- PostgreSQL, jOOQ, and Flyway
+- PostgreSQL and Flyway, with jOOQ currently accepted and an Exposed SQL DSL
+  replacement proposed in Q-035
 - Spring Security OIDC
 - Dutch and English message bundles
 - Locally hosted, progressively enhanced, WCAG 2.2 AA user interface
