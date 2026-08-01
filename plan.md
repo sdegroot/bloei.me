@@ -225,6 +225,104 @@ sanitized before publication, including image metadata removal. Account deletion
 anonymizes the personal actor while retaining the organization-owned action;
 exceptional legal, privacy, or security redaction leaves a public tombstone.
 
+### Moderation, abuse, and AI assistance
+
+Moderation controls content visibility; it never silently changes a pledge,
+consent, objection, ballot, delivery, settlement, or campaign outcome. When
+harmful wording in an organization-owned position is hidden or redacted, its
+structured organization, criterion, and position remain public with a
+moderation tombstone.
+
+Reportable grounds include illegal content, personal or confidential
+information, threats or harassment, discrimination, spam, impersonation,
+malicious content, materially misleading campaign information, identity or
+authority fraud, manipulation of platform identities or reports, and platform-
+terms violations. Disagreement about scope, price, delivery quality, or an
+acceptance position uses campaign clarification, amendment, objection, and
+voting processes rather than moderation.
+
+Authority stays separated:
+
+- Moderators may label, request correction, quarantine, hide, redact, restore,
+  or take no action on content.
+- Project maintainers curate proposals and may request campaign corrections.
+- Tenant administrators govern tenant participation and may invoke existing
+  campaign suspension or forced-failure processes.
+- Deployment operators handle global identity review and exceptional legal,
+  fraud, security, and recovery actions.
+- Funding organizations judge delivery through objections and voting.
+
+Signed-in users can make ordinary community reports. An accessible electronic
+illegal-content notice accepts a report without an account and requires contact
+details, the exact target, a sufficiently substantiated explanation, and a
+good-faith declaration, subject to legally required exceptions. Bloei.me
+acknowledges the report and records its source without publicly naming the
+reporter.
+
+A moderation case contains one or more reports, a typed target reference,
+grounds, protected evidence, decisions, restrictions, appeals, notices, and
+append-only events. Every restriction is an overlay on the original record and
+is reversible. Decisions identify whether they rely on law or platform terms,
+the applicable ground, facts, scope, duration, use of automation, reason, and
+available review. Urgent content may be temporarily hidden before review.
+Affected authors and reporters receive the outcome where appropriate and may
+request review; a different qualified reviewer handles an appeal where
+practical.
+
+Campaign-relevant restrictions leave a limited public tombstone and public
+operational effects where necessary. Reports, reporter identity, protected
+originals, internal deliberation, and detailed fraud or security evidence stay
+restricted. Restricting a person does not erase organization-owned history or
+prevent another authorized representative from administering a locked
+commitment. Before start, ordinary cancellation remains available; after start,
+material campaign consequences use suspension and forced-failure governance.
+
+AI moderation is an optional, provider-neutral assistant behind a
+`ModerationClassifier` port. The processing pipeline is:
+
+`submission -> deterministic checks -> AI assessment -> policy decision -> human review`
+
+Deterministic checks remain authoritative for supported file types, decoding,
+metadata stripping, size limits, rate limits, and known malicious patterns. AI
+may detect risk categories and relevant spans, warn an author, suggest safer
+wording, classify and prioritize reports, identify duplicates, translate or
+summarize context, draft reasons, and temporarily quarantine high-confidence
+dangerous content for human review.
+
+AI never independently deletes content permanently, rejects an appeal, changes
+an organization position, imposes an organization sanction, determines identity
+fraud, judges delivery, or changes campaign state. Model output is untrusted
+input to deterministic policy code, uses structured schemas, has no tools or
+direct domain commands, and is never published as an allegation.
+
+Each AI assessment records provider and model identifier, model and policy
+version, language, categories, relevant spans, confidence, suggested action,
+automatic temporary action, and the later human outcome. Bloei.me stores the
+structured assessment rather than hidden model reasoning. Metrics cover false
+positives, sampled false negatives, human and appeal reversals, language and
+category performance, and quarantine duration.
+
+The classifier receives only content and context needed for moderation. Private
+budgets, memberships, identity documents, and unrelated records are excluded.
+Provider configuration must prohibit training on submitted Bloei.me content and
+meet applicable processing and retention requirements. Hosted deployments may
+configure a managed provider; self-hosted deployments may use another provider,
+a local model, or disable AI.
+
+AI is not an availability dependency. If it fails or is disabled, deterministic
+controls and human reporting continue, ordinary low-risk content can proceed,
+and content already considered suspicious remains queued. Delivery and campaign
+deadlines do not wait indefinitely for a classifier.
+
+V1 implements reporting, a basic queue, reasoned reversible content decisions,
+public tombstones, notices, a basic appeal, emergency handling, deterministic
+safety checks, and protected audit history. When an AI provider is configured,
+v1 supports warnings, classification, prioritization, and reversible temporary
+quarantine. Configurable tenant policies, mandatory second review, advanced
+automation, trusted reporters, bulk operations, cross-tenant detection,
+transparency analytics, and external dispute-resolution integration may follow
+later.
+
 ## Proposals and campaigns
 
 The primary product flow is:
@@ -866,6 +964,10 @@ Core value types include:
 - `SettlementNoteStatus(open, completed)` controlled by the lead supplier
 - Versioned campaign amendments with explicit organization consents
 - Versioned pledge attestation
+- Moderation cases, reports, target references, decisions, restrictions,
+  appeals, notices, and append-only case events
+- Provider-neutral `ModerationAssessment` values and deterministic policy
+  decisions, without model access to domain commands
 
 PostgreSQL tenant isolation is enforced in the database where applicable and
 backed by application-level authorization. State-changing workflows use
@@ -894,7 +996,8 @@ budgets, moderation, verification, and settlement-note completion.
 V1 has no public JSON API, webhook framework, GitHub-specific fields, or
 connector installation UI. Internal ports should exist for future progress
 sources, organization verification, notifications, object storage, settlement
-export, and accounting integrations.
+export, accounting integrations, and AI moderation. AI provider configuration
+is optional and campaign behavior never depends on a particular model.
 
 ### Deployment
 
@@ -915,7 +1018,8 @@ export, and accounting integrations.
 3. **Budgets:** budget administration, spender authorization, ledger,
    eligibility, transactional reservations, transfers, and inline creation.
 4. **Community workflow:** projects, private ideas, proposals, endorsements,
-   comments, moderation, and notifications.
+   comments, reporting, reversible moderation, optional AI assistance, appeals,
+   and notifications.
 5. **Funding:** supplier teams, campaign versions and amendments, deadlines,
    attestations, budget-backed pledges, fair allocation, and atomic campaign
    start.
@@ -982,6 +1086,13 @@ without explicit permission.
   consumption.
 - Test identity snapshots, personal anonymization, merge redirects, and
   exceptional redaction tombstones.
+- Test reporting, target permissions, reversible restriction overlays, public
+  tombstones, reasoned notices, appeals, emergency actions, and preservation of
+  structured organization positions.
+- Test AI assessment schema validation, prompt-injection isolation, model and
+  policy versioning, temporary quarantine and restoration, human overrides,
+  provider failure, disabled-AI operation, and the prohibition on model-driven
+  domain commands.
 - Verify tenant isolation, role authorization, CSRF protection, content
   sanitization, and image validation.
 - Run PostgreSQL integration and migration tests with Testcontainers.
@@ -1001,6 +1112,8 @@ The Epistola pilot must:
 - Lock a lower final price, freeze allocation, and release surplus reservations
   at delivery submission.
 - Complete normal review and a negative-consent acceptance vote.
+- Demonstrate a report, reversible restriction, tombstone, and appeal without
+  changing the underlying organization position.
 - Consume final budget amounts at settlement.
 - Produce reproducible CSV and JSON exports.
 
@@ -1010,8 +1123,9 @@ The Epistola pilot must:
   scope.
 - Epistola is the first tenant, but the core contains no Epistola-specific or
   GitHub-specific concepts.
-- Published campaigns are public in v1. Budgets, cost centers,
-  representatives, moderation, and settlement-note completion remain private.
+- Published campaigns and limited moderation tombstones are public in v1.
+  Budgets, cost centers, representatives, protected moderation case data, and
+  settlement-note completion remain private.
 - Every pledge requires one budget in v1; the data model prepares for several
   budgets per pledge later.
 - Organizations and budgets are global within one deployment, while tenant

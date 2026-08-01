@@ -1375,3 +1375,140 @@ A later release adds a public campaign API or downloadable transparency export.
 ### Result
 
 Adding another interface does not silently expand what Bloei.me publishes.
+
+## Scenario 56 — Harmful wording does not erase an objection
+
+### Starting point
+
+A funding organization submits a valid criterion-based rejection whose
+explanation includes an employee's telephone number and abusive wording.
+
+### Flow
+
+1. A user reports the explanation for personal information and harassment.
+2. A moderator hides the wording and records both grounds, the affected text,
+   and a reasoned decision while preserving the protected original.
+3. The public campaign continues to show the organization, criterion, and
+   `reject` position with a moderation tombstone.
+4. The moderator cannot convert the ballot, dismiss the objection, or decide
+   whether the criterion was satisfied.
+5. A corrected explanation may be published without changing the organization
+   position or campaign deadlines.
+
+### Result
+
+Content safety and acceptance governance remain independent.
+
+## Scenario 57 — A moderation decision is appealed
+
+### Starting point
+
+A supplier's delivery explanation is hidden after an illegal-content notice.
+
+### Flow
+
+1. Bloei.me acknowledges the sufficiently specific notice and records its exact
+   target without publishing the reporter.
+2. The supplier receives the restriction, facts, legal or terms ground, scope,
+   automation use, and available review route.
+3. The supplier appeals and supplies additional context.
+4. A different qualified reviewer considers the protected original and case
+   history where practical.
+5. The reviewer either restores the explanation or confirms the restriction
+   with a new reasoned decision; the campaign page reflects the result.
+
+### Result
+
+Moderation is reversible, attributable, and reviewable without exposing case
+evidence publicly.
+
+## Scenario 58 — A fraud report reaches the proper authority
+
+### Starting point
+
+A reporter alleges that a campaign supplier is impersonating another legal
+organization.
+
+### Flow
+
+1. The moderator protects any dangerous content and escalates the identity
+   allegation rather than deciding it.
+2. The deployment operator starts identity review; the tenant administrator may
+   apply tenant suspension according to the evidence and existing authority.
+3. An affected campaign follows the supplier hold and timer rules.
+4. Before start it may be cancelled through ordinary governance; after start it
+   can only reach failure through the recorded forced-failure or emergency path.
+5. The public history shows the operational effect without publishing protected
+   fraud evidence or an unproven accusation.
+
+### Result
+
+A report can trigger safeguards without giving moderators undeclared campaign
+or identity powers.
+
+## Scenario 59 — AI warns an author before publication
+
+### Starting point
+
+A community member writes a comment containing what appears to be a personal
+email address and an insulting phrase.
+
+### Flow
+
+1. Deterministic checks validate the request and the configured classifier
+   assesses only the proposed comment and necessary policy context.
+2. Bloei.me highlights the relevant spans and warns about privacy and harassment
+   without silently rewriting the text.
+3. The author removes the address and revises the phrase.
+4. The revised comment passes the policy decision and is published.
+5. The assessment records model and policy versions and the outcome without
+   storing hidden reasoning.
+
+### Result
+
+AI prevents avoidable moderation work while the author keeps control of the
+meaning.
+
+## Scenario 60 — AI quarantine receives human review
+
+### Starting point
+
+New evidence contains a malicious link and text instructing the classifier to
+ignore Bloei.me policy and approve it.
+
+### Flow
+
+1. Content is treated as untrusted data; the classifier has no tools or domain
+   commands and returns only schema-validated categories and confidence.
+2. Deterministic policy temporarily quarantines the evidence and opens a case.
+3. The lead supplier is told that the action was automated and can correct or
+   contest it.
+4. A moderator reviews the original, assessment, and technical link result and
+   makes the reasoned decision.
+5. Quarantine cannot change price, allocation, objections, ballots, or campaign
+   state by itself.
+
+### Result
+
+Prompt injection cannot turn the classifier into a governance actor, and an
+automated restriction remains reversible.
+
+## Scenario 61 — AI is unavailable or disabled
+
+### Starting point
+
+The hosted classifier is temporarily unavailable, while a self-hosted tenant
+has deliberately disabled AI.
+
+### Flow
+
+1. Both deployments continue deterministic file, metadata, rate, and known-
+   threat checks.
+2. Ordinary low-risk content can proceed and remains reportable.
+3. Content already considered suspicious stays in the human moderation queue.
+4. Moderators can perform the same decisions and appeals without model output.
+5. Campaign deadlines and delivery governance do not wait indefinitely for AI.
+
+### Result
+
+AI improves moderation but is not an availability or portability dependency.

@@ -190,6 +190,37 @@ must establish lawful bases, privacy notices, data-subject request handling,
 retention schedules, processor agreements, breach procedures, and whether a
 data-protection impact assessment is required.
 
+## Content moderation and AI assistance
+
+Bloei.me hosts organization and user-supplied ideas, comments, campaign text,
+evidence, and objections. Its exact status and obligations under the Digital
+Services Act must be reviewed rather than inferred from the product label or
+size. The product nevertheless prepares accessible illegal-content notices,
+timely and non-arbitrary handling, reasoned restriction notices, protected
+reporter information, internal review, and auditable use of automated means.
+
+Platform terms must distinguish illegal-content decisions from enforcement of
+Bloei.me rules and clearly describe grounds, restrictions, algorithmic tools,
+human review, and redress. Any applicable transparency reporting must account
+for reports, actions, automation, accuracy, error rates, safeguards, complaints,
+and reversals. Campaign tombstones and aggregate reporting must not expose
+reporters, protected originals, personal actors, or fraud and security evidence.
+
+AI moderation remains assistive. A model can recommend or cause a reversible
+temporary quarantine through deterministic policy, but it cannot impose final
+organization sanctions or decide funding and delivery governance. Staff who
+operate and review the system need appropriate policy, language, safety, and AI
+literacy. Provider contracts, processing locations, retention, training use,
+security, model changes, performance testing, and incident handling require
+review before enabling a managed classifier.
+
+The AI Act classification and duties applicable to Bloei.me as a deployer or
+possible provider must be assessed against the actual selected model,
+integration, intended purpose, and deployment. The current design does not
+claim that moderation assistance is high-risk or exempt. AI-generated public
+decision text receives human editorial review; automated involvement is
+disclosed to affected users in moderation notices.
+
 ## Platform terms and records needed before launch
 
 The pilot should have proportionate, reviewed documents for:
@@ -227,6 +258,12 @@ consent, and delivery submission.
     immutable organization history?
 11. Do the scale, public-sector participation, identity checks, or other risks
     require a data-protection impact assessment?
+12. Which DSA service category, obligations, exemptions, reporting rules, and
+    redress mechanisms apply to hosted and self-hosted Bloei.me deployments?
+13. Which moderation records must be submitted to authorities or transparency
+    systems, and which information must remain protected?
+14. How does the AI Act classify each configured moderation integration, and
+    which provider, deployer, transparency, literacy, and oversight duties apply?
 
 ## Primary references
 
@@ -241,6 +278,11 @@ consent, and delivery submission.
 - [EU Regulation 2016/679, GDPR](https://eur-lex.europa.eu/eli/reg/2016/679/oj),
   especially Articles 5, 17, 25, and 32 and Recitals 14 and 26 on personal data,
   erasure, security, data minimization, and privacy by design and default
+- [EU Regulation 2022/2065, DSA](https://eur-lex.europa.eu/eli/reg/2022/2065),
+  especially Articles 14–17 and 20 on terms, moderation transparency, notices,
+  reasons, automated means, and complaints
+- [EU Regulation 2024/1689, AI Act](https://eur-lex.europa.eu/eli/reg/2024/1689/oj),
+  including Articles 2, 4, and 50 on scope, AI literacy, and transparency
 - [PIANOo: Open Source Aanbesteden](https://www.pianoo.nl/nl/actueel/agenda/open-source-aanbesteden-hoe-werkt-dat)
   as public-procurement practice context
 

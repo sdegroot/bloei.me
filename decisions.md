@@ -108,8 +108,9 @@ superseded.
 - **Why:** Transparency helps organizations coordinate open-source investment.
   Later private procurement-like campaigns should not require a security-model
   rewrite.
-- **Consequences:** Drafts, ideas, moderation, representatives, budgets, and
-  invoice administration remain private. V1 only permits public publication.
+- **Consequences:** Drafts, ideas, protected moderation case data,
+  representatives, budgets, and invoice administration remain private. Public
+  moderation effects may leave a tombstone. V1 only permits public publication.
 
 ## D-010 — Use one supplier and a fixed net campaign price
 
@@ -824,3 +825,43 @@ superseded.
   audit history, account deletion anonymizes the person rather than erasing the
   organization action, and every future public API or export must use the same
   explicit public projection as the website.
+
+## D-062 — Separate content moderation from campaign governance
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** Give moderators reversible control over content visibility but
+  no authority to alter organization-owned positions or campaign state. Use
+  reasoned reports, restrictions, notices, public tombstones, and appeals;
+  escalate identity, participation, and campaign consequences to their existing
+  governance processes.
+- **Why:** Harmful or illegal content must be addressable without allowing a
+  content decision to settle a funding, scope, delivery, or acceptance dispute.
+  Recorded reasons and review protect both the reporter and affected author from
+  arbitrary action.
+- **Consequences:** V1 includes ordinary and illegal-content reporting, a basic
+  queue, reversible moderation overlays, emergency hiding, protected originals,
+  author and reporter notices, a basic appeal, and complete audit history. An
+  objection whose explanation is redacted retains its organization, criterion,
+  and position. Personal restrictions do not erase organization actions, and
+  campaign consequences use cancellation, suspension, identity review, or
+  forced-failure governance. Advanced case operations and external dispute
+  resolution may follow later.
+
+## D-063 — Use AI as an optional moderation assistant
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** Put an optional provider-neutral AI classifier between
+  deterministic safety checks and deterministic moderation policy. Let it warn,
+  classify, prioritize, summarize, and temporarily quarantine for human review,
+  but never make final sanctions or campaign and organization decisions.
+- **Why:** AI can reduce moderator load and catch personal data, abuse, spam,
+  and malicious content earlier, but model errors, bias, prompt injection, and
+  outages must not gain governance authority or block Bloei.me operation.
+- **Consequences:** Assessments use structured versioned output, minimal input,
+  no domain tools, no hidden reasoning storage, human overrides, performance
+  metrics, and audited temporary actions. Managed, local, alternative, and
+  disabled configurations are supported. V1 may implement warnings, triage,
+  prioritization, and reversible quarantine; final automated enforcement,
+  custom training, cross-tenant detection, and advanced analytics are deferred.

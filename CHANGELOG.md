@@ -32,6 +32,9 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - Public/private visibility scenarios covering organization-level transparency,
   protected employee attribution, private participation review, and safe future
   exports.
+- Moderation and AI-assistance scenarios covering content redaction, appeals,
+  fraud escalation, author warnings, reversible quarantine, prompt injection,
+  and classifier outages.
 
 ### Changed
 
@@ -73,3 +76,7 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - Defined an organization-attributed public record while keeping personal
   actors, budgets, verification evidence, enrollment review, settlement-note
   completion, and security data private.
+- Separated reversible content moderation from campaign governance and defined
+  reasoned reporting, notices, public tombstones, appeals, and escalation.
+- Designed optional provider-neutral AI moderation for warnings, triage, and
+  temporary quarantine without final enforcement or campaign authority.
