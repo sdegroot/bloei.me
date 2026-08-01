@@ -17,7 +17,8 @@ are in [scenarios.md](scenarios.md).
 
 The first Bloei.me pilot uses trust-based organization commitments:
 
-- A tenant verifies the identity of participating organizations.
+- A deployment operator verifies legal identity once, and each tenant separately
+  approves participation.
 - Organization administrators appoint funding and supplier representatives.
 - Budget authorization identifies who may use an organization budget.
 - An authorized funding representative confirms a pledge through Bloei.me.
@@ -26,11 +27,11 @@ The first Bloei.me pilot uses trust-based organization commitments:
 - Suppliers knowingly rely on the platform commitment without Bloei.me
   guaranteeing legal enforceability or payment.
 
-Verification confirms organizational identity and tenant participation. It is
-not legal advice, procurement approval, proof of a representative's statutory
-signing authority, credit assessment, or a guarantee that an expenditure is
-lawful. The organization remains responsible for its internal authority and
-applicable process.
+Identity verification and tenant approval are distinct. Neither is legal advice,
+procurement approval, proof of a representative's statutory signing authority,
+credit assessment, supplier-quality certification, or a guarantee that an
+expenditure is lawful. The organization remains responsible for its internal
+authority and applicable process.
 
 ## Functional meaning of a pledge
 
@@ -193,6 +194,17 @@ consent, and delivery submission.
   especially Article 25 on electronic signatures
 - [PIANOo: Open Source Aanbesteden](https://www.pianoo.nl/nl/actueel/agenda/open-source-aanbesteden-hoe-werkt-dat)
   as public-procurement practice context
+
+Verification implementation should also consult:
+
+- [KVK Handelsregister API](https://developers.kvk.nl/nl/documentation/zoeken-api)
+  for Dutch registration lookup and active-status data
+- [Register van Overheidsorganisaties](https://organisaties.overheid.nl/) and
+  its government-domain register for Dutch public bodies
+- [European Commission VIES](https://ec.europa.eu/taxation_customs/vies/technicalInformation.html)
+  as supplementary VAT-status evidence, not proof of general authority
+- [eHerkenning authorization](https://www.eherkenning.nl/en/authorisation) for a
+  possible future organization-control integration
 
 These references are starting points, not a legal opinion. They must be checked
 again when legal terms or signed-contract support are designed.

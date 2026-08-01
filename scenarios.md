@@ -40,12 +40,12 @@ municipality to participate in Epistola funding campaigns.
 3. No organization exists, so they create a provisional organization profile
    containing its legal name, country, registration details, official website,
    and public description.
-4. As its provisional organization administrator, they request participation
-   in the Epistola tenant and provide the evidence
-   needed to verify the municipality and their authority to represent it.
-5. An Epistola tenant administrator reviews the request.
-6. The administrator verifies the organization's enrollment in that tenant;
-   it does not assign the organization's internal roles.
+4. They provide evidence needed to verify the municipality and their control of
+   its Bloei.me account through an independent official channel.
+5. A deployment operator verifies Rivierenstad's legal identity and the
+   claimant's control using authoritative government sources.
+6. An Epistola tenant administrator separately approves participation in that
+   tenant; it does not repeat identity verification or assign internal roles.
 7. The organization administrator appoints a budget manager and one or more
    funding representatives.
 8. The organization is now allowed to endorse Epistola proposals.
@@ -55,13 +55,14 @@ municipality to participate in Epistola funding campaigns.
 
 If Rivierenstad already exists, the adviser requests membership instead of
 creating another profile. An existing organization administrator approves the
-membership and assigns the appropriate roles. The organization still requires
-verification in every tenant where it wants to participate.
+membership and assigns the appropriate roles. Each tenant still approves its
+own enrollment without repeating legal-identity verification.
 
 ### Visible result
 
-The public can see Rivierenstad's verified organization profile. Its members,
-evidence, roles, budgets, and cost centers remain private.
+The public can see that Rivierenstad's identity is verified and its Epistola
+enrollment is approved. Its members, evidence, roles, budgets, and cost centers
+remain private.
 
 ## Scenario 2 — The municipality reserves an innovation budget
 
@@ -206,7 +207,8 @@ Delivery has already started with these projected shares: 10%, 30%, 30%, and
 
 ### Flow
 
-1. A fifth verified organization discovers the campaign.
+1. A fifth identity-verified and tenant-approved organization discovers the
+   campaign.
 2. Its funding representative selects an eligible budget and pledges at least
    22.5%.
 3. The budget reserves its worst-case exposure against the €100,000 maximum.
@@ -351,13 +353,15 @@ later settlement; Rivierenstad handles the accounting exception externally.
 
 ### Starting point
 
-Rivierenstad is already registered and verified in the Epistola tenant. It now
-wants to fund a campaign in another open-source community on Bloei.me.
+Rivierenstad's identity is already verified and its Epistola enrollment is
+approved. It now wants to fund a campaign in another open-source community on
+Bloei.me.
 
 ### Flow
 
 1. An organization administrator requests enrollment in the second tenant.
-2. The second tenant administrator reviews and verifies that relationship.
+2. The second tenant administrator reviews and approves that relationship
+   without repeating identity verification.
 3. Rivierenstad keeps its existing legal profile, members, and organization
    roles; nothing is recreated.
 4. Its budget manager adds the second tenant to an existing innovation budget's
@@ -375,22 +379,23 @@ controls whether Rivierenstad may participate there.
 
 ### Starting point
 
-An organization requests tenant enrollment but supplies incomplete legal
-evidence.
+An identity-verified organization requests tenant enrollment but supplies
+incomplete tenant-specific participation information.
 
 ### Flow
 
 1. The tenant administrator rejects the request with a private explanation.
 2. The organization's global profile and participation in other tenants remain
    unaffected.
-3. Its administrator corrects the details and uploads better evidence.
+3. Its administrator corrects the tenant-specific details.
 4. The organization resubmits the enrollment request.
-5. The tenant administrator verifies the corrected request.
+5. The tenant administrator approves the corrected request.
 
 ### Result
 
-Rejection is recoverable and tenant-local. There is no platform-level appeal or
-automatic verification expiry in v1.
+Rejection is recoverable and tenant-local. Identity appeals and tenant
+reconsideration follow separate routes, and identity verification has no
+automatic expiry.
 
 ## Scenario 14 — A funding representative leaves
 
@@ -511,12 +516,12 @@ reservations, and creates no settlement notes.
 5. A deployment operator may bypass the delay only for a legal, fraud, or
    security emergency.
 
-## Scenario 19 — A supplier's verification is suspended
+## Scenario 19 — A supplier loses participation eligibility
 
 ### Starting point
 
-A co-supplier loses tenant verification while delivery review has five days
-remaining.
+A co-supplier's tenant enrollment is suspended while delivery review has five
+days remaining.
 
 ### Flow
 
@@ -524,15 +529,15 @@ remaining.
 2. New pledges, cap increases, evidence submission, review, voting, and
    settlement are blocked.
 3. Existing organization commitments remain reserved.
-4. The tenant administrator restores verification after resolving the issue.
+4. The tenant administrator restores approved participation after resolving the
+   issue.
 5. Review resumes with the original five days remaining; the delivery deadline
    is not extended retroactively.
 
 ### Failure variation
 
-If verification cannot be restored, the tenant administrator uses the public
-failure process. Verification loss after settlement never rewrites that
-settlement.
+If approval cannot be restored, the tenant administrator uses the public failure
+process. Approval loss after settlement never rewrites that settlement.
 
 ## Scenario 20 — An objection triggers negative-consent voting
 
@@ -704,7 +709,8 @@ combined outcome.
 
 1. Supplier A is recorded as the lead supplier and adds B and C as
    co-suppliers while the campaign is still a draft.
-2. All three organizations must be verified in the tenant.
+2. All three organizations must have verified identities and approved tenant
+   enrollments.
 3. B and C confirm that they may be shown publicly as participants.
 4. The campaign publishes one outcome, maximum price, set of criteria, and
    supplier team; it publishes no supplier work packages or price shares.
@@ -1058,15 +1064,16 @@ calendar.
 
 ### Starting point
 
-Review has five days remaining when a supplier loses verification. The fixed
-ultimate delivery date passes during the suspension.
+Review has five days remaining when a supplier loses identity verification. The
+fixed ultimate delivery date passes during the suspension.
 
 ### Flow
 
 1. Bloei.me stores the five remaining review days and pauses interaction.
 2. It does not move the campaign delivery date or any backing budget expiry.
 3. The campaign gains the public `overdue` condition while suspended.
-4. After verification is restored, review resumes with five days remaining.
+4. After identity verification is restored, review resumes with five days
+   remaining.
 5. Changing a fixed date still requires an amendment and budget revalidation.
 
 ### Result
@@ -1120,13 +1127,13 @@ A review deadline is 15:30, but the automatic acceptance worker runs at 15:34.
 
 Worker scheduling never extends a governance window or changes its outcome.
 
-## Scenario 46 — A verified organization joins the trust-based pilot
+## Scenario 46 — An approved organization joins the trust-based pilot
 
 ### Starting point
 
-Rivierenstad is verified in the Epistola tenant and has authorized a funding
-representative to use an eligible innovation budget. V1 does not require a
-signed expenditure contract in Bloei.me.
+Rivierenstad's identity is verified, its Epistola enrollment is approved, and it
+has authorized a funding representative to use an eligible innovation budget.
+V1 does not require a signed expenditure contract in Bloei.me.
 
 ### Flow
 
@@ -1174,3 +1181,102 @@ external signed agreement is required before any pledge becomes effective.
 The first release prepares domain boundaries only. It does not upload contracts,
 provide electronic signatures, determine counterparties, or validate legal
 enforceability.
+
+## Scenario 48 — A Dutch organization proves identity and account control
+
+### Starting point
+
+An employee claims a Dutch organization that does not yet exist in the
+deployment.
+
+### Flow
+
+1. Bloei.me searches normalized names and registration identifiers for an
+   existing profile before allowing creation.
+2. The claimant enters the KVK number and an official organization domain.
+3. A deployment operator checks legal name, form, address, and active status
+   against the Handelsregister.
+4. Bloei.me confirms account control through an independently obtained official
+   organization channel; possession of a matching email address alone is not
+   enough.
+5. The operator records source, reference, observed values, timestamp, reviewer,
+   and decision without retaining a raw identity document by default.
+6. The organization becomes `verified`, and the claimant becomes its initial
+   administrator.
+7. It still needs `approved` enrollment before participating in a tenant.
+
+### Government variation
+
+A Dutch public body uses the Register van Overheidsorganisaties and its official
+domain register. A foreign organization uses an appropriate national register;
+VIES may supplement but not replace legal-identity evidence.
+
+## Scenario 49 — A tenant rejects participation without rejecting identity
+
+### Starting point
+
+An organization's legal identity is verified, but it does not yet satisfy an
+Epistola tenant participation requirement.
+
+### Flow
+
+1. The tenant administrator rejects the enrollment with a private reason.
+2. The organization's global profile remains verified and its approved
+   participation in other tenants remains unaffected.
+3. Its administrator corrects the tenant-specific information and requests
+   reconsideration from Epistola.
+4. The tenant approves enrollment after review.
+
+### Result
+
+Tenant governance cannot rewrite a deployment-level identity decision, and an
+identity appeal does not bypass local participation rules.
+
+## Scenario 50 — An approved supplier is not quality-certified
+
+### Starting point
+
+A verified and tenant-approved organization is proposed as a campaign's lead
+supplier but has no previous delivery history on Bloei.me.
+
+### Flow
+
+1. The campaign clearly shows “organization identity verified” and “approved
+   participant in Epistola.”
+2. It does not display “certified,” “trusted supplier,” or another competence
+   endorsement.
+3. The supplier representative confirms participation and attestations.
+4. A project maintainer decides whether the campaign is suitable to publish.
+5. Future successful and failed campaigns form transparent history without
+   changing the meaning of identity verification.
+
+### Result
+
+Funders can distinguish verified identity from delivery reputation and make
+their own assessment.
+
+## Scenario 51 — A material identity change triggers review
+
+### Starting point
+
+A registry signal indicates that a supplier changed legal form and official
+domain during an active campaign.
+
+### Flow
+
+1. Bloei.me changes the global identity status to `review required` and records
+   the trigger.
+2. Existing locked commitments and history remain intact while new sensitive
+   organization actions pause.
+3. Because an active supplier no longer has verified identity, its campaign
+   follows the supplier-suspension rules and stores remaining timers.
+4. A deployment operator verifies whether this is an ordinary profile update,
+   legal succession, or a different organization.
+5. Successful re-verification resumes the campaign; succession may require an
+   audited continuity action or supplier amendment.
+
+### Minor-change variation
+
+A simple address correction updates the profile with history and does not
+automatically suspend participation. Identity verification has no scheduled
+expiry; review is triggered by meaningful events.

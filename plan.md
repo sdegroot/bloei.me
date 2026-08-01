@@ -35,7 +35,7 @@ and lead-confirmed completion of settlement notes.
 ### Tenants and projects
 
 - A tenant owns its branding, domains, projects, moderation policy, and
-  organization verification.
+  organization participation approval.
 - A tenant has one or more projects.
 - A project represents a fundable open-source product or initiative.
 - A campaign belongs to exactly one project.
@@ -52,8 +52,10 @@ Bloei.me uses one configurable OIDC provider per deployment. The hosted
 service initially uses the central Authentik deployment. Self-hosted operators
 can configure another standards-compliant OIDC provider.
 
-Organizations have one global identity within a Bloei.me deployment. Each
-tenant relationship is a separate enrollment with status `pending`, `verified`,
+Organizations have one global identity within a Bloei.me deployment, with
+status `provisional`, `verified`, `review required`, `closed`, or `merged`.
+Deployment-level verification establishes legal identity once. Each tenant
+relationship is a separate enrollment with status `pending`, `approved`,
 `rejected`, or `suspended`. Registering once avoids duplicated legal identities,
 memberships, and budgets while leaving every tenant in control of participation
 in its own community.
@@ -76,7 +78,7 @@ The authorization model contains these roles:
 - **Member:** participates in the community without financial authority.
 
 Organization roles belong to the person's organization membership and work in
-every tenant where the organization is verified. Organization administrators
+every tenant where the organization is approved. Organization administrators
 assign and revoke roles. Funding representatives additionally require
 authorization to use the selected budget.
 
@@ -99,15 +101,32 @@ recovery is available when no usable administrator remains.
 
 ### Organization enrollment and continuity
 
-- The creator of a provisional organization becomes its initial organization
-  administrator. Tenant verification activates participation but does not
-  assign internal roles. Disputed ownership is handled through audited platform
-  operator recovery.
+- A claimant searches registration identifiers and normalized legal names
+  before creating a provisional organization. Exact identifiers block a
+  duplicate; possible matches direct the person to request membership.
+- A deployment operator verifies legal identity from an authoritative source.
+  For Dutch businesses this may be the KVK Handelsregister; Dutch public bodies
+  may use the Register van Overheidsorganisaties and government-domain register;
+  foreign organizations use an appropriate national register with VIES only as
+  supplementary VAT evidence. Manual review remains available.
+- Legal-identity evidence records source, reference, observed values, time,
+  reviewer, and reason. Raw documents are avoided by default; any necessary
+  protected document has encryption, restricted access, and a retention limit.
+- The first administrator must also prove control separately from legal
+  existence through an official organization channel and independent
+  confirmation. An official-domain email alone is insufficient. Existing
+  administrators approve later members; disputed ownership uses audited
+  operator recovery. Future eHerkenning support may strengthen Dutch
+  organization authorization but is not required in v1.
 - An organization administrator requests enrollment in a tenant; a tenant
-  administrator verifies, rejects, or suspends only that relationship.
+  administrator approves, rejects, or suspends only that relationship and never
+  repeats or rewrites the deployment-level identity decision.
 - A rejection includes a private reason and may be corrected and resubmitted.
-- Verification has no automatic expiry. Material legal-identity changes or
-  tenant action can trigger a new review or suspension.
+- Identity verification has no automatic expiry. Legal name, form, registration
+  or active-status changes, domain loss, credible fraud reports, succession,
+  administrator loss, or material source mismatches trigger `review required`.
+  Existing locked commitments survive while new sensitive actions may pause;
+  tenant suspension remains available when risk warrants it.
 - A platform operator can recover an organization with no active administrator
   after verifying the replacement's authority.
 - Legal registration identifiers prevent duplicate creation where available.
@@ -118,6 +137,14 @@ recovery is available when no usable administrator remains.
   open organization ballot.
 - Account deletion anonymizes personal profile data while preserving
   organization-authorized actions and internal audit identifiers.
+
+Identity appeals go to a different deployment operator where possible; tenant
+enrollment reconsideration remains with that tenant. Public profiles show
+factual identity-verification source category and date plus tenant participation
+status, not private evidence or reviewer identity. The interface uses
+“organization identity verified” and “approved participant” and never presents
+verification as procurement approval, credit assessment, technical competence,
+or a trusted-supplier certification.
 
 If a funding organization's tenant enrollment is suspended before delivery
 starts, its pledge is deactivated and its budget reservation is released.
@@ -155,7 +182,8 @@ The primary product flow is:
 - Moderators review the submission before it becomes public.
 - Project maintainers turn suitable ideas into outcome-focused public
   proposals.
-- A verified organization can add one advisory endorsement to a proposal.
+- An identity-verified organization with approved tenant enrollment can add one
+  advisory endorsement to a proposal.
 - Endorsement is separate from funding and does not bind prioritization.
 - Comments, updates, notifications, flagging, and moderation are native
   Bloei.me functionality.
@@ -164,11 +192,12 @@ The primary product flow is:
 
 ### Campaign terms
 
-Every published campaign identifies exactly one verified **lead supplier** and
-may identify any number of verified **co-suppliers**. The lead supplier is the
-single accountable contact for campaign administration, coordinates the shared
-delivery, and submits it to Bloei.me. Co-suppliers publicly confirm their
-participation before publication.
+Every published campaign identifies exactly one identity-verified and tenant-
+approved **lead supplier** and may identify any number of equally eligible
+**co-suppliers**. The lead supplier is the single accountable contact for
+campaign administration, coordinates the shared delivery, and submits it to
+Bloei.me. Co-suppliers publicly confirm their participation before publication.
+There is no separate supplier-quality verification or certification.
 
 The campaign promises one combined outcome. Bloei.me does not assign scope,
 work packages, prices, settlement shares, or invoices to individual suppliers;
@@ -460,13 +489,13 @@ existing pledge data.
 - Representative identity, budget information, and settlement-note completion
   are private.
 
-V1 uses a trust-based flow: the verified organization appoints its roles and an
-authorized representative confirms authority to commit the selected budget.
-Bloei.me does not require or validate a signed contract. Verification confirms
-identity and tenant participation, not statutory authority, procurement
-compliance, creditworthiness, or guaranteed payment. Every organization remains
-responsible for its legal, procurement, contracting, tax, and external
-settlement requirements.
+V1 uses a trust-based flow: the identity-verified, tenant-approved organization
+appoints its roles and an authorized representative confirms authority to
+commit the selected budget. Bloei.me does not require or validate a signed
+contract. Verification and approval do not prove statutory authority,
+procurement compliance, creditworthiness, or guaranteed payment. Every
+organization remains responsible for its legal, procurement, contracting, tax,
+and external settlement requirements.
 
 Before delivery starts, an organization can increase, reduce, move, or
 withdraw its pledge. When aggregate caps reach 100%, the campaign atomically
@@ -488,11 +517,11 @@ If the latest funding date arrives before automatic or manual start, the
 campaign expires. Once delivery has started, that deadline no longer closes
 pledging; new organizations may continue to join until delivery submission.
 
-New verified organizations may pledge throughout delivery, and existing
-organizations may increase their caps. Each change updates the projected
-allocation and its transactional budget reservations. Joining a campaign that
-is already delivering requires an explicit acknowledgement that the new pledge
-locks immediately.
+New identity-verified organizations with approved enrollment may pledge
+throughout delivery, and existing organizations may increase their caps. Each
+change updates the projected allocation and its transactional budget
+reservations. Joining a campaign that is already delivering requires an
+explicit acknowledgement that the new pledge locks immediately.
 
 The selected backing budget may be replaced privately when the destination is
 eligible and the acting person is authorized for both sides or is a budget
@@ -663,13 +692,14 @@ operator may bypass the delay for a legal, fraud, or security emergency.
 Failure creates no settlement notes, releases reservations, and preserves the
 public outcome and produced open-source work.
 
-If any supplier organization loses tenant verification, the campaign is
-suspended. New pledges, cap increases, delivery submission, review, voting, and
-settlement are blocked, and active review or voting countdowns pause. Existing
-commitments remain reserved. Restoration resumes the remaining timer duration;
-the original funding and delivery deadlines do not change. The tenant
-administrator may instead use the public failure process. Verification loss
-after accepted settlement does not alter that settlement.
+If any supplier organization loses verified identity or its tenant enrollment
+is suspended, the campaign is suspended. New pledges, cap increases, delivery
+submission, review, voting, and settlement are blocked, and active review or
+voting countdowns pause. Existing commitments remain reserved. Restoration
+resumes the remaining timer duration; the original funding and delivery
+deadlines do not change. The tenant administrator may instead use the public
+failure process. Verification or approval loss after accepted settlement does
+not alter that settlement.
 
 ### Settlement notes
 
@@ -724,11 +754,12 @@ audit event rather than erasing the record.
 
 ## Legal and contracting boundary
 
-The initial pilot relies on verified organizations and authorized
-representatives rather than platform-required signed agreements. Suppliers
-knowingly rely on these operational commitments without Bloei.me guaranteeing
-enforceability or payment. The payee-free settlement note remains informational
-and external processes determine legal counterparties and recipients.
+The initial pilot relies on identity-verified, tenant-approved organizations and
+authorized representatives rather than platform-required signed agreements.
+Suppliers knowingly rely on these operational commitments without Bloei.me
+guaranteeing enforceability or payment. The payee-free settlement note remains
+informational and external processes determine legal counterparties and
+recipients.
 
 Future municipal use may require an external signed agreement before a pledge
 becomes effective. Domain boundaries prepare a versioned contract-requirement
@@ -761,7 +792,9 @@ Core value types include:
 - `CampaignSupplierTeam(leadSupplier, coSuppliers)` without work or price
   allocation
 - `CampaignVisibility`
-- `OrganizationEnrollmentStatus(pending, verified, rejected, suspended)`
+- `OrganizationIdentityStatus(provisional, verified, reviewRequired, closed,
+  merged)`
+- `TenantEnrollmentStatus(pending, approved, rejected, suspended)`
 - Organization-owned membership roles
 - Versioned organization authorization policies and requests, with v1 enforcing
   one immediate approval
@@ -822,8 +855,8 @@ export, and accounting integrations.
 
 1. **Foundation:** build, license, CI, changelog, database migrations, module
    boundaries, and bilingual design system.
-2. **Tenancy and identity:** OIDC, tenant routing, branding, organizations,
-   verification, roles, and auditing.
+2. **Tenancy and identity:** OIDC, tenant routing, branding, organization
+   identity verification, account control, tenant approval, roles, and auditing.
 3. **Budgets:** budget administration, spender authorization, ledger,
    eligibility, transactional reservations, transfers, and inline creation.
 4. **Community workflow:** projects, private ideas, proposals, endorsements,
@@ -880,9 +913,11 @@ without explicit permission.
 - Test early and multiple criterion-based objections, full review before voting,
   withdrawal, supersession on resubmission, required rejection reasons,
   moderation without position loss, and atomic settlement after acceptance.
-- Test organization enrollment rejection, resubmission, suspension, restoration,
-  role replacement, administrator recovery, and audited duplicate merges.
-- Test tenant-scoped budget allowlists across multiple verified enrollments.
+- Test authoritative-source identity verification, initial account control,
+  tenant approval, rejection, resubmission, suspension, restoration, event-
+  driven review, appeals, role replacement, administrator recovery, minimal
+  evidence retention, and audited duplicate merges.
+- Test tenant-scoped budget allowlists across multiple approved enrollments.
 - Test campaign cancellation, supplier suspension with paused timers,
   voluntary failure, forced-failure notice, and emergency bypass.
 - Test self-funded completion and partial settlements with a supplier-
@@ -901,7 +936,8 @@ without explicit permission.
 
 The Epistola pilot must:
 
-- Receive budget-backed pledges from at least three verified organizations.
+- Receive budget-backed pledges from at least three identity-verified,
+  tenant-approved organizations.
 - Preserve the exact trust-based authority confirmation for each pilot pledge.
 - Reject a concurrent or direct budget overcommit.
 - Start automatically when coverage reaches 100%.
@@ -927,9 +963,9 @@ The Epistola pilot must:
   enrollment and budget eligibility remain explicit.
 - Bloei.me manages commitments and settlement evidence, not bank funds or
   statutory accounts.
-- V1 trusts verified organizations and authorized representatives without
-  requiring signed contracts; it makes no legal, procurement, or payment
-  guarantee.
+- V1 trusts identity-verified, tenant-approved organizations and authorized
+  representatives without requiring signed contracts; it makes no legal,
+  procurement, supplier-quality, or payment guarantee.
 - Each campaign has one lead supplier and may have co-suppliers, but Bloei.me
   does not divide their work, price, settlement, or external invoices.
 - Payees, payments, invoice administration, advance or milestone invoicing, tax

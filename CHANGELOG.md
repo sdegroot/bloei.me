@@ -27,6 +27,8 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   platform outages, and delayed background jobs.
 - A separate legal and compliance considerations document plus trust-based and
   future signed-contract scenarios.
+- Identity, account-control, tenant-approval, supplier-labeling, and event-driven
+  re-verification scenarios.
 
 ### Changed
 
@@ -63,3 +65,5 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   calendar-day windows, timer pauses, outage correction, and reminder policy.
 - Adopted verified-organization trust for v1 commitments while preparing an
   optional external-contract requirement for later municipal expenditure.
+- Separated deployment-level legal identity verification from tenant-level
+  participation approval and explicitly rejected supplier-quality certification.

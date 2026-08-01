@@ -33,7 +33,7 @@ superseded.
 ## D-003 — Use a multi-tenant product model
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Accepted and clarified by D-060
 - **Decision:** Tenants own branding, domains, projects, moderation, and
   verification. Projects own campaigns.
 - **Why:** The first use is Epistola, but the platform should be reusable by
@@ -55,7 +55,7 @@ superseded.
 ## D-005 — Use deployment-level OIDC and global organizations
 
 - **Date:** 2026-08-01
-- **Status:** Accepted and expanded by D-037
+- **Status:** Accepted and expanded by D-037 and D-060
 - **Decision:** Configure one OIDC provider per deployment. Organizations have
   a global identity within that deployment and tenant-specific verification.
 - **Why:** OIDC avoids building password authentication. A shared organization
@@ -428,7 +428,7 @@ superseded.
 ## D-037 — Use global organizations with tenant enrollments
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Accepted and clarified by D-060
 - **Decision:** Register an organization once per deployment and represent its
   relationship with each tenant through an independently governed enrollment.
 - **Why:** Tenant-local copies fragment legal identity, memberships, budgets,
@@ -456,7 +456,7 @@ superseded.
 ## D-039 — Handle verification loss according to commitment state
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Accepted and clarified by D-060
 - **Decision:** Before delivery starts, suspension deactivates an organization's
   pledge and releases its reservation. After start, the commitment survives and
   the organization retains only the actions required to administer it.
@@ -522,7 +522,7 @@ superseded.
 ## D-044 — Pause campaigns when supplier verification is lost
 
 - **Date:** 2026-08-01
-- **Status:** Accepted and expanded by D-049
+- **Status:** Accepted and expanded by D-049 and D-060
 - **Decision:** Supplier suspension blocks pledging, delivery, review, voting,
   and settlement while preserving existing commitments.
 - **Why:** Bloei.me must not settle with an unverified supplier, but immediate
@@ -777,3 +777,25 @@ superseded.
   `external contract required` policy with protected, versioned evidence and an
   external signature service. [legal.md](legal.md) records risks, sources, and
   questions that require counsel before broader public-sector use.
+
+## D-060 — Separate legal identity verification from tenant approval
+
+- **Date:** 2026-08-01
+- **Status:** Accepted; clarifies D-003, D-005, D-037, D-039, and D-044
+- **Decision:** Verify an organization's legal identity and initial account
+  control once per deployment. Let every tenant separately approve, reject,
+  suspend, or restore participation without repeating or rewriting identity
+  verification. Do not create a supplier-quality verification tier.
+- **Why:** Legal identity, control of an account, and permission to join a
+  community answer different questions. Separating them prevents duplicate
+  evidence collection and avoids presenting participation as competence,
+  procurement, credit, or payment endorsement.
+- **Consequences:** Organization identity uses `provisional`, `verified`,
+  `review required`, `closed`, and `merged`; tenant enrollment uses `pending`,
+  `approved`, `rejected`, and `suspended`. Authoritative registries and an
+  independent official channel support initial verification, with minimal
+  protected evidence and event-driven re-review rather than automatic expiry.
+  Appeals follow the level that made the decision. Suppliers need verified
+  identity, approved enrollment, representative confirmation, and maintainer
+  publication, but receive no “trusted supplier” badge. Future eHerkenning may
+  strengthen Dutch account control without becoming a v1 dependency.
