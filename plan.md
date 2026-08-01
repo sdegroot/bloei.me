@@ -11,7 +11,8 @@ Bloei.me. The reasons behind the choices are recorded in
 ## Product summary
 
 Bloei.me is a standalone, multi-tenant platform where organizations reserve
-innovation budgets and collectively fund fixed-price open-source outcomes.
+innovation budgets and collectively fund fixed-outcome open-source campaigns
+with a published maximum price.
 
 - Product name: **Bloei.me**
 - Descriptor: **Open-source co-funding**
@@ -93,7 +94,7 @@ The primary product flow is:
 Every published campaign identifies one verified supplier organization that
 is responsible for delivery and external invoicing. It records:
 
-- One ISO-4217 currency and a fixed net price excluding tax
+- One ISO-4217 currency and a maximum net price excluding tax
 - Outcome and scope
 - Milestones and objective acceptance criteria
 - The stable, supported release in which delivery must be available
@@ -105,10 +106,10 @@ is responsible for delivery and external invoicing. It records:
 - Configurable review-vote quorum and approval thresholds between 50% and
   100%, both defaulting to two-thirds
 
-The published price, scope, criteria, dates, supplier, and governance settings
-become immutable after the first pledge. A material change creates a new
-campaign version, supersedes the old version, releases its reservations, and
-requires every organization to pledge again.
+The published price ceiling, scope, criteria, dates, supplier, and governance
+settings become immutable after the first pledge. A material change creates a
+new campaign version, supersedes the old version, releases its reservations,
+and requires every organization to pledge again.
 
 Published campaigns are public in v1. Visibility and inherited access policy
 remain explicit domain concepts so private campaigns can be introduced later
@@ -160,15 +161,17 @@ use.
 ### Reservations and consumption
 
 - Creating a pledge and reserving its complete maximum monetary exposure occur
-  in one database transaction.
+  in one database transaction. That exposure is the pledge cap multiplied by
+  the campaign's maximum price.
 - Concurrent pledges cannot reserve the same remaining balance twice.
 - Increasing a pledge reserves the additional exposure.
 - Reducing or withdrawing a pre-start pledge releases the corresponding
   reservation.
 - Expired, cancelled, failed, or superseded campaigns release their active
   reservations.
-- The first delivery submission freezes the allocation and releases the part
-  of each reservation above its final allocated amount.
+- The first delivery submission locks the supplier's final price, freezes the
+  allocation, and releases the part of each reservation above its final
+  allocated amount.
 - Accepted settlement converts the remaining reservation into consumed budget.
 - Invoice and payment status do not alter budget consumption.
 
@@ -199,31 +202,52 @@ existing pledge data.
 
 ### Pledge semantics
 
-- A pledge is a serious, public maximum-percentage commitment.
+- A pledge is a serious, public maximum-percentage commitment against the
+  campaign's eventual final price.
 - It is not a donation, payment, or legally binding invoice.
-- Confirmation explains that the campaign may start immediately when coverage
-  reaches 100% and that the commitment then locks.
+- Its worst-case monetary exposure is that percentage of the published maximum
+  price, and the organization's budget reserves that complete amount.
+- Confirmation explains that the campaign starts automatically at 100%
+  coverage, may be started earlier by the supplier, and locks the commitment
+  when delivery starts.
 - The public record shows the organization, maximum cap, projected share,
-  campaign activity, and final net settlement amount.
+  worst-case amount, campaign activity, and final net settlement amount.
 - Representative identity, budget information, and invoice administration are
   private.
 
-Before 100% coverage, an organization can increase, reduce, move, or withdraw
-its pledge. When aggregate caps reach 100%, the campaign atomically starts
-delivery without reconfirmation. Existing pledges can no longer be reduced or
-withdrawn.
+Before delivery starts, an organization can increase, reduce, move, or
+withdraw its pledge. When aggregate caps reach 100%, the campaign atomically
+starts delivery without reconfirmation.
+
+Below 100%, the supplier may manually start delivery at any coverage level,
+including zero. This action is irreversible and publicly records the coverage
+at which the supplier accepted responsibility for the uncovered share. Once
+delivery starts, existing pledges can no longer be reduced or withdrawn.
+
+If the latest funding date arrives before automatic or manual start, the
+campaign expires. Once delivery has started, that deadline no longer closes
+pledging; new organizations may continue to join until delivery submission.
 
 New verified organizations may pledge throughout delivery, and existing
 organizations may increase their caps. Each change updates the projected
-allocation and its transactional budget reservations.
+allocation and its transactional budget reservations. Joining a campaign that
+is already delivering requires an explicit acknowledgement that the new pledge
+locks immediately.
 
 An exceptional post-start reduction requires a deployment operator, a public
 reason, and an immutable audit event. Any shortfall after work starts is the
-supplier's risk.
+supplier's risk. A campaign started below full coverage prominently shows the
+supplier's uncovered percentage and worst-case monetary exposure.
+
+Public campaign pricing shows the maximum price, aggregate coverage, committed
+amount at the ceiling, current supplier-funded gap, and the coverage captured
+at manual start. After delivery submission, it additionally shows the locked
+final price and final organization allocations. The coverage indicator stops
+at 100%, even if the sum of organization caps is higher.
 
 ### Fair-share calculation
 
-Allocation uses max-min fair water filling:
+Allocation uses max-min fair water filling against the supplier's final price:
 
 1. Divide the remaining target equally among participating organizations.
 2. Lock any organization whose maximum cap is below that equal share.
@@ -233,6 +257,11 @@ Allocation uses max-min fair water filling:
 For caps of 10%, 30%, 100%, and 100%, the allocation is 10%, 30%, 30%, and
 30%. If another organization with a cap of at least 22.5% joins, the allocation
 becomes 10%, 22.5%, 22.5%, 22.5%, and 22.5%.
+
+When combined caps reach at least 100%, water filling allocates the complete
+final price. When a supplier starts and delivers below full coverage, every
+organization reaches at most its cap and the supplier absorbs the unallocated
+remainder.
 
 Pledge caps are stored in basis points. Monetary values are stored in currency
 minor units. Rounding is deterministic and never exceeds the exact maximum
@@ -247,11 +276,18 @@ retains any delivery efficiency margin.
 The supplier publishes sanitized text, external links, and raster images as
 evidence. V1 does not accept arbitrary document uploads.
 
-The first delivery submission:
+With the first delivery submission, the supplier declares a final net price
+from zero through the published maximum. Bloei.me does not require an itemized
+cost statement or audit: the supplier is free to charge less, while the
+published ceiling remains the funders' guaranteed worst case.
+
+The first delivery submission atomically:
 
 - Permanently closes pledging
+- Locks the final price so later evidence resubmissions cannot change it
 - Freezes the final allocation
 - Freezes the set of voting organizations
+- Releases budget reservations above final allocated amounts
 - Opens the configured review period
 
 ### Pledger review
@@ -263,6 +299,10 @@ The first delivery submission:
 - The supplier may correct the work and resubmit, restarting the review period.
 - No independent reviewer is required.
 
+A declared price within the previously accepted ceiling is not itself grounds
+for an objection. Bloei.me does not assess the supplier's internal costs or
+margin.
+
 If the supplier contests a remaining objection, the pledging organizations
 vote. Each organization has one vote. The campaign's immutable quorum and
 approval thresholds apply. If the vote passes, delivery is accepted. If it
@@ -270,8 +310,10 @@ fails, the campaign returns to revision and no settlement is created.
 
 ### Settlement and invoicing
 
-Accepted delivery creates one immutable settlement from the frozen allocation
-and consumes the associated budget reservations.
+Accepted delivery creates one immutable settlement from the locked final price
+and frozen allocation, then consumes the associated budget reservations. A
+zero final price produces a public zero settlement, releases all reservations,
+and creates no invoice obligations.
 
 Bloei.me:
 
@@ -310,6 +352,7 @@ Core value types include:
 
 - `Money(currency, minorUnits)`
 - `PercentageCap(basisPoints)`
+- `CampaignPrice(maximum, finalPrice?)`
 - `CampaignVisibility`
 - `CampaignDeadlinePolicy(fundingDeadline, deliveryDeadline)`
 - `AcceptancePolicy(reviewDays, quorumBps, approvalBps)`
@@ -388,6 +431,12 @@ without explicit permission.
   persistence model.
 - Test campaign versioning, deadlines, re-pledging, operator exceptions, and
   overdue delivery.
+- Test automatic start at full coverage and irreversible manual start at zero,
+  partial, and full coverage.
+- Reject a final price above the ceiling and every attempt to alter it after
+  the first delivery submission.
+- Verify full, partial, and zero-price settlement, including supplier-funded
+  shortfalls and released budget reservations.
 - Test automatic acceptance, objections, resubmission, quorum rounding,
   configurable thresholds, and failed votes.
 - Verify tenant isolation, role authorization, CSRF protection, content
@@ -402,8 +451,10 @@ The Epistola pilot must:
 - Receive budget-backed pledges from at least three verified organizations.
 - Reject a concurrent or direct budget overcommit.
 - Start automatically when coverage reaches 100%.
+- Demonstrate manual early start and the public supplier-risk disclosure.
 - Reallocate projected shares after a late pledge.
-- Freeze allocation and release surplus reservations at delivery submission.
+- Lock a lower final price, freeze allocation, and release surplus reservations
+  at delivery submission.
 - Complete pledger review and acceptance.
 - Consume final budget amounts at settlement.
 - Produce reproducible CSV and JSON exports.

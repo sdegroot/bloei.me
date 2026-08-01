@@ -114,7 +114,8 @@ superseded.
 ## D-010 — Use one supplier and a fixed net campaign price
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Partially superseded by D-035; the one-supplier decision remains
+  accepted
 - **Decision:** Each campaign names one verified supplier organization and one
   fixed net price in a single ISO currency.
 - **Why:** One accountable delivery and invoicing party keeps settlement
@@ -125,7 +126,7 @@ superseded.
 ## D-011 — Treat pledges as serious public maximum commitments
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Accepted; its fixed-price basis is superseded by D-035
 - **Decision:** A pledge publicly declares the organization's maximum
   percentage of the fixed campaign price and may be relied upon to start work.
 - **Why:** Organizations need a clear commitment without Bloei.me becoming a
@@ -147,7 +148,7 @@ superseded.
 ## D-013 — Start immediately at full coverage
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Accepted and extended by D-036
 - **Decision:** When aggregate caps reach 100%, delivery starts atomically
   without a reconfirmation step.
 - **Why:** A second confirmation would weaken the original pledge and delay
@@ -392,3 +393,34 @@ superseded.
   commercial and payment domain.
 - **Consequences:** Hosted service agreements, if any, are administered outside
   Bloei.me.
+
+## D-035 — Use a maximum price with a supplier-declared final price
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** A campaign publishes one immutable maximum net price rather
+  than a fixed price or range. With the first delivery submission, the supplier
+  declares and locks any final price from zero through that maximum.
+- **Why:** Software delivery is not always predictable enough for an exact
+  price. A ceiling gives organizations a firm worst case while letting the
+  supplier voluntarily charge less. A range was rejected because it creates
+  ambiguous start thresholds, actual-cost proof, and partially funded overrun
+  rules.
+- **Consequences:** A pledge cap is a percentage of the final price, while its
+  budget reserves the same percentage of the maximum price. The first delivery
+  submission releases the unused reservation. Bloei.me requires no itemized
+  cost statement, and later evidence submissions cannot change the locked
+  price.
+
+## D-036 — Allow the supplier to start below full coverage
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** Full coverage continues to start delivery automatically, but
+  the supplier may irreversibly start at any lower coverage, including zero.
+- **Why:** A supplier may choose to invest its own capacity, accept the funding
+  risk, and let organizations join while delivery is already underway.
+- **Consequences:** The start coverage and supplier exposure are public.
+  Existing pledges lock immediately, later pledges lock when made, and the
+  supplier absorbs every final-price share not covered by organization caps.
+  If delivery has not started by the funding deadline, the campaign expires.
