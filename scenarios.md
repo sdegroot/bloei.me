@@ -286,16 +286,19 @@ The lead supplier submits a stable release, evidence, and a locked final price.
 1. Rivierenstad identifies that one published accessibility criterion is not
    demonstrated by the evidence.
 2. Its funding representative submits an objection referencing that criterion.
-3. The lead supplier coordinates corrections or supplies better evidence and
-   resubmits.
-4. The complete review period starts again.
-5. If the disagreement remains, Bloei.me opens a fresh formal acceptance
-   window.
-6. Each pledging organization receives one ballot; silence is deemed acceptance
+3. The public objection prevents automatic acceptance, but other funders retain
+   the rest of the original period to review and object.
+4. The lead supplier coordinates corrections or supplies better evidence and
+   formally resubmits.
+5. The old objection is preserved as superseded and a complete review period
+   starts again for everyone.
+6. If the organization objects again and the lead contests it after the new
+   review period, Bloei.me opens formal acceptance voting.
+7. Each pledging organization receives one ballot; silence is deemed acceptance
    and there is no quorum.
-7. The immutable campaign approval threshold determines the result across all
+8. The immutable campaign approval threshold determines the result across all
    eligible organizations.
-8. A successful result accepts delivery; a failed threshold returns it to
+9. A successful result accepts delivery; a failed threshold returns it to
    revision.
 
 ### Boundaries
@@ -537,7 +540,7 @@ settlement.
 
 Ten organizations funded a campaign with a two-thirds acceptance threshold.
 Rivierenstad maintains a criterion-based objection after the lead supplier
-responds.
+responds and the full review period ends.
 
 ### Flow
 
@@ -546,6 +549,8 @@ responds.
 3. All funding representatives and organization administrators receive in-app
    and email notices plus reminders.
 4. Two organizations explicitly accept. Seven organizations take no action.
+   Any organization newly rejecting must reference a criterion and publish a
+   reason.
 5. Positions remain hidden and can change until closing.
 6. At closing, the two explicit accepts and seven deemed accepts produce 90%
    acceptance, so delivery passes.
@@ -937,3 +942,69 @@ duplicate registration was discovered. Delivery has already started.
 
 Before delivery starts, the canonical organization selects one cap and backing
 budget instead because no supplier has yet relied on the duplicate positions.
+
+## Scenario 38 — An early objection does not shorten review
+
+### Starting point
+
+Rivierenstad objects on day two of a 14-day review. Another organization finds
+a different criterion problem on day eleven.
+
+### Flow
+
+1. Rivierenstad's public objection immediately prevents automatic acceptance.
+2. The review deadline remains day fourteen so every other funder keeps its
+   original opportunity.
+3. The second organization submits its separate criterion-based objection.
+4. The lead supplier responds to both but cannot request formal voting before
+   the review period ends.
+5. At day fourteen, the lead either resubmits, requests one vote covering the
+   complete outcome, or eventually declares failure.
+
+### Result
+
+An early objector cannot shorten everybody else's review, and the supplier
+cannot force an early contested decision.
+
+## Scenario 39 — Every objection is withdrawn after review ends
+
+### Starting point
+
+The review period has ended with two open objections. The lead supplier answers
+both without changing the delivered result.
+
+### Flow
+
+1. Each objecting organization decides that the response demonstrates its
+   criterion and withdraws its own objection.
+2. When the final objection is withdrawn, no contested issue remains.
+3. Because every funder already received the complete review period, Bloei.me
+   accepts delivery immediately without opening a vote.
+4. Settlement and settlement notes are created atomically.
+
+### Vote variation
+
+If formal voting had already opened, withdrawal changes the objector's ballot
+to `accept`; the ordinary voting rules still determine when the window closes.
+
+## Scenario 40 — Moderation changes wording but not a funder's position
+
+### Starting point
+
+A valid criterion-based objection includes a personal accusation against a
+supplier employee.
+
+### Flow
+
+1. A moderator hides the abusive personal wording and records the moderation
+   reason.
+2. The funding organization's underlying objection and initial reject position
+   remain active.
+3. The lead supplier responds to the substantive criterion issue.
+4. The organization may withdraw, the lead may resubmit, or the issue may go to
+   formal voting.
+
+### Result
+
+Moderation protects people and public discussion without becoming a hidden
+technical acceptance decision.

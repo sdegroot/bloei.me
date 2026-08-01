@@ -481,7 +481,8 @@ superseded.
 ## D-041 — Use negative consent for disputed acceptance
 
 - **Date:** 2026-08-01
-- **Status:** Accepted; supersedes the quorum rules in D-018 and D-019
+- **Status:** Accepted and expanded by D-057; supersedes the quorum rules in
+  D-018 and D-019
 - **Decision:** A maintained objection opens a fresh acceptance window equal to
   the campaign review period. Silence is deemed acceptance, there is no quorum,
   and the configurable approval threshold defaults to two-thirds.
@@ -714,3 +715,23 @@ superseded.
   Amendments do not unilaterally pause campaign deadlines. Pre-start funders may
   withdraw entirely; locked funders cannot. Clarification challenges receive a
   non-conflicted ruling, and every activated version and consent remains public.
+
+## D-057 — Use criterion-based public objections before negative-consent voting
+
+- **Date:** 2026-08-01
+- **Status:** Accepted; expands D-041
+- **Decision:** Keep the complete review period open after an objection and
+  allow formal voting only after it ends and the lead has responded to every
+  open objection. Objections and explicit rejections are organization-owned,
+  public, and criterion-based.
+- **Why:** Every funder needs the full opportunity to inspect delivery, while
+  objections must remain tied to the outcome that was actually promised. A
+  structured vote resolves substantive disagreement without an independent
+  technical judge.
+- **Consequences:** Objector silence never withdraws an objection. A resubmission
+  supersedes old objections and restarts review while preserving price and
+  allocation. One vote decides the complete outcome; new explicit rejection
+  requires a reason, silence is acceptance, and successful voting atomically
+  settles. There is no partial acceptance, automatic supplier-response deadline,
+  or reopening after acceptance. Moderation may remove harmful wording but not
+  silently erase an organization position.

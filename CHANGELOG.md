@@ -21,6 +21,8 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   combined delivery, and externally arranged invoicing.
 - Lifecycle, authorization, supplier-continuity, conflict, duplicate-merge, and
   future four-eyes scenarios.
+- Review edge cases for early and multiple objections, withdrawal after the
+  deadline, resubmission, and content moderation.
 
 ### Changed
 
@@ -52,3 +54,5 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   and exceptional duplicate-organization merges.
 - Detailed amendment duration, changing consent, supplier confirmation,
   provisional reservations, deadline interaction, and clarification challenges.
+- Finalized public criterion-based objections, full review before contested
+  voting, rejection reasons, resubmission, withdrawal, and moderation rules.

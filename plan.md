@@ -516,41 +516,79 @@ price but creates no funder review, settlement, or settlement notes.
 
 ### Pledger review
 
-- Funding representatives assess evidence against the published criteria.
-- If nobody objects, delivery is automatically accepted when the review period
-  ends.
-- An objection must identify an unmet acceptance criterion.
-- The lead supplier may correct the work and resubmit, restarting the review
-  period.
-- No independent reviewer is required.
+Funding representatives assess the complete outcome against the published
+criteria. If the review period ends without an open objection, delivery is
+accepted and settlement is created atomically. No independent reviewer is
+required.
 
-A declared price within the previously accepted ceiling is not itself grounds
-for an objection. Bloei.me does not assess the supplier's internal costs or
+Only a frozen funding organization may object. Its public organization-owned
+objection must arrive before the deadline, reference at least one criterion,
+and explain what is absent or insufficient; the acting employee remains
+private. Additional scope, regret about accepted terms, a price within the
+ceiling, internal pledge disputes, supplier arrangements, and unrelated support
+requests are not valid grounds. Bloei.me does not assess supplier costs or
 margin.
 
-If the lead supplier contests a maintained objection, Bloei.me opens a fresh
-formal acceptance window equal to the campaign's configured review period:
+An objection prevents automatic acceptance but does not end the review window:
+other funders retain the complete period to inspect and object. It stays open
+until the organization withdraws it, a formal resubmission supersedes it, or a
+vote decides it. Objector silence never withdraws it. The lead supplier may ask
+for detail, respond, improve evidence, correct work and resubmit, contest it, or
+declare failure. There is no separate response deadline; ordinary overdue and
+forced-failure governance handles prolonged inactivity.
 
-- The organizations frozen at the first delivery submission are eligible.
-- Each organization has one ballot with `accept` or `reject`; the maintained
-  objector begins with `reject`.
+A formal resubmission supersedes but preserves every objection to the previous
+submission and starts a complete new review period for all funders. The final
+price, allocation, and voting group remain locked. A still-dissatisfied funder
+must object to the revised submission again.
+
+Several organizations may object to one criterion and one organization may
+object to several. Similar items may be grouped visually, but organization
+positions stay distinct. The lead must respond to every open objection before
+requesting one vote on the complete outcome. Formal voting cannot begin until
+the full review period ends.
+
+If all objections are withdrawn, ordinary review resumes with its remaining
+time or accepts immediately when the original deadline has passed. During a
+vote, withdrawing the written objection changes that organization's ballot to
+`accept`, subject to further change before closing.
+
+A contested delivery opens a formal acceptance window equal to the configured
+review period:
+
+- The organizations frozen at first delivery submission are eligible and have
+  equal voting power regardless of pledge amount.
+- Each has one organization ballot with `accept` or `reject`; an open objector
+  begins with `reject`.
+- A new explicit rejection must reference a criterion and give a public reason.
 - Taking no action is deemed acceptance. There is no quorum.
 - At closing, acceptance is
   `(eligible organizations - rejecting organizations) / eligible organizations`.
   Exact equality with the campaign threshold passes.
 - Organizations may change their position until closing.
-- Positions remain hidden during voting. After closing, the public record shows
-  explicit acceptance, deemed acceptance, or rejection for each organization.
+- Ballots remain hidden during voting, although a public objection naturally
+  reveals its organization's initial rejection. After closing, the public
+  record shows explicit acceptance, deemed acceptance, or criterion-based
+  rejection for every organization.
 - The window closes early only when every eligible organization explicitly
   accepts.
 - Bloei.me sends recorded in-app and email notices to funding representatives
   and organization administrators, plus reminders. An email delivery failure
   does not pause the window.
 
-If the threshold passes, delivery is accepted. Otherwise it returns to revision
-without changing the locked price, allocations, or pledges. The lead supplier
-may revise and resubmit without an automatic attempt limit, or declare the
-campaign failed.
+If the threshold passes, settlement and settlement notes are created
+atomically, budget reservations are consumed, and remaining objections are
+recorded as overruled by the funders. If it fails, the campaign enters
+`revision required` without changing price, allocation, or pledges. The lead
+may resubmit without an automatic attempt limit or declare failure; partial
+acceptance and settlement do not exist.
+
+Moderators may hide abusive, unlawful, or personal wording without silently
+removing the organization's position. Obvious spam, duplicate technical
+submissions, or ineligible objections may be removed with a recorded reason,
+but a maintainer cannot dismiss a substantive objection merely for disagreeing.
+Acceptance cannot be reopened inside Bloei.me; later support, security, legal,
+or corrective work follows a separate process and preserves settlement history.
 
 ### Suspension, cancellation, and failure
 
@@ -755,6 +793,9 @@ without explicit permission.
   shortfalls and released budget reservations.
 - Test negative-consent acceptance, explicit and deemed positions, exact
   thresholds, changed ballots, hidden positions, and unanimous early closing.
+- Test early and multiple criterion-based objections, full review before voting,
+  withdrawal, supersession on resubmission, required rejection reasons,
+  moderation without position loss, and atomic settlement after acceptance.
 - Test organization enrollment rejection, resubmission, suspension, restoration,
   role replacement, administrator recovery, and audited duplicate merges.
 - Test tenant-scoped budget allowlists across multiple verified enrollments.
