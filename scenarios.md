@@ -1119,3 +1119,58 @@ A review deadline is 15:30, but the automatic acceptance worker runs at 15:34.
 ### Result
 
 Worker scheduling never extends a governance window or changes its outcome.
+
+## Scenario 46 — A verified organization joins the trust-based pilot
+
+### Starting point
+
+Rivierenstad is verified in the Epistola tenant and has authorized a funding
+representative to use an eligible innovation budget. V1 does not require a
+signed expenditure contract in Bloei.me.
+
+### Flow
+
+1. The representative reviews the exact campaign version, cap, worst-case
+   amount, locking rule, and legal-responsibility notice.
+2. They confirm that they are authorized by Rivierenstad to make the commitment
+   and use the selected budget.
+3. Bloei.me records the versioned confirmation and activates the pledge and
+   reservation atomically.
+4. Bloei.me does not inspect a procurement file or claim that verification
+   proves statutory signing authority or procurement compliance.
+5. The supplier team chooses whether to rely on the operational commitment.
+6. After accepted delivery, Bloei.me calculates Rivierenstad's payee-free
+   contribution note and external handling occurs outside the platform.
+
+### Result
+
+The pilot can operate through organizational trust while making its legal and
+procurement limitations explicit rather than presenting assumptions as facts.
+
+## Scenario 47 — A municipality later requires a signed agreement
+
+### Starting point
+
+In a future release, Rivierenstad configures its innovation budget so that an
+external signed agreement is required before any pledge becomes effective.
+
+### Flow
+
+1. A funding representative submits a pledge request.
+2. Bloei.me keeps it private and outside campaign coverage while the contract
+   requirement is pending, with its worst-case exposure provisionally reserved.
+3. Rivierenstad and the appropriate external counterparties complete their
+   procurement and signing process outside Bloei.me.
+4. An authorized person records protected agreement metadata, parties, scope,
+   maximum amount, validity, signature status, external reference, and document
+   hash or protected location.
+5. Bloei.me validates the configured requirement and then activates the pledge,
+   subject to its normal approvals, converting the provisional reservation.
+6. A later campaign amendment determines against the versioned policy whether
+   renewed agreement evidence is required.
+
+### V1 boundary
+
+The first release prepares domain boundaries only. It does not upload contracts,
+provide electronic signatures, determine counterparties, or validate legal
+enforceability.

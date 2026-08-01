@@ -25,6 +25,8 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   deadline, resubmission, and content moderation.
 - Timing scenarios for deadline races, daylight-saving changes, paused windows,
   platform outages, and delayed background jobs.
+- A separate legal and compliance considerations document plus trust-based and
+  future signed-contract scenarios.
 
 ### Changed
 
@@ -59,3 +61,5 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   voting, rejection reasons, resubmission, withdrawal, and moderation rules.
 - Defined authoritative campaign timezones, exclusive local deadlines,
   calendar-day windows, timer pauses, outage correction, and reminder policy.
+- Adopted verified-organization trust for v1 commitments while preparing an
+  optional external-contract requirement for later municipal expenditure.

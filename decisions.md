@@ -756,3 +756,24 @@ superseded.
   campaign that expired during the outage and has had no later lifecycle action.
   Important windows receive in-app and email notices with non-duplicative
   reminders.
+
+## D-059 — Start with trust-based commitments and prepare external contracts
+
+- **Date:** 2026-08-01
+- **Status:** Accepted working position pending specialist legal review
+- **Decision:** V1 activates pledges from verified organizations through their
+  authorized representatives without requiring a signed contract. Treat them
+  as serious operational platform commitments while avoiding claims that
+  verification, the pledge, or a payee-free settlement note proves legal or
+  procurement compliance.
+- **Why:** A trust-based pilot keeps the first workflow practical. Municipalities
+  may later require formal expenditure agreements, but their form and parties
+  depend on procurement, authority, supplier structure, and applicable law that
+  the platform should not guess.
+- **Consequences:** Verification confirms identity rather than spending
+  authority or guaranteed payment. Organizations and suppliers arrange their
+  legal basis externally. Bloei.me stores no contract in v1 and does not enforce
+  contributions. The model prepares a future organization- or budget-level
+  `external contract required` policy with protected, versioned evidence and an
+  external signature service. [legal.md](legal.md) records risks, sources, and
+  questions that require counsel before broader public-sector use.

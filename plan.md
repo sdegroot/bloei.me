@@ -7,7 +7,9 @@ Last updated: 2026-08-01
 This document describes the agreed product and implementation direction for
 Bloei.me. The reasons behind the choices are recorded in
 [decisions.md](decisions.md). Concrete end-to-end journeys are documented in
-[scenarios.md](scenarios.md).
+[scenarios.md](scenarios.md). The trust-based pilot assumptions, unresolved
+legal questions, and future signed-contract direction are recorded separately
+in [legal.md](legal.md).
 
 ## Product summary
 
@@ -412,7 +414,7 @@ use.
   allocation, and releases the part of each reservation above its final
   allocated amount.
 - Accepted settlement converts the remaining reservation into consumed budget.
-- Invoice and payment status do not alter budget consumption.
+- Settlement-note completion does not alter budget consumption.
 
 A budget total may be increased. It may only be reduced when the new total
 still covers all consumed and reserved amounts. Expiration can be extended; it
@@ -445,7 +447,9 @@ existing pledge data.
 
 - A pledge is a serious, public maximum-percentage commitment against the
   campaign's eventual final price.
-- It is not a donation, payment, or legally binding invoice.
+- Bloei.me treats it as an organization-authorized conditional platform
+  commitment. It is not money, an invoice, a purchase order, or proof that a
+  legally enforceable external contract exists.
 - Its worst-case monetary exposure is that percentage of the published maximum
   price, and the organization's budget reserves that complete amount.
 - Confirmation explains that the campaign starts automatically at 100%
@@ -455,6 +459,14 @@ existing pledge data.
   worst-case amount, campaign activity, and final net settlement amount.
 - Representative identity, budget information, and settlement-note completion
   are private.
+
+V1 uses a trust-based flow: the verified organization appoints its roles and an
+authorized representative confirms authority to commit the selected budget.
+Bloei.me does not require or validate a signed contract. Verification confirms
+identity and tenant participation, not statutory authority, procurement
+compliance, creditworthiness, or guaranteed payment. Every organization remains
+responsible for its legal, procurement, contracting, tax, and external
+settlement requirements.
 
 Before delivery starts, an organization can increase, reduce, move, or
 withdraw its pledge. When aggregate caps reach 100%, the campaign atomically
@@ -710,6 +722,21 @@ immutable. Only a platform operator may exceptionally redact content for legal,
 privacy, or security reasons. Redaction leaves a public tombstone and immutable
 audit event rather than erasing the record.
 
+## Legal and contracting boundary
+
+The initial pilot relies on verified organizations and authorized
+representatives rather than platform-required signed agreements. Suppliers
+knowingly rely on these operational commitments without Bloei.me guaranteeing
+enforceability or payment. The payee-free settlement note remains informational
+and external processes determine legal counterparties and recipients.
+
+Future municipal use may require an external signed agreement before a pledge
+becomes effective. Domain boundaries prepare a versioned contract-requirement
+policy and protected evidence metadata, but v1 provides neither contract upload
+nor electronic signing. A later implementation should integrate a suitable
+trust service rather than create its own signature mechanism. The current legal
+assumptions and review questions are maintained in [legal.md](legal.md).
+
 ## Technical architecture
 
 ### Application
@@ -738,6 +765,8 @@ Core value types include:
 - Organization-owned membership roles
 - Versioned organization authorization policies and requests, with v1 enforcing
   one immediate approval
+- Future external contract requirements and protected agreement evidence, with
+  v1 always using `contract not required`
 - `CampaignDeadlinePolicy(timezone, fundingDeadline, deliveryDeadline)` with
   UTC instants and an immutable IANA zone
 - `AcceptancePolicy(reviewDays, approvalThresholdBps)`
@@ -838,6 +867,8 @@ without explicit permission.
 - Test organization-owned actions, authority revocation, concurrent
   representative changes, conflict exclusions, and one-approval v1 behavior
   against future multi-approval boundaries.
+- Test versioned trust-based pledge confirmations and keep future contract
+  evidence inaccessible and inactive in the v1 policy.
 - Test automatic start at full coverage and irreversible manual start at zero,
   partial, and full coverage.
 - Reject a final price above the ceiling and every attempt to alter it after
@@ -871,6 +902,7 @@ without explicit permission.
 The Epistola pilot must:
 
 - Receive budget-backed pledges from at least three verified organizations.
+- Preserve the exact trust-based authority confirmation for each pilot pledge.
 - Reject a concurrent or direct budget overcommit.
 - Start automatically when coverage reaches 100%.
 - Demonstrate manual early start and the public supplier-risk disclosure.
@@ -895,6 +927,9 @@ The Epistola pilot must:
   enrollment and budget eligibility remain explicit.
 - Bloei.me manages commitments and settlement evidence, not bank funds or
   statutory accounts.
+- V1 trusts verified organizations and authorized representatives without
+  requiring signed contracts; it makes no legal, procurement, or payment
+  guarantee.
 - Each campaign has one lead supplier and may have co-suppliers, but Bloei.me
   does not divide their work, price, settlement, or external invoices.
 - Payees, payments, invoice administration, advance or milestone invoicing, tax
