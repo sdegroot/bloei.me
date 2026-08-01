@@ -50,15 +50,18 @@ Bloei.me uses one configurable OIDC provider per deployment. The hosted
 service initially uses the central Authentik deployment. Self-hosted operators
 can configure another standards-compliant OIDC provider.
 
-Organizations have a global identity within a Bloei.me deployment, while each
-tenant verifies an organization's participation independently.
+Organizations have one global identity within a Bloei.me deployment. Each
+tenant relationship is a separate enrollment with status `pending`, `verified`,
+`rejected`, or `suspended`. Registering once avoids duplicated legal identities,
+memberships, and budgets while leaving every tenant in control of participation
+in its own community.
 
 The authorization model contains these roles:
 
 - **Platform operator:** provisions tenants, performs exceptional audited
   operations, and operates the deployment.
-- **Tenant administrator:** manages tenant branding, projects, verification,
-  and tenant membership.
+- **Tenant administrator:** manages tenant branding, projects, and organization
+  enrollments, but not an organization's internal people, roles, or budgets.
 - **Project maintainer:** curates proposals and manages project campaigns.
 - **Moderator:** reviews idea submissions, comments, and flags.
 - **Organization administrator:** controls the organization's profile,
@@ -68,8 +71,43 @@ The authorization model contains these roles:
 - **Funding representative:** pledges and votes on behalf of an organization.
 - **Member:** participates in the community without financial authority.
 
+Organization roles belong to the person's organization membership and work in
+every tenant where the organization is verified. Organization administrators
+assign and revoke roles. Funding representatives additionally require
+authorization to use the selected budget.
+
 One person may hold several organization roles. Public visitors can read
 published content; authentication is required for submissions and comments.
+
+### Organization enrollment and continuity
+
+- The creator of a provisional organization becomes its initial organization
+  administrator. Tenant verification activates participation but does not
+  assign internal roles. Disputed ownership is handled through audited platform
+  operator recovery.
+- An organization administrator requests enrollment in a tenant; a tenant
+  administrator verifies, rejects, or suspends only that relationship.
+- A rejection includes a private reason and may be corrected and resubmitted.
+- Verification has no automatic expiry. Material legal-identity changes or
+  tenant action can trigger a new review or suspension.
+- A platform operator can recover an organization with no active administrator
+  after verifying the replacement's authority.
+- Legal registration identifiers prevent duplicate creation where available.
+  A platform operator may merge accidental duplicates with a complete audit
+  trail and redirects to the canonical profile.
+- Removing a representative never changes organization-owned pledges, budgets,
+  or ballots. Another authorized representative can take control and alter an
+  open organization ballot.
+- Account deletion anonymizes personal profile data while preserving
+  organization-authorized actions and internal audit identifiers.
+
+If a funding organization's tenant enrollment is suspended before delivery
+starts, its pledge is deactivated and its budget reservation is released.
+Restoration requires a new pledge. If suspension happens after delivery starts,
+the locked pledge remains and the organization may only administer that
+commitment: review, vote, replace its representative, or move its reservation.
+It cannot endorse, create another pledge, increase its cap, or join another
+campaign in that tenant until restored.
 
 ## Proposals and campaigns
 
@@ -104,8 +142,8 @@ is responsible for delivery and external invoicing. It records:
 - A configurable minimum pledge cap, defaulting to 1%
 - A configurable review period, defaulting to 14 calendar days and restricted
   to 7–30 days
-- Configurable review-vote quorum and approval thresholds between 50% and
-  100%, both defaulting to two-thirds
+- A configurable acceptance threshold between 50% and 100%, defaulting to
+  two-thirds; formal acceptance voting has no quorum
 
 The published price ceiling, scope, criteria, dates, supplier, and governance
 settings become immutable after the first pledge. A material change creates a
@@ -130,6 +168,7 @@ An organization may define multiple budgets. Each budget has:
 - Net total amount
 - Valid-from and expiration dates
 - Administrative processing buffer, defaulting to 14 days
+- An explicit allowlist of tenants in which the budget may be used
 - Authorized funding representatives
 - Lifecycle status and append-only history
 
@@ -143,6 +182,7 @@ A budget can back a pledge only when:
 
 - The budget and campaign currencies match.
 - The budget is active.
+- The campaign's tenant is in the budget's allowlist.
 - The funding representative is authorized to use it.
 - Its available amount covers the pledge's complete maximum exposure.
 - Its expiry covers the campaign's ultimate delivery date, review period, and
@@ -179,7 +219,9 @@ use.
 A budget total may be increased. It may only be reduced when the new total
 still covers all consumed and reserved amounts. Expiration can be extended; it
 can only be shortened when every active reservation remains eligible. Budgets
-with financial history are archived rather than deleted.
+with financial history are archived rather than deleted. Adding a tenant to a
+budget allowlist enables future use there. Removing one blocks new reservations
+but preserves existing ones and their history.
 
 If delivery becomes overdue, budget managers receive escalating warnings and
 may move the private reservation to another eligible budget without modifying
@@ -291,6 +333,10 @@ The first delivery submission atomically:
 - Releases budget reservations above final allocated amounts
 - Opens the configured review period
 
+If no organization has pledged when delivery is submitted, Bloei.me instead
+marks the campaign `delivered self-funded`. It publishes the evidence and final
+price but creates no funder review, settlement, or invoice obligations.
+
 ### Pledger review
 
 - Funding representatives assess evidence against the published criteria.
@@ -304,34 +350,96 @@ A declared price within the previously accepted ceiling is not itself grounds
 for an objection. Bloei.me does not assess the supplier's internal costs or
 margin.
 
-If the supplier contests a remaining objection, the pledging organizations
-vote. Each organization has one vote. The campaign's immutable quorum and
-approval thresholds apply. If the vote passes, delivery is accepted. If it
-fails, the campaign returns to revision and no settlement is created.
+If the supplier contests a maintained objection, Bloei.me opens a fresh formal
+acceptance window equal to the campaign's configured review period:
+
+- The organizations frozen at the first delivery submission are eligible.
+- Each organization has one ballot with `accept` or `reject`; the maintained
+  objector begins with `reject`.
+- Taking no action is deemed acceptance. There is no quorum.
+- At closing, acceptance is
+  `(eligible organizations - rejecting organizations) / eligible organizations`.
+  Exact equality with the campaign threshold passes.
+- Organizations may change their position until closing.
+- Positions remain hidden during voting. After closing, the public record shows
+  explicit acceptance, deemed acceptance, or rejection for each organization.
+- The window closes early only when every eligible organization explicitly
+  accepts.
+- Bloei.me sends recorded in-app and email notices to funding representatives
+  and organization administrators, plus reminders. An email delivery failure
+  does not pause the window.
+
+If the threshold passes, delivery is accepted. Otherwise it returns to revision
+without changing the locked price, allocations, or pledges. The supplier may
+revise and resubmit without an automatic attempt limit, or declare the campaign
+failed.
+
+### Suspension, cancellation, and failure
+
+Before delivery starts, the supplier, project maintainer, or tenant
+administrator may cancel a campaign with a public reason. All pledges and
+reservations release immediately.
+
+After delivery starts, cancellation is unavailable. The supplier may publicly
+declare failure at any time. A tenant administrator may propose forced failure
+with a public reason; this opens a seven-day supplier response period and pauses
+new pledges, cap increases, review, voting, and settlement. The administrator
+may withdraw or confirm failure afterward. A deployment operator may bypass
+the delay for a legal, fraud, or security emergency. Failure creates no
+settlement or invoices, releases reservations, and preserves the public outcome
+and produced open-source work.
+
+If the supplier organization loses tenant verification, the campaign is
+suspended. New pledges, cap increases, delivery submission, review, voting, and
+settlement are blocked, and active review or voting countdowns pause. Existing
+commitments remain reserved. Restoration resumes the remaining timer duration;
+the original funding and delivery deadlines do not change. The tenant
+administrator may instead use the public failure process. Verification loss
+after accepted settlement does not alter that settlement.
 
 ### Settlement and invoicing
 
 Accepted delivery creates one immutable settlement from the locked final price
-and frozen allocation, then consumes the associated budget reservations. A
-zero final price produces a public zero settlement, releases all reservations,
-and creates no invoice obligations.
+and frozen allocation, then consumes the associated budget reservations. When
+organization caps do not cover the complete final price, a public non-invoice
+supplier-contribution line reconciles the remainder. A zero final price
+produces a public zero settlement, releases all reservations, and creates no
+invoice obligations.
 
 Bloei.me:
 
 - Publishes final organization shares and net amounts
 - Exports authorized settlement data as CSV and JSON
-- Lets the supplier privately record `not invoiced`, `invoiced`, and `paid`
-  states
+- Lets the supplier privately record `not invoiced`, `invoiced`, `disputed`,
+  `paid`, and `closed unpaid` states, with an optional private note and external
+  reference
 - Does not collect money
 - Does not generate tax invoices
 - Does not calculate tax
 
 The supplier invoices every funding organization externally after accepted
 delivery and adds legally required VAT or other tax. Advance and milestone
-invoicing are not supported in v1.
+invoicing are not supported in v1. Invoice status never changes the immutable
+settlement or consumed budget, and v1 does not track partial payments,
+collections, or dispute resolution. Normal transitions are `not invoiced` to
+`invoiced`, `invoiced` to `disputed`, `paid`, or `closed unpaid`, and `disputed`
+back to `invoiced` or onward to either terminal state. Every transition is
+historical; correcting a terminal status requires an audited operator action.
 
 An unsuccessful campaign creates no settlement or invoice. The failure,
 evidence, and produced open-source work remain visible.
+
+### Historical integrity and redaction
+
+Pledges and settlements snapshot the organization's legal identity at the time
+of the action while linking to its current canonical profile. Renames and
+audited merges therefore preserve the name and registration data under which a
+commitment was made.
+
+Published campaign terms, evidence, objections, ballots, and settlements are
+immutable. Only a platform operator may exceptionally redact content for legal,
+privacy, or security reasons. Redaction leaves a public tombstone and immutable
+audit event rather than erasing the record.
 
 ## Technical architecture
 
@@ -355,9 +463,17 @@ Core value types include:
 - `PercentageCap(basisPoints)`
 - `CampaignPrice(maximum, finalPrice?)`
 - `CampaignVisibility`
+- `OrganizationEnrollmentStatus(pending, verified, rejected, suspended)`
+- Organization-owned membership roles
 - `CampaignDeadlinePolicy(fundingDeadline, deliveryDeadline)`
-- `AcceptancePolicy(reviewDays, quorumBps, approvalBps)`
+- `AcceptancePolicy(reviewDays, approvalThresholdBps)`
+- `OrganizationBallot(accept, reject)` with deemed acceptance when absent
 - `BudgetValidity(validFrom, expiresOn, processingBufferDays)`
+- Explicit tenant allowlists on budgets
+- Campaign states for supplier suspension, proposed failure, revision required,
+  and self-funded delivery
+- Settlement lines for organizations and supplier contributions
+- `InvoiceStatus(notInvoiced, invoiced, disputed, paid, closedUnpaid)`
 - Versioned pledge attestation
 
 PostgreSQL tenant isolation is enforced in the database where applicable and
@@ -371,7 +487,8 @@ audit events.
 - Accept JPEG, PNG, and WebP only after successful decoding and re-encoding.
 - Strip metadata, reject SVG and non-images, and enforce size limits.
 - Use an outbox-backed worker for email, funding deadlines, budget warnings,
-  review timers, and automatic acceptance.
+  review and voting timers, reminders, paused countdowns, and automatic
+  acceptance.
 - Deliver notifications through SMTP and an in-app inbox.
 
 ### Interfaces and future integrations
@@ -438,8 +555,19 @@ without explicit permission.
   the first delivery submission.
 - Verify full, partial, and zero-price settlement, including supplier-funded
   shortfalls and released budget reservations.
-- Test automatic acceptance, objections, resubmission, quorum rounding,
-  configurable thresholds, and failed votes.
+- Test negative-consent acceptance, explicit and deemed positions, exact
+  thresholds, changed ballots, hidden positions, and unanimous early closing.
+- Test organization enrollment rejection, resubmission, suspension, restoration,
+  role replacement, administrator recovery, and audited duplicate merges.
+- Test tenant-scoped budget allowlists across multiple verified enrollments.
+- Test campaign cancellation, supplier suspension with paused timers,
+  voluntary failure, forced-failure notice, and emergency bypass.
+- Test self-funded completion and partial settlements with a supplier-
+  contribution line.
+- Test valid and invalid private invoice-state transitions and audited terminal
+  corrections without changing settlement or budget consumption.
+- Test identity snapshots, personal anonymization, merge redirects, and
+  exceptional redaction tombstones.
 - Verify tenant isolation, role authorization, CSRF protection, content
   sanitization, and image validation.
 - Run PostgreSQL integration and migration tests with Testcontainers.
@@ -456,7 +584,7 @@ The Epistola pilot must:
 - Reallocate projected shares after a late pledge.
 - Lock a lower final price, freeze allocation, and release surplus reservations
   at delivery submission.
-- Complete pledger review and acceptance.
+- Complete normal review and a negative-consent acceptance vote.
 - Consume final budget amounts at settlement.
 - Produce reproducible CSV and JSON exports.
 
@@ -470,6 +598,8 @@ The Epistola pilot must:
   representatives, moderation, and invoicing administration remain private.
 - Every pledge requires one budget in v1; the data model prepares for several
   budgets per pledge later.
+- Organizations and budgets are global within one deployment, while tenant
+  enrollment and budget eligibility remain explicit.
 - Bloei.me manages commitments and settlement evidence, not bank funds or
   statutory accounts.
 - Payments, advance invoicing, milestone invoicing, tax calculation, debt

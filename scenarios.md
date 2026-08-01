@@ -38,11 +38,12 @@ municipality to participate in Epistola funding campaigns.
 3. No organization exists, so they create a provisional organization profile
    containing its legal name, country, registration details, official website,
    and public description.
-4. They request participation in the Epistola tenant and provide the evidence
+4. As its provisional organization administrator, they request participation
+   in the Epistola tenant and provide the evidence
    needed to verify the municipality and their authority to represent it.
 5. An Epistola tenant administrator reviews the request.
-6. The administrator verifies the organization for that tenant and confirms
-   the initial organization administrator.
+6. The administrator verifies the organization's enrollment in that tenant;
+   it does not assign the organization's internal roles.
 7. The organization administrator appoints a budget manager and one or more
    funding representatives.
 8. The organization is now allowed to endorse Epistola proposals.
@@ -283,10 +284,14 @@ The supplier submits a stable release, evidence, and a locked final price.
 2. Its funding representative submits an objection referencing that criterion.
 3. The supplier corrects the work or supplies better evidence and resubmits.
 4. The complete review period starts again.
-5. If the disagreement remains, the supplier opens an organization vote.
-6. Each pledging organization receives one vote.
-7. The immutable campaign quorum and approval thresholds determine the result.
-8. A successful vote accepts delivery; a failed vote returns it to revision.
+5. If the disagreement remains, Bloei.me opens a fresh formal acceptance
+   window.
+6. Each pledging organization receives one ballot; silence is deemed acceptance
+   and there is no quorum.
+7. The immutable campaign approval threshold determines the result across all
+   eligible organizations.
+8. A successful result accepts delivery; a failed threshold returns it to
+   revision.
 
 ### Boundaries
 
@@ -333,3 +338,271 @@ its expiration date.
 If no eligible replacement exists, the original budget becomes `expired with
 active commitment`. Bloei.me does not withdraw the locked pledge or block a
 later settlement; Rivierenstad handles the accounting exception externally.
+
+## Scenario 12 — An organization joins a second tenant
+
+### Starting point
+
+Rivierenstad is already registered and verified in the Epistola tenant. It now
+wants to fund a campaign in another open-source community on Bloei.me.
+
+### Flow
+
+1. An organization administrator requests enrollment in the second tenant.
+2. The second tenant administrator reviews and verifies that relationship.
+3. Rivierenstad keeps its existing legal profile, members, and organization
+   roles; nothing is recreated.
+4. Its budget manager adds the second tenant to an existing innovation budget's
+   allowlist.
+5. An authorized funding representative can now use that budget in either
+   tenant.
+6. Reservations from both tenants reduce the same available balance.
+
+### Result
+
+Bloei.me prevents cross-tenant overcommitment while each tenant independently
+controls whether Rivierenstad may participate there.
+
+## Scenario 13 — Tenant enrollment is rejected and corrected
+
+### Starting point
+
+An organization requests tenant enrollment but supplies incomplete legal
+evidence.
+
+### Flow
+
+1. The tenant administrator rejects the request with a private explanation.
+2. The organization's global profile and participation in other tenants remain
+   unaffected.
+3. Its administrator corrects the details and uploads better evidence.
+4. The organization resubmits the enrollment request.
+5. The tenant administrator verifies the corrected request.
+
+### Result
+
+Rejection is recoverable and tenant-local. There is no platform-level appeal or
+automatic verification expiry in v1.
+
+## Scenario 14 — A funding representative leaves
+
+### Starting point
+
+The employee who created Rivierenstad's pledge changes jobs during delivery.
+
+### Flow
+
+1. An organization administrator removes the employee's membership or funding
+   role.
+2. The pledge, reservation, and any submitted organization ballot remain owned
+   by Rivierenstad.
+3. The administrator assigns the funding role to another member.
+4. The replacement representative can review delivery and alter Rivierenstad's
+   position while an acceptance window remains open.
+
+### No-administrator variation
+
+If no active organization administrator remains, a platform operator verifies
+a replacement's authority and performs an audited recovery. Tenant
+administrators cannot appoint a global organization administrator.
+
+## Scenario 15 — A funding organization is suspended
+
+### Before delivery starts
+
+1. The tenant administrator suspends Rivierenstad's tenant enrollment.
+2. Its active pledge is deactivated and its budget reservation releases.
+3. Campaign coverage recalculates and may drop below 100%.
+4. Restoration does not recreate the pledge; a funding representative must
+   knowingly pledge again.
+
+### After delivery starts
+
+1. The locked pledge and reservation remain because the supplier relied on
+   them.
+2. Rivierenstad may replace its representative, transfer the reservation, review
+   delivery, and vote on that existing commitment.
+3. It cannot endorse, create a pledge, increase its cap, or join another
+   campaign in that tenant until restored.
+
+### Result
+
+Suspension blocks new authority without silently erasing a commitment on which
+work has already started.
+
+## Scenario 16 — Two campaigns compete for one budget
+
+### Starting point
+
+Rivierenstad has €20,000 available in a cross-tenant innovation budget. Two
+funding representatives submit €15,000 maximum commitments at nearly the same
+time in different tenants.
+
+### Flow
+
+1. The first pledge and reservation commit atomically.
+2. The second transaction sees only €5,000 available and is rejected.
+3. Bloei.me explains the insufficient balance without exposing budget details
+   publicly.
+4. The budget manager may increase the budget, choose another eligible budget,
+   or reduce the proposed pledge before retrying.
+
+### Result
+
+Tenant separation never permits the same organization budget to be
+overcommitted.
+
+## Scenario 17 — Campaign terms must change after pledging
+
+### Starting point
+
+The supplier discovers that a required external standard changed after several
+organizations pledged but before delivery started.
+
+### Flow
+
+1. The supplier cannot edit the maximum price, scope, criteria, dates, or
+   acceptance policy in place.
+2. A project maintainer creates a new campaign version with the revised terms.
+3. The old version becomes superseded and releases all pledges and reservations.
+4. Every organization receives notice and decides whether to pledge again.
+
+### Result
+
+No organization is silently moved to commercial or acceptance terms it did not
+approve.
+
+## Scenario 18 — Cancellation and failure are different
+
+### Cancellation before start
+
+The supplier, project maintainer, or tenant administrator cancels a campaign
+with a public reason. All pledges and reservations release immediately.
+
+### Supplier failure after start
+
+The supplier concludes that it cannot deliver. It declares the campaign failed,
+publishes the reason and produced work, releases reservations, and creates no
+settlement or invoices.
+
+### Tenant-forced failure
+
+1. A tenant administrator publishes a proposed failure and reason.
+2. New pledges, cap increases, review, voting, and settlement pause for seven
+   days.
+3. The supplier responds with evidence of progress or accepts failure.
+4. The administrator withdraws or confirms failure after the response period.
+5. A deployment operator may bypass the delay only for a legal, fraud, or
+   security emergency.
+
+## Scenario 19 — Supplier verification is suspended
+
+### Starting point
+
+The supplier loses tenant verification while delivery review has five days
+remaining.
+
+### Flow
+
+1. Bloei.me suspends the campaign and freezes the five remaining review days.
+2. New pledges, cap increases, evidence submission, review, voting, and
+   settlement are blocked.
+3. Existing organization commitments remain reserved.
+4. The tenant administrator restores verification after resolving the issue.
+5. Review resumes with the original five days remaining; the delivery deadline
+   is not extended retroactively.
+
+### Failure variation
+
+If verification cannot be restored, the tenant administrator uses the public
+failure process. Verification loss after settlement never rewrites that
+settlement.
+
+## Scenario 20 — An objection triggers negative-consent voting
+
+### Starting point
+
+Ten organizations funded a campaign with a two-thirds acceptance threshold.
+Rivierenstad maintains a criterion-based objection after the supplier responds.
+
+### Flow
+
+1. Bloei.me opens a fresh formal window equal to the campaign review period.
+2. Rivierenstad begins with an explicit `reject` position.
+3. All funding representatives and organization administrators receive in-app
+   and email notices plus reminders.
+4. Two organizations explicitly accept. Seven organizations take no action.
+5. Positions remain hidden and can change until closing.
+6. At closing, the two explicit accepts and seven deemed accepts produce 90%
+   acceptance, so delivery passes.
+7. Bloei.me publishes every organization as explicit accept, deemed accept, or
+   reject.
+
+### Variations
+
+- An email bounce is recorded but does not stop the deadline.
+- Exact equality with the configured threshold passes.
+- The window closes early only if all ten organizations explicitly accept.
+- If rejection exceeds the allowed threshold, delivery returns to revision.
+  The price, allocation, and pledges remain locked, and there is no automatic
+  limit on further submissions.
+
+## Scenario 21 — Delivery is entirely self-funded
+
+### Starting point
+
+The supplier started at zero coverage and no organization pledged before
+delivery submission.
+
+### Flow
+
+1. The supplier publishes its evidence and final price.
+2. Bloei.me marks the campaign `delivered self-funded`.
+3. No funding organization exists to review or vote.
+4. Bloei.me creates no settlement or invoice obligations.
+
+### Partial-funding variation
+
+If organizations cover only part of the final price, the settlement contains
+their invoice lines plus a public, non-invoice supplier-contribution line. The
+lines reconcile exactly to the final price.
+
+## Scenario 22 — An external invoice is disputed
+
+### Starting point
+
+Delivery was accepted and the immutable settlement allocated €12,000 to
+Rivierenstad. The supplier issued its invoice externally.
+
+### Flow
+
+1. The supplier changes the private line from `invoiced` to `disputed`.
+2. It records a private note and reference to its external accounting system.
+3. The settlement and Rivierenstad's consumed budget remain unchanged.
+4. After external resolution, the supplier records `paid` or `closed unpaid`.
+
+### Result
+
+Bloei.me provides operational visibility but does not manage partial payments,
+credit notes, collection, or dispute resolution.
+
+## Scenario 23 — Historical identity must be preserved
+
+### Organization rename or merge
+
+Rivierenstad changes its legal name or is merged with a duplicate profile. Old
+pledges and settlements continue to show the legal-identity snapshot used at
+the time, with a link or redirect to the current canonical organization.
+
+### Personal account deletion
+
+An employee deletes their account. Bloei.me anonymizes their personal profile
+while preserving actions performed for Rivierenstad and the internal audit
+identifier.
+
+### Exceptional redaction
+
+A published evidence image accidentally exposes personal information. A
+platform operator redacts it for privacy reasons. The page retains a public
+tombstone explaining that an exceptional redaction occurred, and the immutable
+audit history records who performed it and why.

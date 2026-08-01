@@ -55,7 +55,7 @@ superseded.
 ## D-005 — Use deployment-level OIDC and global organizations
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Accepted and expanded by D-037
 - **Decision:** Configure one OIDC provider per deployment. Organizations have
   a global identity within that deployment and tenant-specific verification.
 - **Why:** OIDC avoids building password authentication. A shared organization
@@ -67,7 +67,7 @@ superseded.
 ## D-006 — Separate organizational responsibilities with roles
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Accepted and expanded by D-038
 - **Decision:** Use distinct platform, tenant, project, moderation,
   organization-administration, budget-management, funding, and member roles.
 - **Why:** Curating work, controlling budgets, and legally representing an
@@ -204,7 +204,7 @@ superseded.
 ## D-018 — Let pledgers review delivery
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Accepted; its quorum-based voting details are superseded by D-041
 - **Decision:** Pledging organizations review evidence. No objection causes
   automatic acceptance; an unresolved objection can trigger an organization
   vote with campaign-configured quorum and approval thresholds.
@@ -216,7 +216,8 @@ superseded.
 ## D-019 — Set review policy per campaign
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Partially superseded by D-041; review duration and configurable
+  approval remain accepted
 - **Decision:** Campaigns configure a 7–30 day review period and organization-
   based quorum and approval thresholds from 50% to 100%. Defaults are 14 days
   and two-thirds for both thresholds.
@@ -424,3 +425,147 @@ superseded.
   Existing pledges lock immediately, later pledges lock when made, and the
   supplier absorbs every final-price share not covered by organization caps.
   If delivery has not started by the funding deadline, the campaign expires.
+
+## D-037 — Use global organizations with tenant enrollments
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** Register an organization once per deployment and represent its
+  relationship with each tenant through an independently governed enrollment.
+- **Why:** Tenant-local copies fragment legal identity, memberships, budgets,
+  and reporting when the same municipality joins several communities. Fully
+  global access would remove tenant governance.
+- **Consequences:** Tenant enrollment can be pending, verified, rejected, or
+  suspended. Tenant administrators govern only that relationship; suspension
+  in one tenant does not affect another.
+
+## D-038 — Let organizations own memberships and roles
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** Organization administrators assign organization-wide roles to
+  members. Tenant administrators verify organizations, not individual staff.
+- **Why:** Staffing and internal delegation belong to the organization and may
+  change frequently. Requiring tenant approval for every employee adds little
+  protection after the organization itself is verified.
+- **Consequences:** Pledges and ballots belong to the organization rather than
+  the acting person. Budget authorization remains an additional requirement.
+  The creator is the provisional first administrator; platform operators
+  provide audited recovery for disputed ownership or when no administrator
+  remains.
+
+## D-039 — Handle verification loss according to commitment state
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** Before delivery starts, suspension deactivates an organization's
+  pledge and releases its reservation. After start, the commitment survives and
+  the organization retains only the actions required to administer it.
+- **Why:** Unverified organizations should not create new commitments, but a
+  supplier may already have relied on a locked pledge.
+- **Consequences:** Restoration before start requires a new pledge. During
+  delivery, review, voting, representative replacement, and reservation
+  transfer remain available, while endorsement, new pledges, and cap increases
+  are blocked. Verification has no automatic expiry.
+
+## D-040 — Allow explicitly scoped cross-tenant budgets
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** Organization budgets may fund campaigns across several tenants
+  selected in an explicit allowlist.
+- **Why:** One innovation envelope should prevent total overcommitment across
+  communities without making every cost center universally spendable.
+- **Consequences:** Adding a tenant enables future reservations. Removing one
+  prevents new reservations but preserves existing commitments and history.
+
+## D-041 — Use negative consent for disputed acceptance
+
+- **Date:** 2026-08-01
+- **Status:** Accepted; supersedes the quorum rules in D-018 and D-019
+- **Decision:** A maintained objection opens a fresh acceptance window equal to
+  the campaign review period. Silence is deemed acceptance, there is no quorum,
+  and the configurable approval threshold defaults to two-thirds.
+- **Why:** Ordinary delivery already accepts after silence. A quorum would let
+  inactive organizations block settlement after an objection even though their
+  nonparticipation normally means consent.
+- **Consequences:** The objector begins as rejecting. Positions can change and
+  remain hidden until closing. The final public record distinguishes explicit
+  acceptance, deemed acceptance, and rejection. Only unanimous explicit
+  acceptance closes early; a failed threshold returns delivery to revision.
+
+## D-042 — Require recorded notice for deemed acceptance
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** Send in-app and email notices plus reminders to funding
+  representatives and organization administrators before silence counts as
+  acceptance.
+- **Why:** Negative consent is only fair when organizations receive clear and
+  repeated notice of the deadline and consequence.
+- **Consequences:** Bloei.me records delivery attempts. An email bounce does not
+  stop the deadline; organizations are responsible for maintaining contacts.
+
+## D-043 — Distinguish cancellation, suspension, and failure
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** Responsible owners may cancel before delivery starts. After
+  start, the supplier may concede public failure, while tenant-forced failure
+  requires seven days' notice unless an emergency operator override applies.
+- **Why:** A supplier may already have relied on locked commitments and started
+  work, so post-start termination must remain visible and accountable.
+- **Consequences:** Proposed failure pauses new financial actions and acceptance
+  timers. There is no automatic limit on revision attempts. Every failure
+  releases reservations and creates no settlement.
+
+## D-044 — Pause campaigns when supplier verification is lost
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** Supplier suspension blocks pledging, delivery, review, voting,
+  and settlement while preserving existing commitments.
+- **Why:** Bloei.me must not settle with an unverified supplier, but immediate
+  failure may be disproportionate when verification can be restored.
+- **Consequences:** Active timers pause and later resume with their remaining
+  duration. Original campaign deadlines do not move. The tenant administrator
+  may restore the supplier or use the public failure process.
+
+## D-045 — Represent self-funding and supplier shortfalls explicitly
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** Delivery with no pledgers completes as self-funded without
+  review or settlement. Partial funding uses a public supplier-contribution
+  settlement line.
+- **Why:** No funder exists to review a zero-pledger campaign, while every
+  published final price should still reconcile transparently when pledges cover
+  only part of it.
+- **Consequences:** Supplier-contribution lines are never invoiced. Organization
+  settlement lines plus supplier contribution equal the final price.
+
+## D-046 — Keep external invoice administration deliberately small
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** Track `not invoiced`, `invoiced`, `disputed`, `paid`, and
+  `closed unpaid` privately, with an optional note and external reference.
+- **Why:** Suppliers need basic operational visibility without turning Bloei.me
+  into accounts-receivable or dispute-resolution software.
+- **Consequences:** There are no partial payments, reminders, credits, or
+  collection workflows. `Paid` and `closed unpaid` are terminal except for an
+  audited operator correction. Invoice status never changes settlement or
+  consumed budget.
+
+## D-047 — Preserve organizational history while minimizing personal data
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** Snapshot legal identity for pledges and settlements, anonymize
+  people after account deletion, and allow only exceptional operator redaction
+  with a public tombstone.
+- **Why:** Public funding history must remain auditable, while personal data and
+  sensitive material should not be retained or exposed unnecessarily.
+- **Consequences:** Renames and audited merges link historical snapshots to the
+  current canonical organization. Redaction never silently erases the existence
+  of a published record.
