@@ -5,8 +5,10 @@ Status: Living plan
 Last updated: 2026-08-01
 
 This document describes the agreed product and implementation direction for
-Bloei.me. The reasons behind the choices are recorded in
-[decisions.md](decisions.md). Concrete end-to-end journeys are documented in
+Bloei.me. An interactive overview is available in
+[functional-design.html](functional-design.html). The reasons behind the choices
+are recorded in [decisions.md](decisions.md). Concrete end-to-end journeys are
+documented in
 [scenarios.md](scenarios.md). The trust-based pilot assumptions, unresolved
 legal questions, and future signed-contract direction are recorded separately
 in [legal.md](legal.md). Product, operational, and implementation choices that

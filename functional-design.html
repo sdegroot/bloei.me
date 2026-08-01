@@ -1,0 +1,880 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive functional design for Bloei.me, the open-source co-funding network.">
+  <title>Bloei.me — Functional design</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17342b;
+      --muted: #587068;
+      --paper: #fbfcf7;
+      --surface: #ffffff;
+      --leaf: #2e7257;
+      --leaf-dark: #19503a;
+      --sprout: #b8d98b;
+      --lime: #e8f2c9;
+      --sun: #f2b84b;
+      --rose: #d97962;
+      --sky: #dcefeb;
+      --line: #cfdbd3;
+      --line-strong: #9eb3a8;
+      --shadow: 0 18px 44px rgba(22, 52, 43, .10);
+      --radius: 1.25rem;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 4% 2%, rgba(184, 217, 139, .35), transparent 22rem),
+        radial-gradient(circle at 96% 20%, rgba(220, 239, 235, .7), transparent 27rem),
+        var(--paper);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    button, input { font: inherit; }
+
+    a { color: var(--leaf-dark); }
+
+    a:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 3px solid var(--sun);
+      outline-offset: 3px;
+    }
+
+    .skip-link {
+      position: fixed;
+      top: .75rem;
+      left: .75rem;
+      z-index: 100;
+      padding: .7rem 1rem;
+      border-radius: .65rem;
+      background: var(--ink);
+      color: white;
+      transform: translateY(-180%);
+    }
+
+    .skip-link:focus { transform: translateY(0); }
+
+    .shell { width: min(calc(100% - 2rem), var(--max)); margin-inline: auto; }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(158, 179, 168, .5);
+      background: rgba(251, 252, 247, .9);
+      backdrop-filter: blur(16px);
+    }
+
+    .nav {
+      min-height: 4.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: .65rem;
+      color: var(--ink);
+      font-size: 1.15rem;
+      font-weight: 800;
+      text-decoration: none;
+      letter-spacing: -.03em;
+    }
+
+    .brand-mark {
+      width: 2rem;
+      height: 2rem;
+      display: grid;
+      place-items: center;
+      border-radius: 50% 50% 45% 55%;
+      background: var(--leaf);
+      color: white;
+      transform: rotate(-8deg);
+    }
+
+    .nav-links { display: flex; align-items: center; gap: .3rem; flex-wrap: wrap; }
+
+    .nav-links a {
+      padding: .45rem .68rem;
+      border-radius: .55rem;
+      color: var(--muted);
+      font-size: .88rem;
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .nav-links a:hover { background: var(--lime); color: var(--ink); }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(18rem, .8fr);
+      gap: clamp(2rem, 6vw, 5.5rem);
+      align-items: center;
+      padding: clamp(4rem, 10vw, 8rem) 0 4.5rem;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      margin: 0 0 1rem;
+      color: var(--leaf-dark);
+      font-size: .78rem;
+      font-weight: 850;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 1.8rem;
+      height: 2px;
+      background: var(--leaf);
+    }
+
+    h1, h2, h3 { line-height: 1.08; letter-spacing: -.045em; }
+
+    h1 {
+      max-width: 13ch;
+      margin: 0;
+      font-size: clamp(3rem, 7vw, 6.6rem);
+      font-weight: 850;
+    }
+
+    h1 em { color: var(--leaf); font-family: Georgia, serif; font-weight: 500; }
+
+    .lede { max-width: 42rem; margin: 1.5rem 0 0; color: var(--muted); font-size: clamp(1.05rem, 2vw, 1.3rem); }
+
+    .hero-actions { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 2rem; }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 2.8rem;
+      padding: .65rem 1rem;
+      border: 1px solid var(--leaf);
+      border-radius: .75rem;
+      background: var(--leaf);
+      color: white;
+      font-weight: 750;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .button.secondary { background: transparent; color: var(--leaf-dark); }
+
+    .hero-card {
+      position: relative;
+      min-height: 24rem;
+      padding: 2rem;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 2.5rem .6rem 2.5rem .6rem;
+      background: var(--ink);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card::before, .hero-card::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: var(--sprout);
+      opacity: .14;
+    }
+
+    .hero-card::before { width: 17rem; height: 17rem; right: -6rem; top: -6rem; }
+    .hero-card::after { width: 10rem; height: 10rem; left: -4rem; bottom: -3rem; }
+
+    .hero-card h2 { margin: .4rem 0 2.3rem; font-family: Georgia, serif; font-size: 2rem; font-weight: 500; }
+
+    .snapshot { display: grid; gap: .75rem; position: relative; }
+
+    .snapshot-row {
+      display: grid;
+      grid-template-columns: 2.1rem 1fr;
+      gap: .75rem;
+      align-items: start;
+    }
+
+    .snapshot-number {
+      width: 2.1rem;
+      height: 2.1rem;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      color: var(--sprout);
+      font-weight: 850;
+    }
+
+    .snapshot-row strong { display: block; font-size: .96rem; }
+    .snapshot-row span { color: rgba(255,255,255,.68); font-size: .84rem; }
+
+    section { padding: clamp(3.8rem, 8vw, 7rem) 0; scroll-margin-top: 4rem; }
+
+    .section-heading {
+      display: grid;
+      grid-template-columns: minmax(0, .7fr) minmax(18rem, 1fr);
+      gap: 2rem;
+      align-items: end;
+      margin-bottom: 2.3rem;
+    }
+
+    .section-heading h2 { margin: 0; max-width: 13ch; font-size: clamp(2.2rem, 5vw, 4.1rem); }
+    .section-heading p { margin: 0; color: var(--muted); font-size: 1.05rem; }
+
+    .surface {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.86);
+      box-shadow: 0 8px 28px rgba(22,52,43,.05);
+    }
+
+    .system-map {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1rem;
+      padding: 1.25rem;
+    }
+
+    .map-node { min-height: 9rem; padding: 1.25rem; border-radius: 1rem; }
+    .map-node h3 { margin: 0 0 .45rem; font-size: 1.1rem; letter-spacing: -.02em; }
+    .map-node p { margin: 0; color: var(--muted); font-size: .88rem; }
+    .map-node small { display: block; margin-top: .8rem; color: var(--leaf-dark); font-weight: 750; }
+
+    .map-network { grid-column: span 12; min-height: auto; background: var(--ink); color: white; }
+    .map-network p { color: rgba(255,255,255,.7); }
+    .map-org { grid-column: span 4; background: var(--lime); }
+    .map-component { grid-column: span 4; background: var(--sky); }
+    .map-campaign { grid-column: span 4; background: #fae7d6; }
+    .map-budget, .map-proposal, .map-settlement { grid-column: span 4; border: 1px dashed var(--line-strong); }
+
+    .map-caption { margin: 1rem 0 0; color: var(--muted); font-size: .85rem; }
+
+    .journey-layout { display: grid; grid-template-columns: minmax(15rem, .72fr) minmax(0, 1.28fr); overflow: hidden; }
+
+    .journey-steps { display: grid; align-content: start; padding: .75rem; border-right: 1px solid var(--line); }
+
+    .journey-step {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 2rem 1fr;
+      gap: .8rem;
+      align-items: center;
+      padding: .9rem;
+      border: 0;
+      border-radius: .8rem;
+      background: transparent;
+      color: var(--muted);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .journey-step:hover { background: var(--lime); }
+    .journey-step[aria-selected="true"] { background: var(--ink); color: white; }
+
+    .step-number {
+      width: 2rem;
+      height: 2rem;
+      display: grid;
+      place-items: center;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      font-size: .78rem;
+      font-weight: 850;
+    }
+
+    .step-label { font-weight: 750; }
+
+    .journey-detail { min-height: 34rem; padding: clamp(1.5rem, 4vw, 3rem); }
+    .journey-detail .stage { color: var(--leaf); font-size: .78rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+    .journey-detail h3 { margin: .6rem 0 1rem; font-size: clamp(1.8rem, 4vw, 3rem); }
+    .journey-detail > p { max-width: 42rem; color: var(--muted); font-size: 1.04rem; }
+
+    .detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 2rem; }
+    .detail-card { padding: 1rem; border: 1px solid var(--line); border-radius: .85rem; background: var(--paper); }
+    .detail-card strong { display: block; margin-bottom: .35rem; font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; }
+    .detail-card span { color: var(--muted); font-size: .91rem; }
+
+    .tabs { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+
+    .tab {
+      padding: .55rem .85rem;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .tab[aria-selected="true"] { border-color: var(--ink); background: var(--ink); color: white; }
+
+    .role-panel { display: grid; grid-template-columns: minmax(13rem, .55fr) 1.45fr; gap: 2rem; padding: 2rem; }
+    .role-panel h3 { margin: 0 0 .8rem; font-size: 1.7rem; }
+    .role-panel p { margin: 0; color: var(--muted); }
+
+    .authority-list { display: grid; gap: .65rem; margin: 0; padding: 0; list-style: none; }
+    .authority-list li { display: grid; grid-template-columns: 1.4rem 1fr; gap: .65rem; padding-bottom: .65rem; border-bottom: 1px solid var(--line); }
+    .authority-list li:last-child { border: 0; }
+    .authority-list .yes { color: var(--leaf); font-weight: 900; }
+    .authority-list .no { color: var(--rose); font-weight: 900; }
+
+    .lifecycle {
+      padding: 1.25rem;
+      overflow-x: auto;
+    }
+
+    .state-track { min-width: 920px; display: flex; align-items: center; gap: .55rem; }
+
+    .state {
+      flex: 1;
+      min-height: 7.4rem;
+      padding: .85rem;
+      border: 1px solid var(--line);
+      border-radius: .85rem;
+      background: var(--surface);
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .state:hover, .state[aria-pressed="true"] { border-color: var(--leaf); background: var(--lime); }
+    .state small { display: block; color: var(--muted); margin-top: .4rem; }
+    .state-arrow { color: var(--line-strong); font-size: 1.5rem; }
+
+    .state-explainer { margin-top: 1rem; padding: 1.1rem; border-left: 4px solid var(--leaf); background: var(--lime); }
+    .state-explainer strong { display: block; }
+    .state-explainer span { color: var(--muted); }
+
+    .holds { display: grid; grid-template-columns: repeat(4, 1fr); gap: .7rem; margin-top: 1rem; }
+    .hold { padding: .8rem; border: 1px dashed var(--line-strong); border-radius: .75rem; font-size: .85rem; }
+    .hold strong { display: block; }
+
+    .funding-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); overflow: hidden; }
+    .funding-controls { padding: 2rem; background: var(--ink); color: white; }
+    .funding-controls h3 { margin-top: 0; font-size: 1.8rem; }
+    .funding-controls p { color: rgba(255,255,255,.7); }
+    .price-output { display: block; margin: .3rem 0 1rem; color: var(--sprout); font-size: 2.3rem; font-weight: 850; letter-spacing: -.04em; }
+    input[type="range"] { width: 100%; accent-color: var(--sprout); }
+
+    .funding-results { padding: 2rem; }
+    .funding-results h3 { margin: 0 0 1rem; }
+    .funder-list { display: grid; gap: .9rem; }
+    .funder-row { display: grid; grid-template-columns: 7.5rem 1fr auto; gap: .75rem; align-items: center; }
+    .funder-row strong { font-size: .9rem; }
+    .bar { height: .75rem; overflow: hidden; border-radius: 999px; background: #e8eee9; }
+    .bar > span { display: block; height: 100%; border-radius: inherit; background: var(--leaf); transition: width .25s ease; }
+    .funding-note { margin: 1.4rem 0 0; padding: 1rem; border-radius: .8rem; background: var(--sky); color: var(--muted); font-size: .9rem; }
+
+    .scope-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .scope-card { padding: 1.4rem; }
+    .scope-card .scope-type { color: var(--leaf); font-size: .75rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+    .scope-card h3 { margin: .55rem 0; }
+    .scope-card p { margin: 0; color: var(--muted); font-size: .91rem; }
+    .scope-card .outcome { display: block; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); font-weight: 750; }
+
+    .visibility-layout { display: grid; grid-template-columns: .6fr 1.4fr; gap: 1rem; }
+    .visibility-switcher { padding: 1.2rem; }
+    .visibility-switcher h3 { margin: 0 0 .5rem; }
+    .visibility-switcher p { color: var(--muted); font-size: .9rem; }
+    .view-buttons { display: grid; gap: .55rem; margin-top: 1rem; }
+    .view-button { padding: .7rem; border: 1px solid var(--line); border-radius: .7rem; background: white; color: var(--ink); font-weight: 750; text-align: left; cursor: pointer; }
+    .view-button[aria-selected="true"] { border-color: var(--leaf); background: var(--lime); }
+
+    .visibility-panel { padding: 1.5rem; }
+    .visibility-panel h3 { margin-top: 0; }
+    .record-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: .7rem; }
+    .record { padding: .85rem; border-radius: .7rem; background: var(--paper); }
+    .record strong { display: block; font-size: .88rem; }
+    .record span { color: var(--muted); font-size: .82rem; }
+    .record.hidden-record { opacity: .45; text-decoration: line-through; }
+
+    .scenario-tools { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.2rem; }
+    .search-wrap { flex: 1; max-width: 34rem; }
+    .search-wrap label { display: block; margin-bottom: .35rem; color: var(--muted); font-size: .82rem; font-weight: 750; }
+    .search-wrap input { width: 100%; padding: .75rem .9rem; border: 1px solid var(--line-strong); border-radius: .7rem; background: white; color: var(--ink); }
+    .result-count { color: var(--muted); font-size: .88rem; }
+
+    .scenario-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .scenario-card { padding: 1.25rem; }
+    .scenario-card[hidden] { display: none; }
+    .scenario-tag { display: inline-block; padding: .2rem .48rem; border-radius: 999px; background: var(--lime); color: var(--leaf-dark); font-size: .72rem; font-weight: 800; }
+    .scenario-card h3 { margin: .8rem 0 .5rem; font-size: 1.15rem; letter-spacing: -.02em; }
+    .scenario-card p { margin: 0; color: var(--muted); font-size: .88rem; }
+
+    .question-summary { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center; margin-bottom: 1.3rem; }
+    .question-summary p { margin: 0; color: var(--muted); }
+    .question-groups { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    details { border: 1px solid var(--line); border-radius: .9rem; background: white; }
+    summary { padding: 1rem; cursor: pointer; font-weight: 800; }
+    details ul { margin: 0; padding: 0 1.2rem 1.2rem 2.3rem; color: var(--muted); }
+    details li + li { margin-top: .5rem; }
+
+    .v1-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .v1-card { padding: 1.3rem; }
+    .v1-card strong { display: block; margin-bottom: .45rem; }
+    .v1-card span { color: var(--muted); font-size: .9rem; }
+
+    footer { padding: 3rem 0; border-top: 1px solid var(--line); }
+    .footer-inner { display: flex; justify-content: space-between; gap: 2rem; align-items: end; }
+    .footer-inner p { max-width: 32rem; margin: .5rem 0 0; color: var(--muted); font-size: .9rem; }
+    .doc-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .8rem; }
+
+    .noscript { margin: 1rem auto; padding: 1rem; border: 1px solid var(--sun); background: #fff5da; }
+
+    @media (max-width: 860px) {
+      .nav-links { display: none; }
+      .hero, .section-heading, .journey-layout, .role-panel, .funding-grid, .visibility-layout { grid-template-columns: 1fr; }
+      .hero { padding-top: 3.5rem; }
+      .journey-steps { grid-template-columns: repeat(2, 1fr); border-right: 0; border-bottom: 1px solid var(--line); }
+      .scope-grid, .scenario-grid, .v1-strip { grid-template-columns: repeat(2, 1fr); }
+      .map-org, .map-component, .map-campaign, .map-budget, .map-proposal, .map-settlement { grid-column: span 6; }
+      .holds { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 560px) {
+      .shell { width: min(calc(100% - 1.2rem), var(--max)); }
+      h1 { font-size: 3.3rem; }
+      .hero-card { min-height: auto; border-radius: 1.5rem .5rem; }
+      .journey-steps, .detail-grid, .scope-grid, .scenario-grid, .question-groups, .v1-strip, .record-list { grid-template-columns: 1fr; }
+      .journey-step { padding: .72rem; }
+      .map-org, .map-component, .map-campaign, .map-budget, .map-proposal, .map-settlement { grid-column: span 12; }
+      .funder-row { grid-template-columns: 6rem 1fr; }
+      .funder-row output { grid-column: 2; }
+      .scenario-tools, .footer-inner { align-items: stretch; flex-direction: column; }
+      .question-summary { grid-template-columns: 1fr; }
+      .doc-links { justify-content: flex-start; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+
+    @media print {
+      .site-header, .hero-actions, .tabs, .view-buttons, .search-wrap { display: none; }
+      body { background: white; }
+      section { padding: 2rem 0; break-inside: avoid; }
+      .surface { box-shadow: none; }
+      .journey-layout, .role-panel, .funding-grid, .visibility-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to functional design</a>
+
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="#top" aria-label="Bloei.me functional design home">
+        <span class="brand-mark" aria-hidden="true">↗</span>
+        bloei.me <small>functional design</small>
+      </a>
+      <nav class="nav-links" aria-label="Page sections">
+        <a href="#model">Model</a>
+        <a href="#journey">Journey</a>
+        <a href="#roles">Roles</a>
+        <a href="#campaign">Campaign</a>
+        <a href="#scenarios">Scenarios</a>
+        <a href="#questions">Questions</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div id="top" class="shell hero">
+      <div>
+        <p class="eyebrow">Product blueprint · 1 August 2026</p>
+        <h1>Fund what should <em>grow.</em></h1>
+        <p class="lede">Bloei.me is one public network where verified organizations reserve innovation budgets and co-fund concrete open-source outcomes. It coordinates trust and evidence; money still moves outside the platform.</p>
+        <div class="hero-actions">
+          <a class="button" href="#journey">Explore the flow</a>
+          <a class="button secondary" href="decisions.md">Read all decisions</a>
+        </div>
+      </div>
+
+      <aside class="hero-card" aria-label="Version one in four points">
+        <p class="eyebrow">V1 promise</p>
+        <h2>A dependable path from shared need to accepted delivery.</h2>
+        <div class="snapshot">
+          <div class="snapshot-row"><span class="snapshot-number">1</span><div><strong>One canonical network</strong><span>No tenants or community silos.</span></div></div>
+          <div class="snapshot-row"><span class="snapshot-number">2</span><div><strong>Budget-backed pledges</strong><span>Maximum exposure is reserved privately.</span></div></div>
+          <div class="snapshot-row"><span class="snapshot-number">3</span><div><strong>One accountable lead</strong><span>Co-suppliers can deliver as one team.</span></div></div>
+          <div class="snapshot-row"><span class="snapshot-number">4</span><div><strong>Evidence before settlement</strong><span>Pledgers review; suppliers invoice externally.</span></div></div>
+        </div>
+      </aside>
+    </div>
+
+    <noscript><p class="shell noscript">This page still contains the complete functional overview, but the journey, role, lifecycle, funding, visibility, and scenario explorers require JavaScript.</p></noscript>
+
+    <section id="model">
+      <div class="shell">
+        <div class="section-heading">
+          <div><p class="eyebrow">01 · Product model</p><h2>One network, clear objects.</h2></div>
+          <p>The public surface is organized around canonical organizations, open-source components, proposals, and campaigns. Budgets remain inside organizations; settlement notes deliberately contain no payee.</p>
+        </div>
+
+        <div class="system-map surface" aria-label="Bloei.me product object map">
+          <article class="map-node map-network"><h3>bloei.me network</h3><p>One public catalogue, identity layer, policy set, search surface, and audit history per deployment.</p></article>
+          <article class="map-node map-org"><h3>Organizations</h3><p>Verified legal identities with members, representatives, roles, and one public history.</p><small>Own budgets + pledges</small></article>
+          <article class="map-node map-component"><h3>Components</h3><p>Canonical open-source software and building blocks with hierarchy, sources, releases, and stewardship.</p><small>Receive proposals + campaigns</small></article>
+          <article class="map-node map-campaign"><h3>Campaigns</h3><p>Versioned scope, acceptance criteria, supplier team, maximum price, dates, and formal component targets.</p><small>Collect commitments</small></article>
+          <article class="map-node map-budget"><h3>Budgets · private</h3><p>Organization-owned funding envelopes with cost center, expiry, capacity, and optional component scope.</p></article>
+          <article class="map-node map-proposal"><h3>Proposals · public</h3><p>Curated demand before a supplier, delivery plan, and price exist. Verified organizations endorse once.</p></article>
+          <article class="map-node map-settlement"><h3>Settlement notes</h3><p>After acceptance: what each pledger contributes, final price, and completion marked by the lead supplier.</p></article>
+        </div>
+        <p class="map-caption">Programs may later curate these canonical objects for discovery. They do not create another identity, budget, policy, or security boundary.</p>
+      </div>
+    </section>
+
+    <section id="journey">
+      <div class="shell">
+        <div class="section-heading">
+          <div><p class="eyebrow">02 · Core journey</p><h2>From organization to outcome.</h2></div>
+          <p>Select a stage to see its owner, public result, protected data, and the rule that lets work advance. The journey begins before any campaign exists.</p>
+        </div>
+
+        <div class="journey-layout surface">
+          <div class="journey-steps" role="tablist" aria-label="End-to-end journey stages">
+            <button class="journey-step" role="tab" id="journey-tab-0" aria-controls="journey-detail" aria-selected="true" data-step="0"><span class="step-number">01</span><span class="step-label">Join</span></button>
+            <button class="journey-step" role="tab" id="journey-tab-1" aria-controls="journey-detail" aria-selected="false" data-step="1"><span class="step-number">02</span><span class="step-label">Verify</span></button>
+            <button class="journey-step" role="tab" id="journey-tab-2" aria-controls="journey-detail" aria-selected="false" data-step="2"><span class="step-number">03</span><span class="step-label">Reserve budget</span></button>
+            <button class="journey-step" role="tab" id="journey-tab-3" aria-controls="journey-detail" aria-selected="false" data-step="3"><span class="step-number">04</span><span class="step-label">Shape demand</span></button>
+            <button class="journey-step" role="tab" id="journey-tab-4" aria-controls="journey-detail" aria-selected="false" data-step="4"><span class="step-number">05</span><span class="step-label">Form campaign</span></button>
+            <button class="journey-step" role="tab" id="journey-tab-5" aria-controls="journey-detail" aria-selected="false" data-step="5"><span class="step-number">06</span><span class="step-label">Pledge</span></button>
+            <button class="journey-step" role="tab" id="journey-tab-6" aria-controls="journey-detail" aria-selected="false" data-step="6"><span class="step-number">07</span><span class="step-label">Deliver</span></button>
+            <button class="journey-step" role="tab" id="journey-tab-7" aria-controls="journey-detail" aria-selected="false" data-step="7"><span class="step-number">08</span><span class="step-label">Review</span></button>
+            <button class="journey-step" role="tab" id="journey-tab-8" aria-controls="journey-detail" aria-selected="false" data-step="8"><span class="step-number">09</span><span class="step-label">Settle</span></button>
+          </div>
+          <article class="journey-detail" id="journey-detail" role="tabpanel" aria-labelledby="journey-tab-0" aria-live="polite">
+            <span class="stage" id="journey-stage">Stage 1 · Join</span>
+            <h3 id="journey-title">A person starts or joins an organization.</h3>
+            <p id="journey-description">They sign in through OIDC, find an existing organization or register a provisional one, and establish an administrator. Personal accounts act; the organization owns official actions.</p>
+            <div class="detail-grid">
+              <div class="detail-card"><strong>Primary owner</strong><span id="journey-owner">Organization administrator</span></div>
+              <div class="detail-card"><strong>Advance when</strong><span id="journey-gate">Account control and organization details are submitted.</span></div>
+              <div class="detail-card"><strong>Public record</strong><span id="journey-public">Nothing until the organization is verified and active.</span></div>
+              <div class="detail-card"><strong>Protected record</strong><span id="journey-private">Memberships, personal actors, and submitted evidence.</span></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="roles">
+      <div class="shell">
+        <div class="section-heading">
+          <div><p class="eyebrow">03 · Authority</p><h2>Organizations act through people.</h2></div>
+          <p>Roles are narrow and scoped. Completed actions belong to the organization and survive personnel changes; every new action rechecks current membership, authority, budget access, and conflicts.</p>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Role groups">
+          <button class="tab" role="tab" aria-selected="true" data-role="funder">Funder</button>
+          <button class="tab" role="tab" aria-selected="false" data-role="supplier">Supplier</button>
+          <button class="tab" role="tab" aria-selected="false" data-role="component">Component</button>
+          <button class="tab" role="tab" aria-selected="false" data-role="platform">Platform</button>
+        </div>
+        <div class="role-panel surface" id="role-panel" role="tabpanel" aria-live="polite">
+          <div><p class="eyebrow" id="role-scope">Organization scope</p><h3 id="role-title">Funding team</h3><p id="role-description">The organization administrator delegates financial work without exposing internal budgets publicly.</p></div>
+          <ul class="authority-list" id="authority-list">
+            <li><span class="yes">✓</span><span>Create private budgets and cost centers as budget manager.</span></li>
+            <li><span class="yes">✓</span><span>Pledge and review delivery as an authorized funding representative.</span></li>
+            <li><span class="yes">✓</span><span>Replace representatives without losing organization commitments.</span></li>
+            <li><span class="no">×</span><span>Cannot accept its own delivery when it is also a supplier.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="campaign">
+      <div class="shell">
+        <div class="section-heading">
+          <div><p class="eyebrow">04 · Campaign lifecycle</p><h2>Stable states, separate holds.</h2></div>
+          <p>The primary lifecycle explains where a campaign is. Temporary conditions explain why an otherwise valid campaign cannot advance. Select a state for its entry rule.</p>
+        </div>
+        <div class="lifecycle surface">
+          <div class="state-track" aria-label="Campaign primary lifecycle">
+            <button class="state" aria-pressed="true" data-state="draft"><strong>Draft</strong><small>Private formation</small></button><span class="state-arrow" aria-hidden="true">→</span>
+            <button class="state" aria-pressed="false" data-state="funding"><strong>Funding</strong><small>Public pledging</small></button><span class="state-arrow" aria-hidden="true">→</span>
+            <button class="state" aria-pressed="false" data-state="delivery"><strong>Delivery</strong><small>Commitments lock</small></button><span class="state-arrow" aria-hidden="true">→</span>
+            <button class="state" aria-pressed="false" data-state="review"><strong>Review</strong><small>Pledging closes</small></button><span class="state-arrow" aria-hidden="true">→</span>
+            <button class="state" aria-pressed="false" data-state="accepted"><strong>Accepted</strong><small>Shares finalize</small></button><span class="state-arrow" aria-hidden="true">→</span>
+            <button class="state" aria-pressed="false" data-state="settled"><strong>Settled</strong><small>Notes completed</small></button>
+          </div>
+          <div class="state-explainer" aria-live="polite"><strong id="state-title">Draft is private.</strong><span id="state-copy">Eligible suppliers prepare terms and a supplier team. Component maintainers select a suitable draft; no pledges are possible yet.</span></div>
+          <div class="holds" aria-label="Orthogonal campaign conditions">
+            <div class="hold"><strong>Suspended</strong>Participation or integrity hold; active timers pause.</div>
+            <div class="hold"><strong>Amendment open</strong>One material change seeks unanimous explicit consent.</div>
+            <div class="hold"><strong>Failure proposed</strong>Financial actions and acceptance pause pending resolution.</div>
+            <div class="hold"><strong>Overdue</strong>A visible warning, not automatic failure.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="funding">
+      <div class="shell">
+        <div class="section-heading">
+          <div><p class="eyebrow">05 · Funding logic</p><h2>Fair shares within firm caps.</h2></div>
+          <p>Each organization publicly promises a maximum percentage and privately reserves its full monetary exposure. The projected split is max-min fair: equal where possible, while never exceeding a cap.</p>
+        </div>
+        <div class="funding-grid surface">
+          <div class="funding-controls">
+            <h3>Try the final price</h3>
+            <p>The campaign maximum is €100,000. The lead supplier may declare a lower final net price when submitting delivery.</p>
+            <label for="price">Final net price</label>
+            <output id="price-output" class="price-output" for="price">€80,000</output>
+            <input id="price" data-testid="price-slider" type="range" min="10000" max="100000" step="5000" value="80000">
+            <p>Caps: Alpha 50%, Bravo 30%, Charlie 25%, Delta 20%. Aggregate coverage is 125%.</p>
+          </div>
+          <div class="funding-results">
+            <h3>Projected contributions</h3>
+            <div class="funder-list" id="funder-list" aria-live="polite"></div>
+            <p class="funding-note"><strong>Why the total is exact:</strong> water-filling divides the price equally until a funder reaches its cap, then redistributes the remainder. Late pledges can lower everyone’s projected share until evidence closes pledging.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="change">
+      <div class="shell">
+        <div class="section-heading">
+          <div><p class="eyebrow">06 · Scope change</p><h2>Change without moving the goalposts.</h2></div>
+          <p>Not every discovery is an amendment. The decisive question is whether the protected promise changes for organizations that already pledged.</p>
+        </div>
+        <div class="scope-grid">
+          <article class="scope-card surface"><span class="scope-type">Clarification</span><h3>The promise stays the same.</h3><p>Explain ambiguity or implementation detail without changing outcome, criteria, maximum price, dates, targets, or supplier team.</p><span class="outcome">Record visibly; no consent needed.</span></article>
+          <article class="scope-card surface"><span class="scope-type">Material amendment</span><h3>The protected terms change.</h3><p>Publish an exact before/after version and rationale. Revalidate budgets and ask the fixed pledger group for explicit unanimous consent within the time box.</p><span class="outcome">Apply only if everyone consents.</span></article>
+          <article class="scope-card surface"><span class="scope-type">Additional outcome</span><h3>The original promise still stands.</h3><p>Do not smuggle optional work into the funded scope. Create a linked proposal or campaign with its own supplier terms and pledges.</p><span class="outcome">Fund separately; preserve linkage.</span></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="visibility">
+      <div class="shell">
+        <div class="section-heading">
+          <div><p class="eyebrow">07 · Information design</p><h2>Transparent commitments, protected operations.</h2></div>
+          <p>Public funding history is organization-attributed. Personal actors, internal budgets, evidence checks, and moderation work stay protected. Switch viewpoints to inspect the boundary.</p>
+        </div>
+        <div class="visibility-layout">
+          <aside class="visibility-switcher surface">
+            <h3>View as</h3><p>The same campaign exposes different records by authority.</p>
+            <div class="view-buttons" role="tablist" aria-label="Information viewpoints">
+              <button class="view-button" role="tab" aria-selected="true" data-view="public">Public visitor</button>
+              <button class="view-button" role="tab" aria-selected="false" data-view="funder">Funding representative</button>
+              <button class="view-button" role="tab" aria-selected="false" data-view="operator">Platform operator</button>
+            </div>
+          </aside>
+          <article class="visibility-panel surface" role="tabpanel" aria-live="polite">
+            <h3 id="view-title">Public visitor sees the shared record</h3>
+            <div class="record-list" id="record-list"></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="scenarios">
+      <div class="shell">
+        <div class="section-heading">
+          <div><p class="eyebrow">08 · Scenario explorer</p><h2>How the system behaves.</h2></div>
+          <p>These representative flows cover the main design pressure points. The complete catalogue contains 67 detailed scenarios.</p>
+        </div>
+        <div class="scenario-tools">
+          <div class="search-wrap"><label for="scenario-search">Filter scenarios</label><input id="scenario-search" data-testid="scenario-search" type="search" placeholder="Try budget, objection, supplier…"></div>
+          <span class="result-count" id="result-count" aria-live="polite">12 scenarios</span>
+        </div>
+        <div class="scenario-grid" id="scenario-grid">
+          <article class="scenario-card surface" data-search="organization registration identity verify municipality"><span class="scenario-tag">Onboarding</span><h3>A municipality joins</h3><p>An employee signs in, registers or claims the organization, proves identity and account control, accepts terms, and receives delegated roles.</p></article>
+          <article class="scenario-card surface" data-search="budget cost center expiry reserve municipality"><span class="scenario-tag">Budget</span><h3>Innovation money is reserved</h3><p>A budget manager creates a private envelope with amount, cost center, expiry, and optional component scope.</p></article>
+          <article class="scenario-card surface" data-search="idea proposal component endorsement maintainer"><span class="scenario-tag">Demand</span><h3>An idea becomes a proposal</h3><p>A member submits privately; the relevant maintainer curates it into a public, endorsable need attached to canonical components.</p></article>
+          <article class="scenario-card surface" data-search="supplier formation lead co supplier campaign"><span class="scenario-tag">Formation</span><h3>Several suppliers form one team</h3><p>One lead owns the platform workflow, co-suppliers confirm participation, and internal work and invoice division remain outside Bloei.me.</p></article>
+          <article class="scenario-card surface" data-search="pledge fund fair share automatic coverage"><span class="scenario-tag">Funding</span><h3>Pledges reach coverage</h3><p>Caps reserve budget transactionally. Full coverage starts delivery automatically; the lead may deliberately start earlier and absorb the gap.</p></article>
+          <article class="scenario-card surface" data-search="late pledge funding share reduce"><span class="scenario-tag">Funding</span><h3>A late funder joins</h3><p>Pledging stays open during delivery. A new cap can reduce every existing projected share until evidence submission fixes the group.</p></article>
+          <article class="scenario-card surface" data-search="scope amendment unanimous consent budget"><span class="scenario-tag">Change</span><h3>Scope changes after pledging</h3><p>One time-bounded amendment shows exact differences, reserves added exposure, and applies only after every affected pledger explicitly consents.</p></article>
+          <article class="scenario-card surface" data-search="delivery evidence objection review acceptance vote silence"><span class="scenario-tag">Review</span><h3>A pledger objects</h3><p>The full review stays open. A maintained criterion-based objection starts a fresh negative-consent vote; silence then counts as acceptance.</p></article>
+          <article class="scenario-card surface" data-search="supplier conflict accept own no pledge self funded"><span class="scenario-tag">Conflict</span><h3>A supplier cannot accept itself</h3><p>A supplier organization has no acceptance voice on its own delivery. With no external pledgers, completion is explicitly self-funded.</p></article>
+          <article class="scenario-card surface" data-search="settlement note completed payment lead supplier payee invoice"><span class="scenario-tag">Settlement</span><h3>The lead closes the note</h3><p>Bloei.me states what each pledger contributes, not to whom. The lead marks external settlement complete; pledgers do not mark payment.</p></article>
+          <article class="scenario-card surface" data-search="moderation ai warning quarantine appeal"><span class="scenario-tag">Safety</span><h3>AI flags risky wording</h3><p>An optional assistant warns or prioritizes; temporary quarantine remains reversible and human-reviewed. It never governs campaigns.</p></article>
+          <article class="scenario-card surface" data-search="legal contract municipality signed agreement trust"><span class="scenario-tag">Later</span><h3>A municipality needs a contract</h3><p>The trust-based pilot can later require a versioned external signed agreement before a pledge activates.</p></article>
+        </div>
+        <p><a href="scenarios.md">Read all 67 detailed scenarios →</a></p>
+      </div>
+    </section>
+
+    <section id="questions">
+      <div class="shell">
+        <div class="section-heading">
+          <div><p class="eyebrow">09 · Open decisions</p><h2>Designed enough to build, honest about the unknowns.</h2></div>
+          <p>Twenty-four questions remain. They are deliberately tracked outside the accepted decision register, with a current inclination and a trigger for resolving each one.</p>
+        </div>
+        <div class="question-summary"><p>Five groups below summarize the register. Legal review is required before relying on enforceability, procurement, privacy, or regulatory conclusions.</p><a class="button secondary" href="open-questions.md">Open full register</a></div>
+        <div class="question-groups">
+          <details><summary>Product and component governance · 6</summary><ul><li>Programs in v1</li><li>Component creation and stewardship claims</li><li>Unmaintained components</li><li>Equivalent campaigns and proposal lifecycle</li></ul></details>
+          <details><summary>Governance and moderation · 5</summary><ul><li>Suspension and appeals</li><li>Operational staffing and service levels</li><li>AI moderation launch scope</li><li>Forced-failure authority</li></ul></details>
+          <details><summary>Finance, contracts, and law · 6</summary><ul><li>Legal meaning of pledges</li><li>Municipal agreements and procurement</li><li>Retention and privacy roles</li><li>Tax and invoicing guidance</li></ul></details>
+          <details><summary>Service sustainability · 3</summary><ul><li>Hosted operator and governance</li><li>Long-term platform funding</li><li>Funding/support hand-off</li></ul></details>
+          <details><summary>Implementation · 4</summary><ul><li>Authentik configuration</li><li>Infrastructure services</li><li>Component-source integrations</li><li>Future split-budget interface</li></ul></details>
+          <details><summary>Already decided</summary><ul><li>One canonical network</li><li>Maximum price, not a range</li><li>Lead plus optional co-suppliers</li><li>Negative consent after objection</li><li>Payee-free settlement notes</li></ul></details>
+        </div>
+
+        <div class="v1-strip" aria-label="Release boundary">
+          <div class="v1-card surface"><strong>Build for v1</strong><span>Organization verification, roles, budgets, proposals, campaigns, pledges, delivery review, settlement notes, moderation basics, and audit history.</span></div>
+          <div class="v1-card surface"><strong>Prepare, don’t expose yet</strong><span>Multiple budgets per pledge, four-eyes authorization, signed-contract requirement, and provider-neutral AI integration points.</span></div>
+          <div class="v1-card surface"><strong>Learn before committing</strong><span>Programs, platform revenue, external source synchronization, advanced AI, federation, and any future tenancy model.</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-inner">
+      <div><a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">↗</span>bloei.me</a><p>Functional design derived from the living product plan and accepted decisions. It explains intended behavior; the Markdown documents remain authoritative.</p></div>
+      <nav class="doc-links" aria-label="Design documents"><a href="plan.md">Plan</a><a href="decisions.md">Decisions</a><a href="scenarios.md">Scenarios</a><a href="legal.md">Legal</a><a href="open-questions.md">Open questions</a></nav>
+    </div>
+  </footer>
+
+  <script>
+    const journeys = [
+      { stage: "Stage 1 · Join", title: "A person starts or joins an organization.", description: "They sign in through OIDC, find an existing organization or register a provisional one, and establish an administrator. Personal accounts act; the organization owns official actions.", owner: "Organization administrator", gate: "Account control and organization details are submitted.", public: "Nothing until the organization is verified and active.", private: "Memberships, personal actors, and submitted evidence." },
+      { stage: "Stage 2 · Verify", title: "Bloei.me establishes identity and participation.", description: "A platform operator verifies legal identity and initial account control. The organization accepts current platform terms and becomes active. Verification is factual; participation can later be suspended without rewriting identity history.", owner: "Platform operator", gate: "Identity is verified, control is proven, and current terms are accepted.", public: "Minimal legal identity and active participation status.", private: "Verification evidence, reviewer, risk signals, and internal notes." },
+      { stage: "Stage 3 · Reserve budget", title: "The organization creates an innovation envelope.", description: "A budget manager records a total amount, cost center, validity window, and optional component scope. Every pledge will reserve its maximum monetary exposure from one eligible budget in v1.", owner: "Budget manager", gate: "Capacity is positive and expiry covers delivery plus review.", public: "Nothing—budgets and cost centers are organization-private.", private: "Amount, balance, cost center, expiry, scope, and allocations." },
+      { stage: "Stage 4 · Shape demand", title: "An idea becomes a curated public proposal.", description: "A member submits an idea privately against one or more canonical components. Maintainers clarify, merge, decline, or publish it. Verified organizations may add one advisory endorsement each.", owner: "Component maintainer", gate: "The need is clear, non-duplicate, safe to publish, and correctly targeted.", public: "Proposal, target components, rationale, discussion, and organization endorsements.", private: "Raw submission, moderation work, unsuccessful formation, and personal actors." },
+      { stage: "Stage 5 · Form campaign", title: "A supplier team makes a concrete offer.", description: "Eligible suppliers prepare private drafts. A maintainer selects a suitable outcome or encourages a team. Exactly one lead supplier coordinates any co-suppliers, with public scope, criteria, dates, and maximum net price.", owner: "Lead supplier + component maintainer", gate: "All suppliers confirm, required upstream claims are confirmed, and the campaign is published.", public: "Selected team, rationale, terms, targets, affiliations, and upstream status.", private: "Unsuccessful drafts, comparison notes, and internal supplier allocation." },
+      { stage: "Stage 6 · Pledge", title: "Organizations commit caps backed by real budgets.", description: "An authorized funding representative selects one budget, accepts versioned terms, and pledges a maximum percentage. Bloei.me reserves the full exposure transactionally and publishes the organization-level commitment.", owner: "Funding representative", gate: "Authority, participation, conflict, budget scope, expiry, and capacity all pass.", public: "Pledging organization, cap, projected share, and time.", private: "Budget source, cost center, personal actor, approvals, and attestation evidence." },
+      { stage: "Stage 7 · Deliver", title: "The lead coordinates one combined outcome.", description: "At full coverage delivery starts automatically; the lead may start earlier and accept the uncovered risk. Pledging continues until evidence is submitted. The supplier team manages its own work and commercial division outside Bloei.me.", owner: "Lead supplier", gate: "Delivery has started and no blocking suspension or proposed failure applies.", public: "Progress, coverage, supplier contribution, dates, and accepted clarifications.", private: "Supplier internal work split and invoice arrangements." },
+      { stage: "Stage 8 · Review", title: "Pledgers inspect evidence against the criteria.", description: "The lead declares the final net price at or below the maximum and submits sanitized evidence. Pledging closes permanently. Silence after proper notice means acceptance unless a criterion-based objection is maintained.", owner: "Eligible pledging organizations", gate: "The full review window ends without objection, or a contested vote ends without an active rejection.", public: "Evidence, objections, responses, organization positions, and outcome.", private: "Personal voters, notice delivery diagnostics, and protected moderation data." },
+      { stage: "Stage 9 · Settle", title: "Bloei.me records contributions, not payments.", description: "Acceptance freezes final fair shares and creates one payee-free settlement note per funding organization. Suppliers invoice and divide revenue externally. The lead marks each note complete when the supplier team considers settlement finished.", owner: "Lead supplier", gate: "Delivery is accepted and final shares are calculated.", public: "Final price, organization contributions, and campaign outcome.", private: "Completion status, actor, timestamp, and operational notes." }
+    ];
+
+    const roleData = {
+      funder: { scope: "Organization scope", title: "Funding team", description: "The organization administrator delegates financial work without exposing internal budgets publicly.", items: [[1,"Create private budgets and cost centers as budget manager."],[1,"Pledge and review delivery as an authorized funding representative."],[1,"Replace representatives without losing organization commitments."],[0,"Cannot accept its own delivery when it is also a supplier."]] },
+      supplier: { scope: "Campaign + organization scope", title: "Supplier team", description: "One verified lead coordinates the public workflow; optional co-suppliers confirm their involvement.", items: [[1,"Lead submits combined progress, evidence, and final net price."],[1,"Lead marks payee-free settlement notes complete."],[1,"Co-suppliers appear publicly and may contribute evidence."],[0,"Bloei.me does not assign work or invoice shares between suppliers."]] },
+      component: { scope: "Component scope", title: "Stewardship and curation", description: "Maintainers connect demand, supplier formation, and truthful upstream claims without gaining commercial exclusivity.", items: [[1,"Maintain canonical component metadata and stewardship history."],[1,"Curate ideas, proposals, and supplier formation."],[1,"Confirm official upstream and supported-release claims."],[0,"Cannot access organization budgets or force organizations to pledge."]] },
+      platform: { scope: "Deployment scope", title: "Platform operations", description: "Operators protect identity and participation; moderators protect content. Neither silently rewrites campaign governance.", items: [[1,"Verify organizations and govern platform participation."],[1,"Apply exceptional, reasoned, audited campaign operations."],[1,"Moderators hide harmful content while preserving factual tombstones."],[0,"AI never makes final sanctions, acceptance, or funding decisions."]] }
+    };
+
+    const states = {
+      draft: ["Draft is private.", "Eligible suppliers prepare terms and a supplier team. Component maintainers select a suitable draft; no pledges are possible yet."],
+      funding: ["Published terms invite commitments.", "The campaign has immutable initial terms, dates, target components, and a confirmed supplier team. Pledges reserve full maximum exposure."],
+      delivery: ["Organization commitments are locked.", "Full coverage starts automatically, or the lead starts early and exposes its own contribution. Late pledging remains possible."],
+      review: ["Evidence fixes price and participants.", "The lead submits one combined outcome and final price. Pledging closes permanently and all eligible funders receive a complete review window."],
+      accepted: ["Final contributions are known.", "Silence after notice, or resolution of a dispute through negative consent, accepts delivery. Final fair shares are calculated."],
+      settled: ["The platform record is complete.", "Payee-free settlement notes remain auditable. The lead records completion after the supplier team handles invoicing externally."]
+    };
+
+    const visibility = {
+      public: { title: "Public visitor sees the shared record", records: [[1,"Campaign terms","Scope, criteria, targets, price ceiling, dates"],[1,"Organizations","Pledgers, caps, projected and final shares"],[1,"Supplier team","Lead, co-suppliers, affiliations, upstream status"],[1,"Review","Evidence, objections, organization positions, outcome"],[0,"Budgets","Totals, balances, cost centers, allocation source"],[0,"People","Personal actors, membership, authority evidence"]] },
+      funder: { title: "Funding representative sees authorized context", records: [[1,"Public campaign record","Everything visible to a visitor"],[1,"Own pledge","Attestation, state, maximum exposure"],[1,"Authorized budgets","Eligible envelopes and available capacity"],[1,"Review action","Organization position and deadline"],[0,"Other funders’ budgets","Never exposed across organizations"],[0,"Moderation casework","Protected unless party to a notice or appeal"]] },
+      operator: { title: "Platform operator sees protected operations", records: [[1,"Identity evidence","Verification sources and review history"],[1,"Participation controls","Suspension, reasons, notice, appeal"],[1,"Exceptional operations","Audited corrections and campaign holds"],[1,"Security context","Delivery diagnostics and relevant risk signals"],[0,"Unnecessary budget detail","Least privilege still applies"],[0,"Supplier commercial split","Never collected by Bloei.me"]] }
+    };
+
+    const euro = new Intl.NumberFormat("en-NL", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+
+    function setJourney(index) {
+      const item = journeys[index];
+      document.querySelectorAll(".journey-step").forEach((button, buttonIndex) => button.setAttribute("aria-selected", String(buttonIndex === index)));
+      const panel = document.getElementById("journey-detail");
+      panel.setAttribute("aria-labelledby", `journey-tab-${index}`);
+      document.getElementById("journey-stage").textContent = item.stage;
+      document.getElementById("journey-title").textContent = item.title;
+      document.getElementById("journey-description").textContent = item.description;
+      document.getElementById("journey-owner").textContent = item.owner;
+      document.getElementById("journey-gate").textContent = item.gate;
+      document.getElementById("journey-public").textContent = item.public;
+      document.getElementById("journey-private").textContent = item.private;
+    }
+
+    document.querySelectorAll(".journey-step").forEach(button => {
+      button.addEventListener("click", () => setJourney(Number(button.dataset.step)));
+      button.addEventListener("keydown", event => {
+        if (event.key !== "ArrowDown" && event.key !== "ArrowRight" && event.key !== "ArrowUp" && event.key !== "ArrowLeft") return;
+        event.preventDefault();
+        const direction = event.key === "ArrowDown" || event.key === "ArrowRight" ? 1 : -1;
+        const next = (Number(button.dataset.step) + direction + journeys.length) % journeys.length;
+        setJourney(next);
+        document.querySelector(`[data-step="${next}"]`).focus();
+      });
+    });
+
+    document.querySelectorAll(".tab[data-role]").forEach(button => button.addEventListener("click", () => {
+      const role = roleData[button.dataset.role];
+      document.querySelectorAll(".tab[data-role]").forEach(tab => tab.setAttribute("aria-selected", String(tab === button)));
+      document.getElementById("role-scope").textContent = role.scope;
+      document.getElementById("role-title").textContent = role.title;
+      document.getElementById("role-description").textContent = role.description;
+      document.getElementById("authority-list").innerHTML = role.items.map(([allowed, copy]) => `<li><span class="${allowed ? "yes" : "no"}">${allowed ? "✓" : "×"}</span><span>${copy}</span></li>`).join("");
+    }));
+
+    document.querySelectorAll(".state").forEach(button => button.addEventListener("click", () => {
+      document.querySelectorAll(".state").forEach(state => state.setAttribute("aria-pressed", String(state === button)));
+      const [title, copy] = states[button.dataset.state];
+      document.getElementById("state-title").textContent = title;
+      document.getElementById("state-copy").textContent = copy;
+    }));
+
+    function fairShares(price) {
+      const funders = [{ name: "Alpha", cap: .5 }, { name: "Bravo", cap: .3 }, { name: "Charlie", cap: .25 }, { name: "Delta", cap: .2 }];
+      let remaining = 1;
+      let active = [...funders];
+      const shares = new Map();
+      while (active.length) {
+        const equal = remaining / active.length;
+        const capped = active.filter(funder => funder.cap <= equal + Number.EPSILON);
+        if (!capped.length) { active.forEach(funder => shares.set(funder.name, equal)); break; }
+        capped.forEach(funder => { shares.set(funder.name, funder.cap); remaining -= funder.cap; });
+        active = active.filter(funder => !capped.includes(funder));
+      }
+      return funders.map(funder => ({ ...funder, share: shares.get(funder.name), amount: shares.get(funder.name) * price }));
+    }
+
+    function renderFunding() {
+      const price = Number(document.getElementById("price").value);
+      document.getElementById("price-output").textContent = euro.format(price);
+      document.getElementById("funder-list").innerHTML = fairShares(price).map(funder => `<div class="funder-row"><strong>${funder.name} · cap ${Math.round(funder.cap * 100)}%</strong><div class="bar" aria-hidden="true"><span style="width:${funder.share * 200}%"></span></div><output>${Math.round(funder.share * 100)}% · ${euro.format(funder.amount)}</output></div>`).join("");
+    }
+    document.getElementById("price").addEventListener("input", renderFunding);
+    renderFunding();
+
+    function renderVisibility(view) {
+      const data = visibility[view];
+      document.querySelectorAll(".view-button").forEach(button => button.setAttribute("aria-selected", String(button.dataset.view === view)));
+      document.getElementById("view-title").textContent = data.title;
+      document.getElementById("record-list").innerHTML = data.records.map(([visible, title, copy]) => `<div class="record${visible ? "" : " hidden-record"}"><strong>${visible ? "Visible" : "Hidden"} · ${title}</strong><span>${copy}</span></div>`).join("");
+    }
+    document.querySelectorAll(".view-button").forEach(button => button.addEventListener("click", () => renderVisibility(button.dataset.view)));
+    renderVisibility("public");
+
+    const search = document.getElementById("scenario-search");
+    search.addEventListener("input", () => {
+      const query = search.value.trim().toLocaleLowerCase();
+      let visible = 0;
+      document.querySelectorAll(".scenario-card").forEach(card => {
+        const matches = !query || `${card.dataset.search} ${card.textContent}`.toLocaleLowerCase().includes(query);
+        card.hidden = !matches;
+        if (matches) visible += 1;
+      });
+      document.getElementById("result-count").textContent = `${visible} ${visible === 1 ? "scenario" : "scenarios"}`;
+    });
+  </script>
+</body>
+</html>

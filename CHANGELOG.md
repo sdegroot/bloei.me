@@ -39,6 +39,9 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   independent-extension, program, and target-amendment scenarios.
 - A separate open-question register with decision horizons, current
   inclinations, rationale, and concrete decision triggers.
+- A standalone interactive functional design covering the product model,
+  end-to-end journey, authority, lifecycle, funding logic, scope change,
+  information visibility, representative scenarios, and release boundary.
 
 ### Changed
 
