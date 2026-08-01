@@ -9,7 +9,8 @@ Bloei.me. The reasons behind the choices are recorded in
 [decisions.md](decisions.md). Concrete end-to-end journeys are documented in
 [scenarios.md](scenarios.md). The trust-based pilot assumptions, unresolved
 legal questions, and future signed-contract direction are recorded separately
-in [legal.md](legal.md).
+in [legal.md](legal.md). Product, operational, and implementation choices that
+still need a decision are tracked in [open-questions.md](open-questions.md).
 
 ## Product summary
 

@@ -37,6 +37,8 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   and classifier outages.
 - Canonical component, stewardship, supplier-formation, cross-component,
   independent-extension, program, and target-amendment scenarios.
+- A separate open-question register with decision horizons, current
+  inclinations, rationale, and concrete decision triggers.
 
 ### Changed
 
