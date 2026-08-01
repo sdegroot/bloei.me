@@ -23,6 +23,8 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   future four-eyes scenarios.
 - Review edge cases for early and multiple objections, withdrawal after the
   deadline, resubmission, and content moderation.
+- Timing scenarios for deadline races, daylight-saving changes, paused windows,
+  platform outages, and delayed background jobs.
 
 ### Changed
 
@@ -34,8 +36,7 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   owned roles, and explicitly scoped cross-tenant budgets.
 - Replaced quorum-based acceptance voting with notified negative consent.
 - Added supplier suspension, cancellation and failure safeguards, self-funded
-  delivery, supplier-contribution settlement lines, and private invoice-dispute
-  states.
+  delivery, and supplier-contribution settlement lines.
 - Defined historical identity snapshots, personal anonymization, duplicate
   recovery, and exceptional audited redaction.
 - Replaced mandatory re-pledging after every material change with explicit
@@ -56,3 +57,5 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   provisional reservations, deadline interaction, and clarification challenges.
 - Finalized public criterion-based objections, full review before contested
   voting, rejection reasons, resubmission, withdrawal, and moderation rules.
+- Defined authoritative campaign timezones, exclusive local deadlines,
+  calendar-day windows, timer pauses, outage correction, and reminder policy.

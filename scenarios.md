@@ -1008,3 +1008,114 @@ supplier employee.
 
 Moderation protects people and public discussion without becoming a hidden
 technical acceptance decision.
+
+## Scenario 41 — The final pledge races the funding deadline
+
+### Starting point
+
+A campaign is at 90% coverage. Rivierenstad submits a 10% pledge while the
+exclusive funding deadline approaches.
+
+### Flow
+
+1. Bloei.me uses database time and one serialized transaction for pledge,
+   reservation, coverage, start, and expiry decisions.
+2. If the pledge commits one instant before the deadline, it is valid and the
+   campaign starts delivery atomically at 100%.
+3. If it commits at or after the deadline, it is rejected and the unstarted
+   campaign expires.
+4. The representative's browser countdown and network request-start time do not
+   determine the result.
+
+### Result
+
+The system cannot both accept the last pledge and expire the same campaign.
+
+## Scenario 42 — A review crosses a daylight-saving change
+
+### Starting point
+
+A 14-day review opens at 15:30 in the campaign's `Europe/Amsterdam` timezone
+shortly before a daylight-saving transition.
+
+### Flow
+
+1. Bloei.me stores the opening and closing instants in UTC and the immutable
+   campaign timezone separately.
+2. The public deadline is 15:30 local time fourteen calendar days later.
+3. The absolute elapsed hours may differ by one, but the promised local clock
+   time remains stable.
+4. Pages name the campaign timezone and may additionally show the viewer's
+   local equivalent.
+
+### Weekend variation
+
+If the calculated deadline is a weekend or public holiday, it does not move.
+Campaign authors must choose suitable dates; Bloei.me has no universal business
+calendar.
+
+## Scenario 43 — A suspension pauses review but not fixed dates
+
+### Starting point
+
+Review has five days remaining when a supplier loses verification. The fixed
+ultimate delivery date passes during the suspension.
+
+### Flow
+
+1. Bloei.me stores the five remaining review days and pauses interaction.
+2. It does not move the campaign delivery date or any backing budget expiry.
+3. The campaign gains the public `overdue` condition while suspended.
+4. After verification is restored, review resumes with five days remaining.
+5. Changing a fixed date still requires an amendment and budget revalidation.
+
+### Result
+
+A hold preserves a fair action window without unilaterally rewriting the
+commercial dates funders accepted.
+
+## Scenario 44 — A platform outage affects a closing window
+
+### Starting point
+
+Bloei.me and its deployment-wide identity provider are unavailable across the
+last two hours of an amendment consent window.
+
+### Flow
+
+1. The operator verifies and records the deployment outage.
+2. Bloei.me calculates both the original deadline plus two hours and 24 hours
+   after restoration.
+3. It selects the later instant as the corrected deadline.
+4. The public audit shows the outage interval, old and new deadline, scope,
+   operator, and reason.
+5. Notifications announce the correction to every affected organization.
+
+### Funding-expiry variation
+
+If an unstarted campaign logically expired during a qualifying outage, the
+operator may restore it to funding only when no later lifecycle action occurred.
+Both the expiry and exceptional restoration remain visible.
+
+### Non-qualifying variation
+
+A bounced email, forgotten password, absent employee, or one organization's
+internal outage does not change the deadline.
+
+## Scenario 45 — A closing job runs late
+
+### Starting point
+
+A review deadline is 15:30, but the automatic acceptance worker runs at 15:34.
+
+### Flow
+
+1. An objection committed at 15:29 is valid and prevents acceptance.
+2. An objection attempted at 15:31 is rejected as late.
+3. If no timely objection exists, the worker records acceptance as effective at
+   15:30 even though processing occurred four minutes later.
+4. Settlement creation remains idempotent if the worker retries.
+
+### Result
+
+Worker scheduling never extends a governance window or changes its outcome.

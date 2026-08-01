@@ -616,7 +616,7 @@ superseded.
 ## D-050 — Model campaign lifecycle separately from temporary conditions
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Accepted and expanded by D-058
 - **Decision:** Use explicit primary campaign states from draft through funding,
   delivery, review, settlement, and terminal outcomes. Represent amendments,
   suspension, proposed failure, and overdue delivery as orthogonal conditions.
@@ -735,3 +735,24 @@ superseded.
   settles. There is no partial acceptance, automatic supplier-response deadline,
   or reopening after acceptance. Moderation may remove harmful wording but not
   silently erase an organization position.
+
+## D-058 — Use campaign-local calendar windows with authoritative UTC instants
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** Store instants in UTC while every campaign uses one immutable
+  IANA timezone for exact local deadlines and calendar-day interaction windows.
+  Deadlines are exclusive and database time, not the browser or job execution
+  time, decides whether an action succeeded.
+- **Why:** Funders need understandable local dates, while transactions, daylight
+  saving, concurrent expiry, and delayed workers require one deterministic
+  authority.
+- **Consequences:** Weekends and holidays receive no automatic adjustment.
+  Holds pause amendment, review, and voting countdowns but not funding,
+  delivery, or budget dates. Missing delivery marks overdue. Verified platform
+  or deployment-wide OIDC outages permit a public audited correction to the
+  later of lost duration and 24 hours after restoration; email or internal
+  organization failures do not. This is the sole audited way to restore a
+  campaign that expired during the outage and has had no later lifecycle action.
+  Important windows receive in-app and email notices with non-duplicative
+  reminders.

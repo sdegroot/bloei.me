@@ -286,6 +286,52 @@ their policy. Missing the ultimate delivery date marks a campaign overdue but
 does not automatically fail it. Terminal records remain public; archival is a
 presentation property rather than another lifecycle state.
 
+### Time, deadlines, and pauses
+
+Bloei.me stores authoritative instants in UTC. Every campaign has one immutable
+IANA timezone inherited initially from its tenant. Public dates name that
+timezone and may additionally show the viewer's local equivalent. Server and
+database time govern actions; browser countdowns are informative only.
+
+Funding and delivery deadlines are exact local date-times. Interaction periods
+use calendar days in the campaign timezone and close at the same local clock
+time after the configured number of days, including across daylight-saving
+changes. Deadlines are exclusive: an action commits only when its authoritative
+timestamp is earlier than the deadline. No automatic weekend or public-holiday
+adjustment applies.
+
+The funding deadline races transactionally with pledging and automatic start.
+A pledge that commits before it may start delivery at full coverage; an action
+at or after it is rejected and an unstarted campaign expires. The ultimate
+delivery deadline instead adds the public `overdue` condition without blocking
+submission or failing the campaign.
+
+Supplier suspension and proposed forced failure pause amendment consent,
+delivery review, and acceptance voting by storing their remaining duration.
+Funding deadlines, ultimate delivery dates, and budget expiry do not move; an
+amendment is normally required to change them. Suspension of one funding
+organization does not pause a campaign-wide timer.
+
+Logical deadlines remain effective even if a background worker executes late.
+Actions are classified by their stored timestamp, and a delayed closing job
+records the result as effective at the intended deadline.
+
+A platform operator may exceptionally correct a funding, amendment, review, or
+voting deadline after verified platform or deployment-wide OIDC unavailability.
+The corrected deadline is the later of the original deadline plus confirmed
+outage duration and 24 hours after restoration. The old and new deadline,
+outage interval, scope, operator, and reason are public and audited. Internal
+organization disruption, an absent employee, or failed email does not qualify.
+If a funding campaign was logically expired during that outage, this correction
+is the sole exception that may restore it to funding; the expiry and restoration
+both remain in history and no later lifecycle action may already have occurred.
+
+Important interaction windows send opening, midpoint, 72-hour, 24-hour, and
+result notifications, suppressing redundant reminders for short windows.
+Delivery deadlines notify lead-supplier representatives and affected budget
+managers before the date and periodically while overdue. In-app notice is
+authoritative; email delivery failures are recorded but never pause time.
+
 ### Campaign permissions and conflicts
 
 Project maintainers curate proposals, approve campaign publication, and confirm
@@ -692,7 +738,8 @@ Core value types include:
 - Organization-owned membership roles
 - Versioned organization authorization policies and requests, with v1 enforcing
   one immediate approval
-- `CampaignDeadlinePolicy(fundingDeadline, deliveryDeadline)`
+- `CampaignDeadlinePolicy(timezone, fundingDeadline, deliveryDeadline)` with
+  UTC instants and an immutable IANA zone
 - `AcceptancePolicy(reviewDays, approvalThresholdBps)`
 - `OrganizationBallot(accept, reject)` with deemed acceptance when absent
 - `BudgetValidity(validFrom, expiresOn, processingBufferDays)`
@@ -716,6 +763,9 @@ audit events.
 - Use an outbox-backed worker for email, funding deadlines, budget warnings,
   review and voting timers, reminders, paused countdowns, and automatic
   acceptance.
+- Evaluate action eligibility against authoritative stored instants so delayed
+  jobs and browser clocks cannot change outcomes.
+- Support public audited deadline correction for verified platform outages.
 - Deliver notifications through SMTP and an in-app inbox.
 
 ### Interfaces and future integrations
@@ -778,6 +828,9 @@ without explicit permission.
 - Test campaign versioning, unanimous explicit amendment consent, non-response,
   failed budget revalidation, deadlines, operator exceptions, and overdue
   delivery.
+- Test exclusive deadline boundaries, pledge/expiry races, IANA timezone and
+  daylight-saving behavior, weekend neutrality, delayed jobs, paused remaining
+  duration, fixed campaign dates, outage correction, and reminder suppression.
 - Test lead- and co-supplier verification, confirmation, permissions, and
   material supplier-team changes without modelling work allocation.
 - Test every campaign transition, illegal transition, terminal state, hold
