@@ -546,7 +546,7 @@ superseded.
 ## D-046 — Keep external invoice administration deliberately small
 
 - **Date:** 2026-08-01
-- **Status:** Accepted and expanded by D-049
+- **Status:** Superseded by D-055
 - **Decision:** Track `not invoiced`, `invoiced`, `disputed`, `paid`, and
   `closed unpaid` privately, with an optional note and external reference.
 - **Why:** Suppliers need basic operational visibility without turning Bloei.me
@@ -593,7 +593,7 @@ superseded.
 
 - **Date:** 2026-08-01
 - **Status:** Accepted; supersedes the one-supplier part of D-010 and expands
-  D-044 and D-046
+  D-044; its invoice-administration consequences are superseded by D-055
 - **Decision:** Every campaign has exactly one verified lead supplier and may
   name verified co-suppliers. The lead supplier administers the campaign and
   submits one combined delivery. Bloei.me does not specify which supplier does
@@ -611,3 +611,106 @@ superseded.
   `closed unpaid` with external references, without supplier-level amounts.
   Combined invoices must not exceed the obligation, and supplier disputes are
   resolved outside Bloei.me.
+
+## D-050 — Model campaign lifecycle separately from temporary conditions
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** Use explicit primary campaign states from draft through funding,
+  delivery, review, settlement, and terminal outcomes. Represent amendments,
+  suspension, proposed failure, and overdue delivery as orthogonal conditions.
+- **Why:** Combining every hold and warning with every lifecycle phase would
+  create an unmanageable state explosion and ambiguous restoration behavior.
+- **Consequences:** Published campaigns never return to draft. Settlement is
+  atomic with acceptance. Missing the delivery date marks a campaign overdue
+  rather than automatically failing it, and archival is presentation metadata.
+
+## D-051 — Use organization-owned actions and narrowly scoped roles
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** People act with membership, role, budget, and approval checks,
+  while pledges, consents, supplier participation, objections, and ballots
+  belong to organizations. Add a supplier-representative role and reserve
+  campaign administration for representatives assigned by the lead supplier.
+- **Why:** Personnel change while organizational commitments must remain
+  stable. Funding authority and delivery authority are distinct.
+- **Consequences:** Revocation preserves completed actions but invalidates an
+  incomplete approval. Co-suppliers confirm participation without administering
+  campaigns. Supplier organizations cannot pledge to or vote on their own
+  campaign, and conflicts are disclosed or excluded according to the action.
+
+## D-052 — Define supplier responsibility as operational, not implied liability
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** The lead supplier coordinates and represents the supplier team
+  inside Bloei.me. Every co-supplier confirms participation and the lead's
+  platform authority. Bloei.me records supplier attestations but does not
+  determine work division, revenue sharing, or joint legal liability.
+- **Why:** Funders need one accountable platform interface, while legal and
+  commercial relationships among suppliers may differ by campaign.
+- **Consequences:** The lead submits the combined outcome and price and attests
+  authority, licensing, evidence integrity, and responsible publication.
+  Supplier-organization replacement requires an amendment; changing an
+  individual representative does not. Internal supplier disputes stay external.
+
+## D-053 — Prepare generic multi-approval authorization without building it
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** V1 uses one immediate authorized approval, while domain and
+  persistence boundaries prepare versioned organization policies and distinct
+  approval records for future four-eyes workflows.
+- **Why:** Municipal organizations may require separation of duties, but making
+  every pilot organization configure approvals would add premature complexity.
+- **Consequences:** Future pending financial requests reserve budget privately
+  and become effective only after all approvals. Policy snapshots, expiry,
+  rejection, and authority loss are modelled without requiring v1 approval UI.
+
+## D-054 — Keep one organization-owned pledge through a strict lifecycle
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** An organization has one effective pledge per campaign. It is
+  editable before delivery, locked at start, allocated at first submission, and
+  settled on acceptance. Backing budgets may move privately, but pledges cannot
+  transfer to unrelated organizations.
+- **Why:** Suppliers need dependable post-start commitments and the public needs
+  an understandable organization position despite representative changes.
+- **Consequences:** Late pledges lock immediately, authority and terms are
+  snapshotted, and suspension follows commitment state. Duplicate organizations
+  merged after start retain both frozen allocation positions but receive one
+  combined canonical contribution so other funders are not recalculated.
+
+## D-055 — Use minimal lead-completed settlement notes
+
+- **Date:** 2026-08-01
+- **Status:** Accepted; supersedes D-046 and the invoice-administration part of
+  D-049
+- **Decision:** After acceptance, create one settlement note per funding
+  organization stating its final net campaign contribution without a payee.
+  Only the lead supplier may change it between `open` and `completed`.
+- **Why:** Bloei.me needs to communicate who contributes what, but supplier
+  allocation, invoices, taxes, payments, and disputes belong to external
+  processes. A detailed invoice tracker would blur that boundary.
+- **Consequences:** Completion means the lead says the supplier team considers
+  external handling complete; it is not bank proof. Status is private to the
+  funder and supplier team, reopening requires a reason, and neither status
+  changes settlement nor budget consumption. No supplier, invoice, or payment
+  details are stored.
+
+## D-056 — Govern amendments with one time-bounded unanimous process
+
+- **Date:** 2026-08-01
+- **Status:** Accepted; expands D-048
+- **Decision:** Allow only one open amendment, with a 14-day default consent
+  period configurable from 7–30 days. Supplier confirmations precede funder
+  consent; positions may change until the final valid consent activates the
+  amendment immediately.
+- **Why:** A stable group, explicit deadline, and exact version prevent consent
+  from becoming ambiguous while allowing genuine changes to proceed promptly.
+- **Consequences:** Additional exposure reserves provisionally per consent.
+  Amendments do not unilaterally pause campaign deadlines. Pre-start funders may
+  withdraw entirely; locked funders cannot. Clarification challenges receive a
+  non-conflicted ruling, and every activated version and consent remains public.

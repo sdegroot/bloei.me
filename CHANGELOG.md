@@ -19,6 +19,8 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   amendments, non-response, and budget revalidation.
 - Multi-supplier scenarios covering supplier-team creation, replacement,
   combined delivery, and externally arranged invoicing.
+- Lifecycle, authorization, supplier-continuity, conflict, duplicate-merge, and
+  future four-eyes scenarios.
 
 ### Changed
 
@@ -38,5 +40,15 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   unanimous campaign amendments backed by successful budget revalidation.
 - Allowed one lead supplier and optional co-suppliers per campaign while
   keeping work, price, and invoice allocation outside Bloei.me.
-- Made invoice administration aggregate per funding organization so several
-  external supplier invoices do not create platform-level supplier allocations.
+- Replaced invoice administration with minimal payee-free settlement notes that
+  only the lead supplier marks open or completed.
+- Defined the complete campaign lifecycle separately from suspension,
+  amendments, proposed failure, and overdue conditions.
+- Added supplier representatives, organization-owned actions, conflict rules,
+  supplier attestations, and operational responsibility boundaries.
+- Prepared generic multi-approval authorization while retaining immediate
+  single-person approval in v1.
+- Formalized pledge lifecycle, backing-budget transfer, attestation snapshots,
+  and exceptional duplicate-organization merges.
+- Detailed amendment duration, changing consent, supplier confirmation,
+  provisional reservations, deadline interaction, and clarification challenges.

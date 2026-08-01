@@ -26,7 +26,7 @@ product overly floral or playful.
 
 The first release is successful when Epistola can run a real campaign from
 proposal through budget-backed pledging, delivery review, settlement export,
-and externally recorded invoicing.
+and lead-confirmed completion of settlement notes.
 
 ## Product model
 
@@ -69,6 +69,8 @@ The authorization model contains these roles:
 - **Budget manager:** creates budgets, controls cost centers, and authorizes
   funding representatives to spend from budgets.
 - **Funding representative:** pledges and votes on behalf of an organization.
+- **Supplier representative:** represents a supplier organization and may be
+  assigned to administer its lead-supplier campaigns.
 - **Member:** participates in the community without financial authority.
 
 Organization roles belong to the person's organization membership and work in
@@ -76,8 +78,22 @@ every tenant where the organization is verified. Organization administrators
 assign and revoke roles. Funding representatives additionally require
 authorization to use the selected budget.
 
-One person may hold several organization roles. Public visitors can read
-published content; authentication is required for submissions and comments.
+One person may hold several organization roles. Actions are performed by people
+but owned by their organizations. Completed commitments and positions therefore
+survive representative replacement. Public visitors can read published content;
+authentication is required for submissions and comments.
+
+Authority is evaluated when an action occurs. The actor must have active
+organization membership, the required role, budget authorization where money
+is involved, and every applicable internal approval. Revoking authority does
+not invalidate a completed organization action, but it invalidates that
+person's contribution to an approval that is still pending. Concurrent changes
+to one organization position use optimistic locking rather than silently
+overwriting a colleague's action.
+
+Tenant administrators cannot grant organization roles or approve spending. An
+organization cannot remove its last active administrator; audited platform
+recovery is available when no usable administrator remains.
 
 ### Organization enrollment and continuity
 
@@ -108,6 +124,22 @@ the locked pledge remains and the organization may only administer that
 commitment: review, vote, replace its representative, or move its reservation.
 It cannot endorse, create another pledge, increase its cap, or join another
 campaign in that tenant until restored.
+
+### Future multi-approval authorization
+
+V1 requires one authorized person for each organization action. The persistence
+and application boundaries prepare for configurable four-eyes approval through
+a versioned authorization policy owned by an organization and optionally
+scoped to a budget and action type. An authorization request records distinct
+approvers, whether the initiator counts, a policy snapshot, expiry, and result.
+
+When multi-approval is introduced, a pending financial request privately
+reserves its worst-case exposure but does not become public or count toward
+campaign coverage until every required approval succeeds. Rejection, expiry,
+or loss of an approver's authority releases or revises the pending request.
+The same mechanism can later govern pledges, cap increases, amendment consent,
+reservation transfers, and settlement-note completion without changing the v1
+one-approval user experience.
 
 ## Proposals and campaigns
 
@@ -157,6 +189,29 @@ The published price ceiling, scope, criteria, dates, supplier team, and
 governance settings become protected after the first pledge. They can change
 only through the unanimous amendment process below.
 
+The lead supplier is the operationally accountable party inside Bloei.me. Its
+assigned supplier representatives administer the campaign, coordinate the
+team, submit one combined delivery and final price, respond to funders, and
+coordinate external settlement. Each co-supplier explicitly confirms before
+publication that it may be named publicly, intends to participate, accepts the
+combined campaign ceiling, and authorizes the lead to coordinate platform
+actions. This does not make Bloei.me an arbiter of work allocation, revenue
+sharing, or joint legal liability.
+
+Before delivery submission, the lead attests for the team that it has authority
+to publish the evidence, can release the result under the stated open-source
+licence, has disclosed known third-party licence obligations, is not knowingly
+publishing secrets or personal data, and has declared the complete combined
+campaign price. Verification establishes organizational identity rather than
+technical competence or platform endorsement.
+
+Supplier representatives may be replaced by their organization without an
+amendment. Replacing the lead organization requires a unanimous amendment. A
+co-supplier withdrawal is handled internally only while the published team
+does not change; removing or replacing it in the campaign record is material.
+Disputes about work, revenue, invoicing, liability, or indemnification remain
+outside Bloei.me and cannot increase funder obligations.
+
 ### Clarifications, additions, and material amendments
 
 A clarification may explain existing terms but cannot alter scope, acceptance
@@ -183,6 +238,29 @@ uses a formal campaign amendment:
 7. Otherwise the amendment expires, the original version remains binding, and
    pledging resumes under its original terms.
 
+The consent window defaults to 14 calendar days and may be set from 7–30 days.
+Only one amendment may be open for consent; additional drafts do not affect the
+campaign. All continuing and newly added co-suppliers confirm participation
+before the project maintainer opens funder consent. An organization may change
+or withdraw its position until activation. The lead may withdraw the proposal.
+The final valid consent activates the amendment immediately, so its confirmation
+warns that it may be decisive and irreversible.
+
+Increased exposure is provisionally reserved when each organization completes
+consent and released if the amendment fails. Before delivery starts, a funder
+may withdraw its original pledge and thereby leave the consent group; cap
+reductions, new pledges, and cap increases pause. Locked pledges cannot leave.
+An amendment does not pause funding or delivery deadlines: the original
+campaign expires if its funding deadline passes before activation, while a
+passed delivery deadline only marks the campaign overdue. A supplier or forced-
+failure suspension pauses the amendment countdown.
+
+Clarifications are public and notified to existing funders. A funder may
+challenge one as material; a non-conflicted maintainer or tenant administrator
+then records whether it remains a clarification or must be proposed as an
+amendment. Activated amendments form an immutable version chain with their
+exact organization consents.
+
 Adding or removing a co-supplier and replacing the lead supplier are material
 changes. A supplier cannot use an amendment to pass on an ordinary overrun;
 without changed scope, the published maximum remains the supplier team's risk.
@@ -192,6 +270,41 @@ submit final delivery until the amendment closes.
 Published campaigns are public in v1. Visibility and inherited access policy
 remain explicit domain concepts so private campaigns can be introduced later
 without redesigning the authorization model.
+
+### Campaign lifecycle
+
+The primary lifecycle states are `draft`, `funding`, `delivery`, `review`,
+`objection open`, `acceptance vote`, `revision required`, `settled`, and
+`delivered self-funded`. `expired`, `cancelled`, and `failed` are terminal
+outcomes. Published campaigns never return to draft, and accepted delivery and
+settlement creation occur atomically without an intermediate accepted state.
+
+`amendment pending`, `supplier verification suspended`, `forced failure
+proposed`, and `delivery overdue` are conditions on a lifecycle state rather
+than combinatorial states. Holds pause only the actions and timers specified by
+their policy. Missing the ultimate delivery date marks a campaign overdue but
+does not automatically fail it. Terminal records remain public; archival is a
+presentation property rather than another lifecycle state.
+
+### Campaign permissions and conflicts
+
+Project maintainers curate proposals, approve campaign publication, and confirm
+that a proposed amendment is genuinely material. Lead-supplier representatives
+edit drafts, invite co-suppliers, start delivery, propose amendments, submit
+evidence and final price, respond to objections, request voting, declare
+failure, and complete settlement notes. Co-supplier representatives confirm or
+decline participation but cannot administer the campaign. Funding
+representatives authorized for the backing budget create pledges and consent to
+amendments; the funding organization owns one effective pledge, objection
+position, and ballot.
+
+Supplier organizations are ineligible to pledge to their own campaign and
+therefore never review or vote on their own delivery. A person who represents a
+campaign supplier cannot act for a funder on that campaign. Maintainer and
+supplier affiliation is permitted when publicly disclosed, but publication or
+amendment validation then requires another non-conflicted maintainer or tenant
+administrator. Exceptional operator actions never impersonate an organization
+and require a reason and immutable audit event.
 
 ## Organization budgets
 
@@ -290,16 +403,23 @@ existing pledge data.
 - Its worst-case monetary exposure is that percentage of the published maximum
   price, and the organization's budget reserves that complete amount.
 - Confirmation explains that the campaign starts automatically at 100%
-  coverage, may be started earlier by the lead supplier, and locks the commitment
-  when delivery starts.
+  coverage, may be started earlier by the lead supplier, and locks the
+  commitment when delivery starts.
 - The public record shows the organization, maximum cap, projected share,
   worst-case amount, campaign activity, and final net settlement amount.
-- Representative identity, budget information, and invoice administration are
-  private.
+- Representative identity, budget information, and settlement-note completion
+  are private.
 
 Before delivery starts, an organization can increase, reduce, move, or
 withdraw its pledge. When aggregate caps reach 100%, the campaign atomically
 starts delivery without reconfirmation.
+
+There is one effective organization-owned pledge per campaign, regardless of
+how many representatives administer it. The pledge progresses from active and
+editable, to locked when delivery starts, to allocated at first delivery
+submission, and to settled on acceptance. Expiry, cancellation, or failure
+releases it according to the campaign state. An unrelated organization can
+never receive a transferred pledge.
 
 Below 100%, the lead supplier may manually start delivery at any coverage level,
 including zero. This action is irreversible and publicly records the coverage
@@ -316,6 +436,12 @@ allocation and its transactional budget reservations. Joining a campaign that
 is already delivering requires an explicit acknowledgement that the new pledge
 locks immediately.
 
+The selected backing budget may be replaced privately when the destination is
+eligible and the acting person is authorized for both sides or is a budget
+manager. New reservation and old release are atomic. Budget expiry never
+silently breaks a locked commitment; an unresolved case becomes an internal
+accounting exception.
+
 An exceptional post-start reduction requires a deployment operator, a public
 reason, and an immutable audit event. Any shortfall after work starts is the
 supplier team's risk. A campaign started below full coverage prominently shows
@@ -326,6 +452,18 @@ amount at the ceiling, current supplier-funded gap, and the coverage captured
 at manual start. After delivery submission, it additionally shows the locked
 final price and final organization allocations. The coverage indicator stops
 at 100%, even if the sum of organization caps is higher.
+
+Pledge confirmation snapshots the exact campaign version, maximum price,
+scope, criteria, supplier team, deadlines, governance, cap, worst-case amount,
+start and withdrawal consequences, and authorization policy. Later amendment
+consents attach to their exact version.
+
+If audited duplicate organizations both pledged before delivery starts, the
+canonical organization selects one cap and backing reservation. If they merge
+after start, both frozen allocation positions remain so other funders are not
+recalculated, but their final values combine into one contribution for the
+canonical organization. Legal succession and duplicate merges are continuity
+events; ordinary pledge transfers remain prohibited.
 
 ### Fair-share calculation
 
@@ -374,7 +512,7 @@ The first delivery submission atomically:
 
 If no organization has pledged when delivery is submitted, Bloei.me instead
 marks the campaign `delivered self-funded`. It publishes the evidence and final
-price but creates no funder review, settlement, or invoice obligations.
+price but creates no funder review, settlement, or settlement notes.
 
 ### Pledger review
 
@@ -426,8 +564,8 @@ failure with a public reason; this opens a seven-day lead-supplier response
 period and pauses new pledges, cap increases, review, voting, and settlement.
 The administrator may withdraw or confirm failure afterward. A deployment
 operator may bypass the delay for a legal, fraud, or security emergency.
-Failure creates no settlement or invoices, releases reservations, and preserves
-the public outcome and produced open-source work.
+Failure creates no settlement notes, releases reservations, and preserves the
+public outcome and produced open-source work.
 
 If any supplier organization loses tenant verification, the campaign is
 suspended. New pledges, cap increases, delivery submission, review, voting, and
@@ -437,42 +575,43 @@ the original funding and delivery deadlines do not change. The tenant
 administrator may instead use the public failure process. Verification loss
 after accepted settlement does not alter that settlement.
 
-### Settlement and invoicing
+### Settlement notes
 
 Accepted delivery creates one immutable settlement from the locked final price
 and frozen allocation, then consumes the associated budget reservations. When
 organization caps do not cover the complete final price, a public non-invoice
 supplier-contribution line reconciles the remainder. A zero final price
 produces a public zero settlement, releases all reservations, and creates no
-invoice obligations.
+actionable settlement notes.
 
 Bloei.me:
 
 - Publishes final organization shares and net amounts
 - Exports authorized settlement data as CSV and JSON
-- Lets the lead supplier privately record an aggregate `not invoiced`,
-  `partially invoiced`, `fully invoiced`, `disputed`, `paid`, or
-  `closed unpaid` state per funding organization, with private notes and
-  external references
+- Creates one settlement note per funding organization stating its final net
+  campaign contribution without naming a payee
+- Lets an authorized lead-supplier representative change that note between
+  `open` and `completed`, with completion time, reason on reopening, and audit
+  history
 - Does not collect money
 - Does not generate tax invoices
 - Does not calculate tax
 
-The supplier team decides externally whether the lead supplier invoices the
-complete amount or several suppliers issue separate invoices. Bloei.me records
-only the funding organization's total settlement obligation and never assigns
-amounts to suppliers. The combined external invoices must not exceed that
-obligation. Applicable VAT or other tax is added externally.
+`completed` means that the lead supplier confirms the supplier team considers
+that organization's external settlement handling complete. It is not proof of
+a bank payment and reveals neither recipient nor division. Co-suppliers report
+their information to the lead outside Bloei.me. The funding organization can
+view but not change the private completion status. Reopening is allowed with a
+recorded reason and never changes settlement or consumed budget.
 
-Advance and milestone invoicing are not supported in v1. Aggregate invoice
-status and references provide operational visibility without modelling the
-supplier team's commercial arrangement. Status never changes the immutable
-settlement or consumed budget, and v1 does not track supplier-level invoice
-amounts, partial payments, collections, or dispute resolution. Every transition
-is historical; correcting a terminal status requires an audited operator
-action.
+The supplier team arranges payees, invoices, taxes, and division externally.
+Bloei.me stores no payee, bank details, invoice number or document, supplier
+allocation, VAT calculation, due date, instalment, collection, or dispute. A
+failed or entirely self-funded campaign creates no organization settlement
+note; future split-budget allocation still produces one note per funding
+organization.
 
-An unsuccessful campaign creates no settlement or invoice. The failure,
+An unsuccessful campaign creates no settlement note. The failure,
 evidence, and produced open-source work remain visible.
 
 ### Historical integrity and redaction
@@ -513,16 +652,16 @@ Core value types include:
 - `CampaignVisibility`
 - `OrganizationEnrollmentStatus(pending, verified, rejected, suspended)`
 - Organization-owned membership roles
+- Versioned organization authorization policies and requests, with v1 enforcing
+  one immediate approval
 - `CampaignDeadlinePolicy(fundingDeadline, deliveryDeadline)`
 - `AcceptancePolicy(reviewDays, approvalThresholdBps)`
 - `OrganizationBallot(accept, reject)` with deemed acceptance when absent
 - `BudgetValidity(validFrom, expiresOn, processingBufferDays)`
 - Explicit tenant allowlists on budgets
-- Campaign states for supplier suspension, proposed failure, revision required,
-  and self-funded delivery
+- Primary campaign lifecycle states plus orthogonal hold and overdue conditions
 - Settlement lines for organizations and supplier contributions
-- `InvoiceStatus(notInvoiced, partiallyInvoiced, fullyInvoiced, disputed,
-  paid, closedUnpaid)`
+- `SettlementNoteStatus(open, completed)` controlled by the lead supplier
 - Versioned campaign amendments with explicit organization consents
 - Versioned pledge attestation
 
@@ -545,7 +684,7 @@ audit events.
 
 Stable public pages cover tenants, projects, proposals, campaigns,
 organizations, evidence, and settlements. Private management pages cover
-budgets, moderation, verification, and invoicing status.
+budgets, moderation, verification, and settlement-note completion.
 
 V1 has no public JSON API, webhook framework, GitHub-specific fields, or
 connector installation UI. Internal ports should exist for future progress
@@ -576,7 +715,7 @@ export, and accounting integrations.
    attestations, budget-backed pledges, fair allocation, and atomic campaign
    start.
 6. **Delivery and settlement:** evidence, allocation freeze, review,
-   objections, voting, budget consumption, exports, and invoice statuses.
+   objections, voting, budget consumption, exports, and settlement notes.
 7. **Hardening and pilot:** security, concurrency, accessibility, operational
    documentation, and an Epistola pilot campaign.
 
@@ -603,6 +742,11 @@ without explicit permission.
   delivery.
 - Test lead- and co-supplier verification, confirmation, permissions, and
   material supplier-team changes without modelling work allocation.
+- Test every campaign transition, illegal transition, terminal state, hold
+  restoration, and overdue condition independently.
+- Test organization-owned actions, authority revocation, concurrent
+  representative changes, conflict exclusions, and one-approval v1 behavior
+  against future multi-approval boundaries.
 - Test automatic start at full coverage and irreversible manual start at zero,
   partial, and full coverage.
 - Reject a final price above the ceiling and every attempt to alter it after
@@ -618,9 +762,9 @@ without explicit permission.
   voluntary failure, forced-failure notice, and emergency bypass.
 - Test self-funded completion and partial settlements with a supplier-
   contribution line.
-- Test aggregate invoice-state transitions, multiple external references, and
-  audited terminal corrections without assigning supplier amounts or changing
-  settlement and budget consumption.
+- Test settlement-note creation, lead-only completion and audited reopening
+  without payees, supplier allocations, or changes to settlement and budget
+  consumption.
 - Test identity snapshots, personal anonymization, merge redirects, and
   exceptional redaction tombstones.
 - Verify tenant isolation, role authorization, CSRF protection, content
@@ -650,7 +794,7 @@ The Epistola pilot must:
 - Epistola is the first tenant, but the core contains no Epistola-specific or
   GitHub-specific concepts.
 - Published campaigns are public in v1. Budgets, cost centers,
-  representatives, moderation, and invoicing administration remain private.
+  representatives, moderation, and settlement-note completion remain private.
 - Every pledge requires one budget in v1; the data model prepares for several
   budgets per pledge later.
 - Organizations and budgets are global within one deployment, while tenant
@@ -659,6 +803,6 @@ The Epistola pilot must:
   statutory accounts.
 - Each campaign has one lead supplier and may have co-suppliers, but Bloei.me
   does not divide their work, price, settlement, or external invoices.
-- Payments, advance invoicing, milestone invoicing, tax calculation, debt
-  collection, tenant billing, campaign fees, support management, and GitHub
-  synchronization are outside v1.
+- Payees, payments, invoice administration, advance or milestone invoicing, tax
+  calculation, debt collection, tenant billing, campaign fees, support
+  management, and GitHub synchronization are outside v1.
