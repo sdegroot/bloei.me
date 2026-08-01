@@ -396,24 +396,17 @@ the item to the resolved log at the bottom of this document.
 - **Decision trigger:** Scaffold the build and define the first releasable OCI
   artifact.
 
-### Q-035 — Should Exposed replace jOOQ?
-
-- **Decision horizon:** Implementation gate — before the first persistence
-  module
-- **Current inclination:** Replace jOOQ with the Exposed JDBC SQL DSL, do not use
-  the Exposed DAO API, and retain Flyway as the only production migration
-  authority.
-- **Why it remains open:** Exposed is Kotlin-native, has Spring Boot 4
-  integration, and supports the PostgreSQL locking modes Bloei.me needs. jOOQ
-  offers stronger schema-first code generation and broader advanced-SQL
-  coverage. D-030 currently selects jOOQ and must be explicitly superseded if
-  the spike confirms Exposed.
-- **Decision trigger:** Implement a short PostgreSQL spike covering
-  schema-per-module table definitions, Spring transactions, `FOR UPDATE`,
-  `SKIP LOCKED`, JSONB, typed IDs, Flyway validation, and a representative
-  multi-module pledge transaction.
-
 ## Resolved questions
 
-No questions have been moved from this register yet. Earlier resolved design
-choices are recorded directly in [decisions.md](decisions.md).
+### Q-035 — Should Exposed replace jOOQ?
+
+- **Resolved:** 2026-08-01 by D-068
+- **Answer:** Yes. Start with the Exposed JDBC SQL DSL, exclude its DAO API, and
+  keep Flyway authoritative. Preserve repository boundaries so another
+  persistence library remains a feasible later change.
+- **Follow-through:** Locking, transactions, JSONB, schema drift, and concurrent
+  financial behavior remain required implementation tests, not a gate before
+  choosing Exposed.
+
+Earlier resolved design choices that predate this register are recorded
+directly in [decisions.md](decisions.md).

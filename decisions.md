@@ -344,9 +344,10 @@ superseded.
 ## D-030 — Use a Kotlin/Spring modular monolith
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Accepted; SQL-access choice superseded by D-068
 - **Decision:** Use Kotlin/JVM 25, Spring Boot 4, Spring Modulith, PostgreSQL,
-  jOOQ, Flyway, Spring MVC, Thymeleaf, and HTMX.
+  Flyway, Spring MVC, Thymeleaf, and HTMX. The original SQL-access choice was
+  jOOQ.
 - **Why:** This aligns with existing operational knowledge and produces one
   simple deployment artifact without requiring a separate SPA or distributed
   services.
@@ -959,3 +960,23 @@ superseded.
   CI still runs an OIDC contract journey, and an optional Compose profile may
   provide Authentik for production-like smoke testing. Production packaging is
   tested to prove the development endpoint and classes are absent.
+
+## D-068 — Use the Exposed SQL DSL
+
+- **Date:** 2026-08-01
+- **Status:** Accepted; supersedes the jOOQ part of D-030
+- **Decision:** Use the Exposed JDBC SQL DSL for persistence, without the
+  Exposed DAO API. Keep Flyway as the only authority for production schema
+  migrations.
+- **Why:** Exposed provides a concise Kotlin-native persistence layer and lets
+  each business module own its table definitions without a generated-source
+  pipeline. Bloei.me is primarily a transactional domain-workflow application,
+  so this simplicity is more valuable initially than jOOQ's broader advanced
+  SQL surface and schema-generated types.
+- **Consequences:** Exposed table and result types remain inside persistence
+  adapters. Repository ports, domain values, Flyway migrations, and PostgreSQL
+  tests prevent the domain from depending on the library and preserve a later
+  migration path. Parameterized JDBC may handle exceptional queries that the
+  DSL cannot express cleanly. Integration tests must detect drift between
+  Flyway schemas and Exposed table declarations and verify locking,
+  transactions, JSONB, and concurrent financial workflows.

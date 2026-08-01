@@ -97,5 +97,5 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - Added canonical hierarchical open-source components, versioned stewardship,
   formal campaign targets, private supplier formation, and optional non-isolating
   programs.
-- Proposed Exposed SQL DSL as a Kotlin-native replacement for jOOQ, pending a
-  focused PostgreSQL and transaction spike before superseding D-030.
+- Replaced jOOQ with the Exposed JDBC SQL DSL while retaining Flyway as the
+  migration authority and repository boundaries as an escape path.

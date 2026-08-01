@@ -129,7 +129,7 @@ the same image can run separate replicas without creating another codebase.
 | Web | Spring MVC, Thymeleaf, HTMX, local CSS and minimal JavaScript |
 | Authentication | Spring Security OAuth2/OIDC client |
 | Database | PostgreSQL |
-| SQL access | Q-035: jOOQ is accepted today; Exposed SQL DSL is recommended pending a spike |
+| SQL access | Exposed JDBC SQL DSL; no Exposed DAO |
 | Schema changes | Flyway forward migrations |
 | Object evidence | S3-compatible storage through an internal port |
 | Background work | PostgreSQL-backed jobs and transactional outbox |
@@ -142,10 +142,9 @@ Library and infrastructure versions should be pinned centrally and upgraded as
 an explicit maintenance task. The architecture does not depend on a specific
 cloud provider.
 
-### 5.1 Persistence-library recommendation
+### 5.1 Persistence-library decision
 
-D-030 currently selects jOOQ. Q-035 proposes replacing it with the Exposed JDBC
-SQL DSL before persistence implementation begins.
+D-068 selects the Exposed JDBC SQL DSL and supersedes the jOOQ part of D-030.
 
 | Criterion | Exposed SQL DSL | jOOQ |
 | --- | --- | --- |
@@ -157,17 +156,19 @@ SQL DSL before persistence implementation begins.
 | Migrations | Keep Flyway authoritative; do not generate production DDL at runtime | Keep Flyway authoritative; generate types from migrated schema |
 | Module ownership | Each module owns its table objects naturally | Each module needs carefully scoped generated-schema outputs |
 
-The current recommendation is **Exposed SQL DSL, without Exposed DAO**, because
+The baseline is **Exposed SQL DSL, without Exposed DAO**, because
 Bloei.me is domain-workflow-heavy rather than reporting-heavy and benefits from
 concise Kotlin persistence code. Repositories still map rows into domain values;
 Exposed table and result types never leave persistence adapters. Raw parameterized
 JDBC remains an escape hatch behind the same repository interface when a
 PostgreSQL query is not expressed cleanly by the DSL.
 
-The decision should only supersede D-030 after a small Testcontainers spike
-proves Spring transaction participation, module schemas, row locking,
-`SKIP LOCKED`, JSONB, typed IDs, Flyway validation, and the pledge transaction.
-Do not use Exposed schema creation or migration utilities in production.
+Testcontainers integration tests must prove Spring transaction participation,
+module schemas, row locking, `SKIP LOCKED`, JSONB, typed IDs, Flyway validation,
+and the pledge transaction as these capabilities are implemented. Do not use
+Exposed schema creation or migration utilities in production. Keeping Exposed
+inside repository adapters preserves the option to replace it if experience in
+Bloei.me or related Epistola software gives a reason to do so later.
 
 ## 6. Business modules
 
@@ -379,7 +380,7 @@ nl.bloei.<module>
 ├── application/         command handlers and workflow coordination
 ├── adapter/
 │   ├── web/             MVC controllers, forms and views
-│   ├── persistence/     jOOQ repositories and records
+│   ├── persistence/     Exposed tables and repository adapters
 │   └── integration/     module-owned external adapters
 └── ModuleConfiguration.kt
 ```
@@ -390,7 +391,7 @@ Cross-cutting technical support is deliberately small:
 - `foundation.money` provides currency-safe money and deterministic rounding.
 - `foundation.web` provides security headers, error mapping, locale, and shared
   view components.
-- `foundation.persistence` provides transaction and jOOQ configuration, not
+- `foundation.persistence` provides transaction and Exposed configuration, not
   repositories or generic entity bases.
 - `foundation.testing` exists only in test fixtures.
 
@@ -846,7 +847,7 @@ Q-022.
 
 ### Integration tests
 
-- Testcontainers starts the supported PostgreSQL version for jOOQ repository,
+- Testcontainers starts the supported PostgreSQL version for Exposed repository,
   Flyway migration, locking, and transaction tests.
 - Concurrency tests race pledges, cap changes, deadline jobs, amendments,
   evidence submission, acceptance, and role revocation.
@@ -954,7 +955,6 @@ choices:
 8. Q-032: test and production object-storage adapters and serving approach.
 9. Q-033: observability stack and OpenTelemetry inclusion in v1.
 10. Q-034: CI, dependency policy, SBOM, and image-signing tooling.
-11. Q-035: Exposed SQL DSL versus the currently accepted jOOQ baseline.
 
 These are implementation decisions, not changes to the functional rules. Once
 accepted, update [open-questions.md](open-questions.md), record consequential

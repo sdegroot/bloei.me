@@ -1051,8 +1051,7 @@ assumptions and review questions are maintained in [legal.md](legal.md).
 - Spring Boot 4
 - Spring Modulith modular monolith
 - Spring MVC, Thymeleaf, and HTMX
-- PostgreSQL and Flyway, with jOOQ currently accepted and an Exposed SQL DSL
-  replacement proposed in Q-035
+- PostgreSQL, Exposed JDBC SQL DSL, and Flyway
 - Spring Security OIDC
 - Dutch and English message bundles
 - Locally hosted, progressively enhanced, WCAG 2.2 AA user interface
