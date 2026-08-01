@@ -17,8 +17,8 @@ are in [scenarios.md](scenarios.md).
 
 The first Bloei.me pilot uses trust-based organization commitments:
 
-- A deployment operator verifies legal identity once, and each tenant separately
-  approves participation.
+- A deployment operator verifies legal identity and initial account control once;
+  the organization accepts platform terms to activate network-wide participation.
 - Organization administrators appoint funding and supplier representatives.
 - Budget authorization identifies who may use an organization budget.
 - An authorized funding representative confirms a pledge through Bloei.me.
@@ -27,11 +27,11 @@ The first Bloei.me pilot uses trust-based organization commitments:
 - Suppliers knowingly rely on the platform commitment without Bloei.me
   guaranteeing legal enforceability or payment.
 
-Identity verification and tenant approval are distinct. Neither is legal advice,
-procurement approval, proof of a representative's statutory signing authority,
-credit assessment, supplier-quality certification, or a guarantee that an
-expenditure is lawful. The organization remains responsible for its internal
-authority and applicable process.
+Identity verification and platform participation are distinct. Neither is legal
+advice, procurement approval, proof of a representative's statutory signing
+authority, credit assessment, supplier-quality certification, or a guarantee
+that an expenditure is lawful. The organization remains responsible for its
+internal authority and applicable process.
 
 ## Functional meaning of a pledge
 
@@ -109,9 +109,31 @@ professionals should review at least:
 - VAT, invoicing, and cross-border supplier implications
 - Remedies for non-performance and non-completion
 
+### Component stewardship and campaign formation
+
+Bloei.me verifies factual evidence that an organization maintains an open-source
+component and records campaign-specific upstream confirmations. Stewardship is
+not a grant of exclusive commercial rights, a supplier certification, or proof
+that another supplier cannot lawfully deliver compatible work.
+
+Component maintainers may curate proposals, compare private supplier drafts,
+lead campaigns themselves, and publish a concise selection rationale. That
+workflow is product curation, not a platform claim that a public procurement
+procedure or competitive award occurred. Selecting the primary maintainer,
+choosing a lower or higher maximum price, encouraging a joint supplier team, or
+publishing a third-party extension may each have different procurement and
+conflict implications for a funding organization. Every funder remains
+responsible for determining its lawful external basis before pledging.
+
+Official, extension, fork, and unconfirmed upstream labels describe the promised
+technical relationship. They do not determine intellectual-property ownership,
+trademark permission, contributor licence requirements, warranty, support, or
+legal responsibility. Component and campaign confirmations must therefore use
+careful factual language and retain versioned evidence.
+
 ## Future signed-contract capability
 
-A later release may let an organization, tenant, or budget require an external
+A later release may let the platform, an organization, or a budget require an external
 signed agreement before a pledge becomes effective. This is prepared for but is
 not built in v1.
 
@@ -181,14 +203,15 @@ limitation, and privacy by design and default. In practice this means:
   history where there is a documented lawful basis
 - Leave a public tombstone when exceptional redaction is necessary
 
-The hosted service and self-hosted deployments may have different controller,
-joint-controller, or processor relationships among the deployment operator,
-tenant, and participating organizations. Product documentation must not assign
-those legal roles by label alone. The actual purposes, means, contracts, and
-deployment arrangement require specialist review before launch. The same review
-must establish lawful bases, privacy notices, data-subject request handling,
-retention schedules, processor agreements, breach procedures, and whether a
-data-protection impact assessment is required.
+The hosted service and separate self-hosted deployments may have different
+controller, joint-controller, or processor relationships among the deployment
+operator and participating organizations. Component stewardship, supplier,
+funder, moderator, and program-curator labels do not assign those legal roles by
+themselves. The actual purposes, means, contracts, and deployment arrangement
+require specialist review before launch. The same review must establish lawful
+bases, privacy notices, data-subject request handling, retention schedules,
+processor agreements, breach procedures, and whether a data-protection impact
+assessment is required.
 
 ## Content moderation and AI assistance
 
@@ -230,7 +253,7 @@ The pilot should have proportionate, reviewed documents for:
 - Campaign and supplier participation
 - Pledge and amendment confirmations
 - Privacy, data processing, retention, and public records
-- Tenant/operator responsibilities
+- Platform/operator and component-role responsibilities
 - A clear procurement and legal-responsibility disclaimer
 
 Bloei.me should version material terms and preserve the exact version associated
@@ -248,7 +271,8 @@ consent, and delivery submission.
 5. Which representative authority and evidence are sufficient per organization?
 6. Which terms govern cross-border funders or suppliers?
 7. What liability and limitation terms are appropriate for the platform
-   operator, tenant, maintainers, funders, lead supplier, and co-suppliers?
+   operator, component maintainers, program curators, funders, lead supplier,
+   and co-suppliers?
 8. What retention and access rules apply to public commitments, verification
    evidence, audit records, and future signed agreements?
 9. Which party is controller, joint controller, or processor for each processing
@@ -264,6 +288,9 @@ consent, and delivery submission.
     systems, and which information must remain protected?
 14. How does the AI Act classify each configured moderation integration, and
     which provider, deployer, transparency, literacy, and oversight duties apply?
+15. When could component curation or supplier selection be treated as part of a
+    procurement, joint commissioning, subsidy, or other regulated award process,
+    and which conflict and transparency safeguards would then be required?
 
 ## Primary references
 

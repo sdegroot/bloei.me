@@ -13,7 +13,7 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - Initial product and architecture decision register.
 - End-to-end product scenarios covering organization onboarding, budgeting,
   funding, delivery, review, and settlement.
-- Edge-case scenarios for tenant enrollment, organizational continuity,
+- Edge-case scenarios for platform participation, organizational continuity,
   suspension, failure, negative consent, and historical integrity.
 - Scope-change scenarios covering clarification, linked additions, unanimous
   amendments, non-response, and budget revalidation.
@@ -27,14 +27,16 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   platform outages, and delayed background jobs.
 - A separate legal and compliance considerations document plus trust-based and
   future signed-contract scenarios.
-- Identity, account-control, tenant-approval, supplier-labeling, and event-driven
-  re-verification scenarios.
+- Identity, account-control, platform-participation, supplier-labeling, and
+  event-driven re-verification scenarios.
 - Public/private visibility scenarios covering organization-level transparency,
   protected employee attribution, private participation review, and safe future
   exports.
 - Moderation and AI-assistance scenarios covering content redaction, appeals,
   fraud escalation, author warnings, reversible quarantine, prompt injection,
   and classifier outages.
+- Canonical component, stewardship, supplier-formation, cross-component,
+  independent-extension, program, and target-amendment scenarios.
 
 ### Changed
 
@@ -42,8 +44,8 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   supplier-declared final price.
 - Allowed suppliers to start delivery below full coverage while accepting the
   uncovered funding risk.
-- Clarified global organizations, tenant-specific enrollment, organization-
-  owned roles, and explicitly scoped cross-tenant budgets.
+- Clarified canonical organizations, deployment-level participation,
+  organization-owned roles, and optional component-scoped budgets.
 - Replaced quorum-based acceptance voting with notified negative consent.
 - Added supplier suspension, cancellation and failure safeguards, self-funded
   delivery, and supplier-contribution settlement lines.
@@ -71,8 +73,8 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   calendar-day windows, timer pauses, outage correction, and reminder policy.
 - Adopted verified-organization trust for v1 commitments while preparing an
   optional external-contract requirement for later municipal expenditure.
-- Separated deployment-level legal identity verification from tenant-level
-  participation approval and explicitly rejected supplier-quality certification.
+- Separated legal identity verification from deployment-level platform
+  participation and explicitly rejected supplier-quality certification.
 - Defined an organization-attributed public record while keeping personal
   actors, budgets, verification evidence, enrollment review, settlement-note
   completion, and security data private.
@@ -80,3 +82,8 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   reasoned reporting, notices, public tombstones, appeals, and escalation.
 - Designed optional provider-neutral AI moderation for warnings, triage, and
   temporary quarantine without final enforcement or campaign authority.
+- Replaced multi-tenancy and community sites with one canonical Bloei.me network,
+  object-scoped governance, and separate self-hosted deployments.
+- Added canonical hierarchical open-source components, versioned stewardship,
+  formal campaign targets, private supplier formation, and optional non-isolating
+  programs.

@@ -33,7 +33,7 @@ superseded.
 ## D-003 — Use a multi-tenant product model
 
 - **Date:** 2026-08-01
-- **Status:** Accepted and clarified by D-060
+- **Status:** Superseded by D-064
 - **Decision:** Tenants own branding, domains, projects, moderation, and
   verification. Projects own campaigns.
 - **Why:** The first use is Epistola, but the platform should be reusable by
@@ -44,7 +44,7 @@ superseded.
 ## D-004 — Use one artifact for hosted and self-hosted deployments
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Accepted; tenant-routing consequences superseded by D-064
 - **Decision:** The same application artifact supports hosted multi-tenancy,
   self-hosted multi-tenancy, and root-domain single-tenancy.
 - **Why:** Separate editions would create behavioral drift and duplicate
@@ -55,7 +55,8 @@ superseded.
 ## D-005 — Use deployment-level OIDC and global organizations
 
 - **Date:** 2026-08-01
-- **Status:** Accepted and expanded by D-037 and D-060
+- **Status:** Partially accepted; tenant-specific consequences superseded by
+  D-064
 - **Decision:** Configure one OIDC provider per deployment. Organizations have
   a global identity within that deployment and tenant-specific verification.
 - **Why:** OIDC avoids building password authentication. A shared organization
@@ -67,7 +68,8 @@ superseded.
 ## D-006 — Separate organizational responsibilities with roles
 
 - **Date:** 2026-08-01
-- **Status:** Accepted and expanded by D-038
+- **Status:** Accepted and expanded by D-038; tenant and project role scopes
+  replaced by D-064 and D-066
 - **Decision:** Use distinct platform, tenant, project, moderation,
   organization-administration, budget-management, funding, and member roles.
 - **Why:** Curating work, controlling budgets, and legally representing an
@@ -95,7 +97,7 @@ superseded.
   or create a campaign.
 - **Why:** Interest and financial authority are different signals. One vote per
   organization avoids popularity being dominated by individual account count.
-- **Consequences:** Project maintainers remain responsible for campaign
+- **Consequences:** Component maintainers remain responsible for campaign
   curation.
 
 ## D-009 — Publish campaigns in v1 and prepare for later privacy
@@ -371,7 +373,7 @@ superseded.
 - **Why:** The first audience includes Dutch municipalities, while open-source
   participation is international and the public platform must be broadly
   usable.
-- **Consequences:** Interface text uses message bundles. Tenant-authored content
+- **Consequences:** Interface text uses message bundles. User-authored content
   declares a primary language but does not require duplicate translations.
 
 ## D-033 — License Bloei.me under EUPL-1.2
@@ -388,7 +390,7 @@ superseded.
 
 - **Date:** 2026-08-01
 - **Status:** Accepted
-- **Decision:** Do not charge tenant subscriptions or campaign fees inside the
+- **Decision:** Do not charge hosted subscriptions or campaign fees inside the
   first release.
 - **Why:** The co-funding workflow should be validated before adding a second
   commercial and payment domain.
@@ -429,7 +431,7 @@ superseded.
 ## D-037 — Use global organizations with tenant enrollments
 
 - **Date:** 2026-08-01
-- **Status:** Accepted and clarified by D-060
+- **Status:** Superseded by D-064
 - **Decision:** Register an organization once per deployment and represent its
   relationship with each tenant through an independently governed enrollment.
 - **Why:** Tenant-local copies fragment legal identity, memberships, budgets,
@@ -442,11 +444,12 @@ superseded.
 ## D-038 — Let organizations own memberships and roles
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Accepted and clarified by D-064
 - **Decision:** Organization administrators assign organization-wide roles to
-  members. Tenant administrators verify organizations, not individual staff.
+  members. Platform operators verify legal identity but do not approve
+  individual staff; component and program roles remain separately scoped.
 - **Why:** Staffing and internal delegation belong to the organization and may
-  change frequently. Requiring tenant approval for every employee adds little
+  change frequently. Requiring platform approval for every employee adds little
   protection after the organization itself is verified.
 - **Consequences:** Pledges and ballots belong to the organization rather than
   the acting person. Budget authorization remains an additional requirement.
@@ -457,7 +460,8 @@ superseded.
 ## D-039 — Handle verification loss according to commitment state
 
 - **Date:** 2026-08-01
-- **Status:** Accepted and clarified by D-060
+- **Status:** Accepted with platform participation replacing tenant enrollment
+  under D-064
 - **Decision:** Before delivery starts, suspension deactivates an organization's
   pledge and releases its reservation. After start, the commitment survives and
   the organization retains only the actions required to administer it.
@@ -471,7 +475,7 @@ superseded.
 ## D-040 — Allow explicitly scoped cross-tenant budgets
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Superseded by D-064 and D-065
 - **Decision:** Organization budgets may fund campaigns across several tenants
   selected in an explicit allowlist.
 - **Why:** One innovation envelope should prevent total overcommitment across
@@ -512,8 +516,9 @@ superseded.
 - **Date:** 2026-08-01
 - **Status:** Accepted
 - **Decision:** Responsible owners may cancel before delivery starts. After
-  start, the supplier may concede public failure, while tenant-forced failure
-  requires seven days' notice unless an emergency operator override applies.
+  start, the supplier may concede public failure, while maintainer- or operator-
+  initiated forced failure requires seven days' notice unless an emergency
+  operator override applies.
 - **Why:** A supplier may already have relied on locked commitments and started
   work, so post-start termination must remain visible and accountable.
 - **Consequences:** Proposed failure pauses new financial actions and acceptance
@@ -523,14 +528,16 @@ superseded.
 ## D-044 — Pause campaigns when supplier verification is lost
 
 - **Date:** 2026-08-01
-- **Status:** Accepted and expanded by D-049 and D-060
+- **Status:** Accepted and expanded by D-049; tenant-specific consequences
+  superseded by D-064
 - **Decision:** Supplier suspension blocks pledging, delivery, review, voting,
   and settlement while preserving existing commitments.
 - **Why:** Bloei.me must not settle with an unverified supplier, but immediate
   failure may be disproportionate when verification can be restored.
 - **Consequences:** Active timers pause and later resume with their remaining
-  duration. Original campaign deadlines do not move. The tenant administrator
-  may restore the supplier or use the public failure process.
+  duration. Original campaign deadlines do not move. A platform operator may
+  restore participation; an in-scope component maintainer or operator may use
+  the public failure process.
 
 ## D-045 — Represent self-funding and supplier shortfalls explicitly
 
@@ -782,7 +789,8 @@ superseded.
 ## D-060 — Separate legal identity verification from tenant approval
 
 - **Date:** 2026-08-01
-- **Status:** Accepted; clarifies D-003, D-005, D-037, D-039, and D-044
+- **Status:** Superseded by D-064 for participation; identity/account-control
+  separation remains accepted
 - **Decision:** Verify an organization's legal identity and initial account
   control once per deployment. Let every tenant separately approve, reject,
   suspend, or restore participation without repeating or rewriting identity
@@ -804,27 +812,27 @@ superseded.
 ## D-061 — Make organizations public and operational data private
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Accepted and clarified by D-064
 - **Decision:** Attribute public campaign, financial, supplier, objection, and
   governance actions to organizations rather than their acting employees.
   Publish the minimum organization and campaign information needed for an
   auditable co-funding record while keeping personal actors, budgets, settlement
-  completion, enrollment review, verification evidence, and security data
+  completion, participation review, verification evidence, and security data
   restricted.
 - **Why:** Funders and the public need to see who committed what and how a
   campaign was governed. Publishing employee identities or internal financial
   and verification records adds privacy and security risk without improving
   organization-level accountability.
 - **Consequences:** Public profiles show minimal legal identity, factual
-  verification metadata, and approved tenant participation. Pledges, amounts,
+  verification metadata, and platform participation. Pledges, amounts,
   amendments, objections, final ballots, delivery, and settlement lines are
-  public at organization level. Pending or rejected enrollment and detailed
-  suspension reasons stay private; a suspension's factual public effect may be
-  shown when relevant. Settlement-note completion is shared only with the
-  funder and supplier team. Internal actor attribution remains in protected
-  audit history, account deletion anonymizes the person rather than erasing the
-  organization action, and every future public API or export must use the same
-  explicit public projection as the website.
+  public at organization level. Detailed participation-review and suspension
+  reasons stay private; a suspension's factual public effect may be shown when
+  relevant. Settlement-note completion is shared only with the funder and
+  supplier team. Internal actor attribution remains in protected audit history,
+  account deletion anonymizes the person rather than erasing the organization
+  action, and every future public API or export must use the same explicit public
+  projection as the website.
 
 ## D-062 — Separate content moderation from campaign governance
 
@@ -864,4 +872,71 @@ superseded.
   metrics, and audited temporary actions. Managed, local, alternative, and
   disabled configurations are supported. V1 may implement warnings, triage,
   prioritization, and reversible quarantine; final automated enforcement,
-  custom training, cross-tenant detection, and advanced analytics are deferred.
+  custom training, cross-component detection, and advanced analytics are
+  deferred.
+
+## D-064 — Use one canonical Bloei.me network without communities
+
+- **Date:** 2026-08-01
+- **Status:** Accepted; supersedes D-003, D-037, and the tenant-specific parts of
+  D-004, D-005, D-039, D-040, D-044, D-060, and D-061
+- **Decision:** Operate hosted Bloei.me as one canonical co-funding network, not
+  separate tenant or community sites. Keep organizations and components
+  canonical within a deployment; scope authority directly to organizations,
+  components, programs, campaigns, and moderation cases. A self-hosted instance
+  is a separate deployment.
+- **Why:** Funding benefits from one registration, budget view, public history,
+  search surface, and cross-component network. Communities would add repeated
+  enrollment, fragmented discovery, unclear authority, and a substantial
+  isolation and routing model before a concrete independently governed or
+  white-labelled operator needs it.
+- **Consequences:** Remove tenant enrollment, tenant routing, custom tenant
+  domains, tenant administrators, tenant isolation, and tenant budget allowlists.
+  Identity verification remains distinct from one deployment-level platform
+  participation status. Hosted routes live under `bloei.me`; optional vanity
+  subdomains may redirect but create no boundary. Budgets may instead use an
+  optional component scope. Platform and object-scoped roles govern workflows,
+  and a future truly independent operator uses another deployment unless a real
+  tenancy requirement is deliberately introduced.
+
+## D-065 — Make open-source components canonical funding targets
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** Model complete applications and smaller building blocks as
+  deployment-canonical `OpenSourceComponent` records with optional hierarchy,
+  lineage, supported releases, and versioned primary or co-maintainer
+  stewardship. Proposals and campaigns target one or more components.
+- **Why:** “Component” matches both complete products and Common Ground-style
+  building blocks without duplicating a separate product concept. Canonical
+  identity prevents conflicting names, sources, licences, stewardship, and
+  campaign history while supporting genuine forks and cross-component work.
+- **Consequences:** Every campaign target records its modified, integrated, or
+  newly-created relationship; official, extension, or fork status; promised
+  release; and any maintainer confirmation. Official upstream promises require
+  the relevant maintainer. Stewardship proves an upstream relationship, not
+  exclusive commercial rights, quality, or guaranteed delivery. Target or
+  upstream-status changes after pledging are material amendments.
+
+## D-066 — Curate supplier formation in one public network
+
+- **Date:** 2026-08-01
+- **Status:** Accepted; expands D-007, D-008, D-049, D-051, and D-052
+- **Decision:** Let component maintainers curate proposals and campaign
+  formation. Eligible suppliers may submit private drafts, and maintainers may
+  select one, request revision, encourage a team, split distinct outcomes, or
+  select none. A primary maintainer may lead directly without a mandatory
+  competition. Optional programs curate public collections but create no
+  identity, policy, budget, or security boundary.
+- **Why:** A proposal captures demand before a supplier and price exist, while a
+  campaign is a concrete supplier commitment. Private formation supports
+  comparison and team-building without fragmenting public funding or turning
+  Bloei.me into an automated tender marketplace. Programs provide thematic and
+  cross-component discovery without recreating tenants.
+- **Consequences:** No draft accepts pledges. One equivalent outcome cannot have
+  silently competing active funding campaigns. Selection publishes a concise
+  rationale while unsuccessful suppliers and drafts remain private. Lowest
+  price is not mandatory, supplier affiliation is disclosed, upstream status is
+  explicit, and rejected suppliers may challenge policy or conflict failures
+  but have no right to publication. Before the first pledge a public campaign
+  may be replaced with history; afterward ordinary amendment consent applies.

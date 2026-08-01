@@ -9,14 +9,17 @@ the rules in [plan.md](plan.md) and the rationale in
 
 ## Actors used in the scenarios
 
-- **Community member:** submits ideas and participates in discussion.
-- **Tenant administrator:** verifies organizations and administers a Bloei.me
-  tenant.
+- **Member:** submits ideas and participates in discussion.
+- **Platform operator:** verifies identity, governs platform participation, and
+  performs exceptional audited actions.
 - **Organization administrator:** manages an organization's identity and role
   assignments.
 - **Budget manager:** creates budgets and authorizes their use.
 - **Funding representative:** pledges and votes for an organization.
-- **Project maintainer:** curates proposals and publishes campaigns.
+- **Component maintainer:** maintains an open-source component, curates its
+  proposals, confirms official upstream claims, and publishes campaigns.
+- **Program curator:** curates a public cross-component collection without
+  controlling the included campaign records.
 - **Lead supplier:** administers a campaign, coordinates its combined outcome,
   submits delivery, and coordinates external settlement after acceptance.
 - **Co-supplier:** publicly participates in delivery without receiving a
@@ -44,8 +47,8 @@ municipality to participate in Epistola funding campaigns.
    its Bloei.me account through an independent official channel.
 5. A deployment operator verifies Rivierenstad's legal identity and the
    claimant's control using authoritative government sources.
-6. An Epistola tenant administrator separately approves participation in that
-   tenant; it does not repeat identity verification or assign internal roles.
+6. The administrator accepts the current platform terms, activating
+   Rivierenstad's deployment-level participation.
 7. The organization administrator appoints a budget manager and one or more
    funding representatives.
 8. The organization is now allowed to endorse Epistola proposals.
@@ -55,13 +58,13 @@ municipality to participate in Epistola funding campaigns.
 
 If Rivierenstad already exists, the adviser requests membership instead of
 creating another profile. An existing organization administrator approves the
-membership and assigns the appropriate roles. Each tenant still approves its
-own enrollment without repeating legal-identity verification.
+membership and assigns the appropriate roles. No component or program requires
+another organization application.
 
 ### Visible result
 
-The public can see that Rivierenstad's identity is verified and its Epistola
-enrollment is approved. Its members, evidence, roles, budgets, and cost centers
+The public can see that Rivierenstad's identity is verified and its Bloei.me
+participation is active. Its members, evidence, roles, budgets, and cost centers
 remain private.
 
 ## Scenario 2 — The municipality reserves an innovation budget
@@ -99,7 +102,7 @@ budget first.
 The budget, balance, cost center, expiration date, and usage remain private to
 authorized Rivierenstad members.
 
-## Scenario 3 — A community idea becomes a campaign
+## Scenario 3 — An idea becomes a campaign
 
 ### Starting point
 
@@ -107,14 +110,17 @@ A user believes Epistola should generate PDF/UA-compliant documents.
 
 ### Flow
 
-1. The user submits the idea privately to the Epistola project.
+1. The user submits the idea privately against the Epistola and Document
+   Generator components.
 2. A moderator reviews it for relevance, clarity, duplication, and appropriate
    content.
-3. A project maintainer works the idea into a public outcome-focused proposal.
+3. An Epistola component maintainer works the idea into a public outcome-focused
+   proposal.
 4. Verified organizations endorse the proposal and discuss why the outcome
    matters to them.
 5. Endorsements demonstrate demand but create no financial commitment.
-6. A supplier prepares a campaign for the proposal.
+6. Eligible suppliers may prepare private campaign drafts; the component
+   maintainer selects a suitable draft and records the rationale.
 7. The campaign publishes:
    - A maximum net price of €100,000
    - The promised outcome and scope
@@ -122,7 +128,8 @@ A user believes Epistola should generate PDF/UA-compliant documents.
    - Milestones
    - Latest funding and ultimate delivery dates
    - Review and voting rules
-8. The project maintainer publishes the campaign for pledging.
+8. Every supplier and required component maintainer confirms its role, and the
+   component maintainer publishes the campaign for pledging.
 
 ### Visible result
 
@@ -207,7 +214,7 @@ Delivery has already started with these projected shares: 10%, 30%, 30%, and
 
 ### Flow
 
-1. A fifth identity-verified and tenant-approved organization discovers the
+1. A fifth identity-verified, active organization discovers the
    campaign.
 2. Its funding representative selects an eligible budget and pledges at least
    22.5%.
@@ -349,53 +356,54 @@ If no eligible replacement exists, the original budget becomes `expired with
 active commitment`. Bloei.me does not withdraw the locked pledge or block a
 later settlement; Rivierenstad handles the accounting exception externally.
 
-## Scenario 12 — An organization joins a second tenant
+## Scenario 12 — An organization funds work across components
 
 ### Starting point
 
-Rivierenstad's identity is already verified and its Epistola enrollment is
-approved. It now wants to fund a campaign in another open-source community on
-Bloei.me.
+Rivierenstad's identity and platform participation are active. It already funds
+an Epistola campaign and now wants to fund a GZAC campaign.
 
 ### Flow
 
-1. An organization administrator requests enrollment in the second tenant.
-2. The second tenant administrator reviews and approves that relationship
-   without repeating identity verification.
-3. Rivierenstad keeps its existing legal profile, members, and organization
-   roles; nothing is recreated.
-4. Its budget manager adds the second tenant to an existing innovation budget's
-   allowlist.
-5. An authorized funding representative can now use that budget in either
-   tenant.
-6. Reservations from both tenants reduce the same available balance.
+1. Its representative discovers the GZAC campaign through the global component
+   and campaign catalog.
+2. Rivierenstad uses its existing legal profile, members, and organization
+   roles; nothing is recreated or reapproved.
+3. A network-wide budget is immediately eligible, while a component-scoped
+   budget requires GZAC to be in its allowed scope.
+4. An authorized funding representative pledges from an eligible budget.
+5. Epistola and GZAC reservations reduce the same available balance.
 
 ### Result
 
-Bloei.me prevents cross-tenant overcommitment while each tenant independently
-controls whether Rivierenstad may participate there.
+One identity and budget portfolio can support several ecosystems without
+repeated community enrollment or overcommitment.
 
-## Scenario 13 — Tenant enrollment is rejected and corrected
+## Scenario 13 — A component stewardship claim is disputed and corrected
 
 ### Starting point
 
-An identity-verified organization requests tenant enrollment but supplies
-incomplete tenant-specific participation information.
+A verified organization claims to be the primary maintainer of a component, but
+the submitted source-control evidence does not establish official authority.
 
 ### Flow
 
-1. The tenant administrator rejects the request with a private explanation.
-2. The organization's global profile and participation in other tenants remain
-   unaffected.
-3. Its administrator corrects the tenant-specific details.
-4. The organization resubmits the enrollment request.
-5. The tenant administrator approves the corrected request.
+1. A platform operator marks the stewardship claim `disputed` with a protected
+   reason; the organization's verified identity and platform participation stay
+   unchanged.
+2. The claimant supplies confirmation through the component's established
+   official channel.
+3. The operator verifies the relationship, scope, evidence category, and
+   effective date.
+4. The claim becomes `verified`, and authorized people may receive component-
+   maintainer roles.
+5. The public component page shows factual stewardship metadata without private
+   evidence or reviewer identity.
 
 ### Result
 
-Rejection is recoverable and tenant-local. Identity appeals and tenant
-reconsideration follow separate routes, and identity verification has no
-automatic expiry.
+Organization identity, platform participation, and component stewardship remain
+separate questions with their own evidence and review history.
 
 ## Scenario 14 — A funding representative leaves
 
@@ -416,14 +424,15 @@ The employee who created Rivierenstad's pledge changes jobs during delivery.
 ### No-administrator variation
 
 If no active organization administrator remains, a platform operator verifies
-a replacement's authority and performs an audited recovery. Tenant
-administrators cannot appoint a global organization administrator.
+a replacement's authority and performs an audited recovery. Component
+maintainers and program curators cannot appoint an organization administrator.
 
 ## Scenario 15 — A funding organization is suspended
 
 ### Before delivery starts
 
-1. The tenant administrator suspends Rivierenstad's tenant enrollment.
+1. A platform operator suspends Rivierenstad's platform participation with
+   notice and an appeal route.
 2. Its active pledge is deactivated and its budget reservation releases.
 3. Campaign coverage recalculates and may drop below 100%.
 4. Restoration does not recreate the pledge; a funding representative must
@@ -435,8 +444,7 @@ administrators cannot appoint a global organization administrator.
    them.
 2. Rivierenstad may replace its representative, transfer the reservation, review
    delivery, and vote on that existing commitment.
-3. It cannot endorse, create a pledge, increase its cap, or join another
-   campaign in that tenant until restored.
+3. It cannot endorse, create another pledge, or increase a cap until restored.
 
 ### Result
 
@@ -447,9 +455,9 @@ work has already started.
 
 ### Starting point
 
-Rivierenstad has €20,000 available in a cross-tenant innovation budget. Two
+Rivierenstad has €20,000 available in a network-wide innovation budget. Two
 funding representatives submit €15,000 maximum commitments at nearly the same
-time in different tenants.
+time against different components.
 
 ### Flow
 
@@ -462,8 +470,8 @@ time in different tenants.
 
 ### Result
 
-Tenant separation never permits the same organization budget to be
-overcommitted.
+Component and campaign boundaries never permit the same organization budget to
+be overcommitted.
 
 ## Scenario 17 — Campaign terms must change after pledging
 
@@ -476,7 +484,7 @@ organizations pledged but before delivery started.
 
 1. The lead supplier drafts an amendment showing the old and new standard,
    acceptance criteria, delivery date, maximum price, and reason for the change.
-2. A project maintainer confirms that this is a genuine scope change rather
+2. A component maintainer confirms that this is a genuine scope change rather
    than an ordinary cost overrun.
 3. Bloei.me pauses new pledges and cap increases.
 4. Every funding organization receives a consent deadline and must explicitly
@@ -497,8 +505,8 @@ because its genuine scope changed.
 
 ### Cancellation before start
 
-The lead supplier, project maintainer, or tenant administrator cancels a
-campaign with a public reason. All pledges and reservations release immediately.
+The lead supplier or an in-scope component maintainer cancels a campaign with a
+public reason. All pledges and reservations release immediately.
 
 ### Supplier failure after start
 
@@ -506,9 +514,10 @@ The lead supplier concludes that the supplier team cannot deliver. It declares
 the campaign failed, publishes the reason and produced work, releases
 reservations, and creates no settlement notes.
 
-### Tenant-forced failure
+### Maintainer-initiated forced failure
 
-1. A tenant administrator publishes a proposed failure and reason.
+1. A non-conflicted in-scope component maintainer publishes a proposed failure
+   and reason.
 2. New pledges, cap increases, review, voting, and settlement pause for seven
    days.
 3. The lead supplier responds with evidence of progress or accepts failure.
@@ -520,8 +529,8 @@ reservations, and creates no settlement notes.
 
 ### Starting point
 
-A co-supplier's tenant enrollment is suspended while delivery review has five
-days remaining.
+A co-supplier's platform participation is suspended while delivery review has
+five days remaining.
 
 ### Flow
 
@@ -529,15 +538,15 @@ days remaining.
 2. New pledges, cap increases, evidence submission, review, voting, and
    settlement are blocked.
 3. Existing organization commitments remain reserved.
-4. The tenant administrator restores approved participation after resolving the
-   issue.
+4. A platform operator restores active participation after resolving the issue.
 5. Review resumes with the original five days remaining; the delivery deadline
    is not extended retroactively.
 
 ### Failure variation
 
-If approval cannot be restored, the tenant administrator uses the public failure
-process. Approval loss after settlement never rewrites that settlement.
+If participation cannot be restored, an in-scope component maintainer or
+deployment operator uses the public failure process. Participation loss after
+settlement never rewrites that settlement.
 
 ## Scenario 20 — An objection triggers negative-consent voting
 
@@ -669,7 +678,7 @@ which published version of that standard the existing wording refers to.
 
 1. The lead supplier drafts a clarification that does not alter the promised
    behavior, price, date, supplier team, or acceptance test.
-2. A project maintainer confirms that no obligation changes.
+2. A component maintainer confirms that no obligation changes.
 3. Bloei.me appends the clarification publicly with its author and timestamp.
 4. Delivery and pledging continue without a consent window.
 
@@ -687,7 +696,7 @@ the original promised outcome.
 
 ### Flow
 
-1. The lead supplier and project maintainer leave the original campaign
+1. The lead supplier and component maintainer leave the original campaign
    unchanged.
 2. They create a linked proposal and campaign for the dashboard.
 3. Organizations decide independently whether to fund it.
@@ -709,8 +718,8 @@ combined outcome.
 
 1. Supplier A is recorded as the lead supplier and adds B and C as
    co-suppliers while the campaign is still a draft.
-2. All three organizations must have verified identities and approved tenant
-   enrollments.
+2. All three organizations must have verified identities and active platform
+   participation.
 3. B and C confirm that they may be shown publicly as participants.
 4. The campaign publishes one outcome, maximum price, set of criteria, and
    supplier team; it publishes no supplier work packages or price shares.
@@ -804,8 +813,8 @@ before the lead supplier submits the result.
 3. Pledges stay locked and reservations remain intact.
 4. The lead supplier may still submit delivery, propose an amendment, or
    declare failure.
-5. A tenant administrator may use the formal forced-failure process rather than
-   relying on an automatic transition.
+5. An in-scope component maintainer may use the formal forced-failure process
+   rather than relying on an automatic transition.
 
 ### Result
 
@@ -1127,12 +1136,12 @@ A review deadline is 15:30, but the automatic acceptance worker runs at 15:34.
 
 Worker scheduling never extends a governance window or changes its outcome.
 
-## Scenario 46 — An approved organization joins the trust-based pilot
+## Scenario 46 — An active organization joins the trust-based pilot
 
 ### Starting point
 
-Rivierenstad's identity is verified, its Epistola enrollment is approved, and it
-has authorized a funding representative to use an eligible innovation budget.
+Rivierenstad's identity is verified, its platform participation is active, and
+it has authorized a funding representative to use an eligible innovation budget.
 V1 does not require a signed expenditure contract in Bloei.me.
 
 ### Flow
@@ -1203,7 +1212,8 @@ deployment.
    and decision without retaining a raw identity document by default.
 6. The organization becomes `verified`, and the claimant becomes its initial
    administrator.
-7. It still needs `approved` enrollment before participating in a tenant.
+7. Its administrator accepts the current platform terms, making participation
+   `active` without another component-specific application.
 
 ### Government variation
 
@@ -1211,42 +1221,45 @@ A Dutch public body uses the Register van Overheidsorganisaties and its official
 domain register. A foreign organization uses an appropriate national register;
 VIES may supplement but not replace legal-identity evidence.
 
-## Scenario 49 — A tenant rejects participation without rejecting identity
+## Scenario 49 — A maintainer confirms an official component release
 
 ### Starting point
 
-An organization's legal identity is verified, but it does not yet satisfy an
-Epistola tenant participation requirement.
+A third-party supplier proposes a campaign that promises a new feature in an
+official Epistola supported release.
 
 ### Flow
 
-1. The tenant administrator rejects the enrollment with a private reason.
-2. The organization's global profile remains verified and its approved
-   participation in other tenants remains unaffected.
-3. Its administrator corrects the tenant-specific information and requests
-   reconsideration from Epistola.
-4. The tenant approves enrollment after review.
+1. The supplier is identity-verified and active but is not Epistola's primary
+   maintainer.
+2. An authorized Epistola component maintainer reviews the exact target,
+   acceptance criteria, and promised release.
+3. The maintainer confirms that official integration is intended and the
+   campaign snapshots that confirmation.
+4. If confirmation is withheld, the supplier may revise the campaign to an
+   accurately labelled extension, fork, or unconfirmed contribution.
 
 ### Result
 
-Tenant governance cannot rewrite a deployment-level identity decision, and an
-identity appeal does not bypass local participation rules.
+Supplier eligibility does not by itself authorize an official upstream promise;
+component stewardship and campaign participation answer different questions.
 
-## Scenario 50 — An approved supplier is not quality-certified
+## Scenario 50 — An eligible supplier is not quality-certified
 
 ### Starting point
 
-A verified and tenant-approved organization is proposed as a campaign's lead
-supplier but has no previous delivery history on Bloei.me.
+A verified, active organization is proposed as a campaign's lead supplier but
+has no previous delivery history on Bloei.me.
 
 ### Flow
 
-1. The campaign clearly shows “organization identity verified” and “approved
-   participant in Epistola.”
+1. The campaign clearly shows “organization identity verified,” “active
+   Bloei.me participant,” and its campaign-specific supplier confirmation.
 2. It does not display “certified,” “trusted supplier,” or another competence
    endorsement.
 3. The supplier representative confirms participation and attestations.
-4. A project maintainer decides whether the campaign is suitable to publish.
+4. An in-scope component maintainer decides whether the campaign is suitable to
+   publish and confirms only the upstream claims within their authority.
 5. Future successful and failed campaigns form transparent history without
    changing the meaning of identity verification.
 
@@ -1299,7 +1312,7 @@ campaign and how acceptance was reached.
 4. It does not show acting employees, organization memberships, budgets, cost
    centers, reservations, settlement-note completion, or verification evidence.
 5. The visitor can follow an organization link to its minimal legal profile and
-   factual verification and tenant-participation status.
+   factual verification and platform-participation status.
 
 ### Result
 
@@ -1330,29 +1343,28 @@ amendment.
 The organization remains publicly accountable while Bloei.me retains only the
 restricted personal evidence needed to operate and audit authorization.
 
-## Scenario 54 — Participation review stays private
+## Scenario 54 — Unsuccessful supplier formation stays private
 
 ### Starting point
 
-A verified organization requests enrollment in a tenant, and the tenant rejects
-the first application.
+Two eligible supplier teams submit private drafts for the same public proposal.
 
 ### Flow
 
-1. The applicant and authorized tenant administrators can see the application
-   and private rejection reason.
-2. Public visitors see neither the pending request nor the rejection.
-3. After correction and approval, the organization's profile publicly shows it
-   as an approved participant in that tenant.
-4. A later suspension that affects an active public campaign shows the factual
-   hold and its public operational reason where required, but protected evidence
-   and internal review detail remain restricted.
+1. Authorized component maintainers compare scope, criteria, feasibility,
+   maximum price, timing, licensing, history, capacity, and risk.
+2. They select one team and record a concise rationale for the eventual public
+   campaign.
+3. The other team's identity, draft, price, and rejection reasoning remain
+   private unless that supplier chose to show its interest publicly.
+4. The rejected team may request review of an undisclosed conflict,
+   discrimination, policy breach, or misrepresentation, but has no right to
+   campaign publication.
 
 ### Result
 
-The platform communicates statuses that affect public commitments without
-turning unsuccessful applications or sensitive investigations into public
-records.
+Bloei.me supports fair, reviewable formation without operating a public auction
+or exposing commercially sensitive unsuccessful drafts.
 
 ## Scenario 55 — A future public export cannot reveal private fields
 
@@ -1433,8 +1445,8 @@ organization.
 
 1. The moderator protects any dangerous content and escalates the identity
    allegation rather than deciding it.
-2. The deployment operator starts identity review; the tenant administrator may
-   apply tenant suspension according to the evidence and existing authority.
+2. The deployment operator starts identity review and may suspend platform
+   participation according to the evidence and existing authority.
 3. An affected campaign follows the supplier hold and timer rules.
 4. Before start it may be cancelled through ordinary governance; after start it
    can only reach failure through the recorded forced-failure or emergency path.
@@ -1450,7 +1462,7 @@ or identity powers.
 
 ### Starting point
 
-A community member writes a comment containing what appears to be a personal
+A member writes a comment containing what appears to be a personal
 email address and an insulting phrase.
 
 ### Flow
@@ -1497,8 +1509,8 @@ automated restriction remains reversible.
 
 ### Starting point
 
-The hosted classifier is temporarily unavailable, while a self-hosted tenant
-has deliberately disabled AI.
+The hosted classifier is temporarily unavailable, while a separate self-hosted
+deployment has deliberately disabled AI.
 
 ### Flow
 
@@ -1512,3 +1524,146 @@ has deliberately disabled AI.
 ### Result
 
 AI improves moderation but is not an availability or portability dependency.
+
+## Scenario 62 — A primary maintainer claims a component family
+
+### Starting point
+
+Epistola Nederland B.V. wants canonical pages for Epistola and its Document
+Generator child component.
+
+### Flow
+
+1. Its administrator finds or creates provisional component records with
+   official websites, source locations, licences, supported releases, and their
+   parent-child relationship.
+2. The organization claims primary-maintainer stewardship for both components.
+3. A deployment operator verifies the relationship through established source,
+   release, governance, and official-channel evidence.
+4. Bloei.me records versioned stewardship scope and effective dates while
+   protecting raw evidence and reviewer identity.
+5. The component pages show Epistola Nederland as primary maintainer without
+   describing it as an exclusive, certified, or guaranteed supplier.
+
+### Result
+
+Component and stewardship identity are canonical across the deployment and can
+be reused by every proposal and campaign.
+
+## Scenario 63 — A primary maintainer leads a campaign directly
+
+### Starting point
+
+An endorsed proposal targets an official Epistola component, and Epistola
+Nederland is prepared to deliver it.
+
+### Flow
+
+1. The primary maintainer prepares a private campaign draft without Bloei.me
+   requiring a supplier competition.
+2. Its authorized supplier representative confirms the lead role, maximum
+   price, dates, licensing, attestations, and external allocation boundary.
+3. The campaign records the official component target and promised release.
+4. An authorized component maintainer completes the v1 publication approval;
+   future four-eyes policy may require a distinct internal approver, but no
+   unrelated external technical reviewer.
+5. The public page discloses that Epistola Nederland is both primary maintainer
+   and lead supplier.
+
+### Result
+
+An ordinary upstream-maintainer delivery path stays efficient while funders see
+the inherent affiliation before pledging.
+
+## Scenario 64 — A campaign changes several official components
+
+### Starting point
+
+A supplier team proposes an official integration between Epistola and GZAC.
+
+### Flow
+
+1. The campaign targets both components and a newly created integration
+   component without introducing another site or duplicating component records.
+2. It states exactly which components are modified, their promised releases,
+   and who will maintain the new integration.
+3. Authorized maintainers for Epistola and GZAC each confirm only their own
+   official upstream claims.
+4. Every supplier confirms participation; one is recorded as lead.
+5. The canonical campaign becomes discoverable from both component pages and
+   may also appear in a Common Ground program.
+
+### Result
+
+Cross-component work has one funding record while every upstream promise retains
+the correct authority.
+
+## Scenario 65 — A third party offers an independent extension
+
+### Starting point
+
+A third-party supplier can deliver an Epistola extension but has no confirmation
+that it will enter the official Epistola release.
+
+### Flow
+
+1. The supplier may form a campaign because it is verified and active.
+2. It cannot mark the target as an official supported release without an
+   authorized component-maintainer confirmation.
+3. It accurately labels the outcome as an independently maintained extension
+   and names its own source and maintenance commitment.
+4. Funders assess that upstream status, supplier history, scope, and criteria
+   before pledging.
+
+### Result
+
+Bloei.me remains open to third-party innovation without allowing misleading
+claims about official component inclusion.
+
+## Scenario 66 — One website presents a curated program
+
+### Starting point
+
+Several organizations want a public overview of Common Ground document-service
+work across multiple components and suppliers.
+
+### Flow
+
+1. Program curators create a Common Ground document-services page on
+   `bloei.me/programs/common-ground-document-services`.
+2. They curate relevant canonical components, proposals, and campaigns into the
+   page without copying or taking ownership of them.
+3. Each campaign retains one canonical URL, public history, supplier team, and
+   funding record and may appear in other programs as well.
+4. Organizations use the same verified identity, roles, budgets, and dashboard
+   throughout Bloei.me.
+5. A vanity subdomain may later redirect to the program but creates no separate
+   login, terms, moderation policy, or data boundary.
+
+### Result
+
+Local narrative and discovery do not fragment the funding network.
+
+## Scenario 67 — A component target changes after pledging
+
+### Starting point
+
+A campaign originally promised an official component release, but the supplier
+now proposes delivery as an independent fork after organizations pledged.
+
+### Flow
+
+1. Bloei.me treats the changed component target, upstream status, source, and
+   maintenance promise as material rather than a clarification.
+2. The lead drafts a before-and-after amendment with the exact acceptance,
+   budget, schedule, and risk effects.
+3. Required suppliers and component maintainers confirm their continuing roles.
+4. Every funding organization must explicitly consent and every affected budget
+   must revalidate.
+5. Without unanimous valid consent, the original official-release promise
+   remains binding or the supplier uses the failure process.
+
+### Result
+
+Component metadata cannot be changed to evade the outcome that funders agreed
+to finance.

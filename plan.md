@@ -13,9 +13,9 @@ in [legal.md](legal.md).
 
 ## Product summary
 
-Bloei.me is a standalone, multi-tenant platform where organizations reserve
-innovation budgets and collectively fund fixed-outcome open-source campaigns
-with a published maximum price.
+Bloei.me is one public co-funding network where organizations reserve innovation
+budgets and collectively fund fixed-outcome open-source campaigns with a
+published maximum price.
 
 - Product name: **Bloei.me**
 - Descriptor: **Open-source co-funding**
@@ -32,19 +32,42 @@ and lead-confirmed completion of settlement notes.
 
 ## Product model
 
-### Tenants and projects
+### Network, components, and programs
 
-- A tenant owns its branding, domains, projects, moderation policy, and
-  organization participation approval.
-- A tenant has one or more projects.
-- A project represents a fundable open-source product or initiative.
-- A campaign belongs to exactly one project.
-- A single-project tenant hides unnecessary project-switching UI.
-- The hosted service primarily uses `{tenant}.bloei.me`, with
-  `bloei.me/t/{tenant}` as a path-based fallback.
-- A tenant may use a verified custom domain.
-- A single-tenant self-hosted installation operates directly at its root
-  domain. The same application artifact can also run in multi-tenant mode.
+The hosted service is one canonical `bloei.me` network rather than a collection
+of community sites. Organizations register once, components have one canonical
+identity, and public proposals and campaigns are discoverable together. The
+primary routes are `/components`, `/proposals`, `/campaigns`, `/programs`,
+`/organizations`, and the signed-in `/my` area. A memorable component or
+program subdomain may later redirect to its canonical page but does not create
+another application, identity, policy, or authorization boundary.
+
+An **open-source component** is the software, standard, service, library,
+connector, or other maintained building block affected by funded work. A
+component may be a complete application or a child of another component. It
+records canonical name, type, description, official website, source locations,
+licence, supported releases, component family, related components, and
+versioned stewardship. Forks are separate components with lineage links rather
+than tenant-specific versions of the same component.
+
+An optional **program** is a public curated collection of components, proposals,
+and campaigns around an objective such as Common Ground document services. A
+program may have branding and curators, but it is not a tenant: it has no
+separate organization enrollment, identity store, budget boundary, terms,
+private data silo, or campaign copy. One campaign can appear in several programs
+while retaining one canonical URL and record.
+
+Every proposal targets at least one component. Every campaign targets one or
+more components and snapshots, for each formal target, whether it is modified,
+integrated, or newly created; whether the result is official, an extension, or
+a fork; any promised supported release; and required maintainer confirmation.
+Incidental dependencies remain technical scope rather than formal targets.
+Adding or removing a target, changing official upstream status, moving to a
+fork, or changing a promised release after the first pledge is material.
+
+Self-hosting creates a separate deployment and canonical network at its own root
+domain. Hosted and self-hosted installations use the same artifact, but do not
+share identities or records unless federation is deliberately designed later.
 
 ### Identity and roles
 
@@ -52,22 +75,25 @@ Bloei.me uses one configurable OIDC provider per deployment. The hosted
 service initially uses the central Authentik deployment. Self-hosted operators
 can configure another standards-compliant OIDC provider.
 
-Organizations have one global identity within a Bloei.me deployment, with
-status `provisional`, `verified`, `review required`, `closed`, or `merged`.
-Deployment-level verification establishes legal identity once. Each tenant
-relationship is a separate enrollment with status `pending`, `approved`,
-`rejected`, or `suspended`. Registering once avoids duplicated legal identities,
-memberships, and budgets while leaving every tenant in control of participation
-in its own community.
+Organizations have one identity within a Bloei.me deployment, with status
+`provisional`, `verified`, `review required`, `closed`, or `merged`. Verification
+establishes legal identity and initial account control once. Platform
+participation is a separate deployment-level status of `active`, `suspended`, or
+`closed`, so a policy restriction does not rewrite a factual identity decision.
+A verified organization becomes active after accepting the current platform
+terms; it does not apply separately to components or programs.
 
 The authorization model contains these roles:
 
-- **Platform operator:** provisions tenants, performs exceptional audited
-  operations, and operates the deployment.
-- **Tenant administrator:** manages tenant branding, projects, and organization
-  enrollments, but not an organization's internal people, roles, or budgets.
-- **Project maintainer:** curates proposals and manages project campaigns.
-- **Moderator:** reviews idea submissions, comments, and flags.
+- **Platform operator:** verifies identity, manages platform participation,
+  performs exceptional audited operations, and operates the deployment.
+- **Platform moderator:** reviews reports and applies reversible content
+  restrictions without changing campaign governance.
+- **Component maintainer:** maintains canonical component information, curates
+  proposals, confirms official upstream claims, and approves suitable campaign
+  publication within assigned component scope.
+- **Program curator:** maintains a public program and its non-exclusive curated
+  collection without controlling included campaign records.
 - **Organization administrator:** controls the organization's profile,
   representatives, and role assignments.
 - **Budget manager:** creates budgets, controls cost centers, and authorizes
@@ -75,12 +101,13 @@ The authorization model contains these roles:
 - **Funding representative:** pledges and votes on behalf of an organization.
 - **Supplier representative:** represents a supplier organization and may be
   assigned to administer its lead-supplier campaigns.
-- **Member:** participates in the community without financial authority.
+- **Member:** participates in discussion without financial authority.
 
-Organization roles belong to the person's organization membership and work in
-every tenant where the organization is approved. Organization administrators
-assign and revoke roles. Funding representatives additionally require
-authorization to use the selected budget.
+Organization roles belong to the person's organization membership and work
+throughout that deployment. Organization administrators assign and revoke
+roles. Funding representatives additionally require authorization to use the
+selected budget. Component and program roles are separately scoped assignments
+and never grant access to an organization's members or budgets.
 
 One person may hold several organization roles. Actions are performed by people
 but owned by their organizations. Completed commitments and positions therefore
@@ -95,11 +122,12 @@ person's contribution to an approval that is still pending. Concurrent changes
 to one organization position use optimistic locking rather than silently
 overwriting a colleague's action.
 
-Tenant administrators cannot grant organization roles or approve spending. An
-organization cannot remove its last active administrator; audited platform
-recovery is available when no usable administrator remains.
+Platform operators, component maintainers, program curators, and moderators
+cannot grant organization roles or approve spending. An organization cannot
+remove its last active administrator; audited platform recovery is available
+when no usable administrator remains.
 
-### Organization enrollment and continuity
+### Organization participation and continuity
 
 - A claimant searches registration identifiers and normalized legal names
   before creating a provisional organization. Exact identifiers block a
@@ -118,15 +146,17 @@ recovery is available when no usable administrator remains.
   administrators approve later members; disputed ownership uses audited
   operator recovery. Future eHerkenning support may strengthen Dutch
   organization authorization but is not required in v1.
-- An organization administrator requests enrollment in a tenant; a tenant
-  administrator approves, rejects, or suspends only that relationship and never
-  repeats or rewrites the deployment-level identity decision.
-- A rejection includes a private reason and may be corrected and resubmitted.
+- After identity and account-control verification, an organization administrator
+  accepts versioned platform terms to activate participation. No component or
+  program can require a duplicate organization application.
+- A platform-policy suspension records a private detailed reason, an appropriate
+  public operational status, notice, and an appeal without rewriting verified
+  legal identity.
 - Identity verification has no automatic expiry. Legal name, form, registration
   or active-status changes, domain loss, credible fraud reports, succession,
   administrator loss, or material source mismatches trigger `review required`.
   Existing locked commitments survive while new sensitive actions may pause;
-  tenant suspension remains available when risk warrants it.
+  platform participation suspension remains available when risk warrants it.
 - A platform operator can recover an organization with no active administrator
   after verifying the replacement's authority.
 - Legal registration identifiers prevent duplicate creation where available.
@@ -138,21 +168,44 @@ recovery is available when no usable administrator remains.
 - Account deletion anonymizes personal profile data while preserving
   organization-authorized actions and internal audit identifiers.
 
-Identity appeals go to a different deployment operator where possible; tenant
-enrollment reconsideration remains with that tenant. Public profiles show
-factual identity-verification source category and date plus tenant participation
-status, not private evidence or reviewer identity. The interface uses
-“organization identity verified” and “approved participant” and never presents
-verification as procurement approval, credit assessment, technical competence,
-or a trusted-supplier certification.
+Identity and participation appeals go to a different deployment operator where
+possible. Public profiles show factual identity-verification source category and
+date plus active or suspended platform participation, not private evidence or
+reviewer identity. The interface uses “organization identity verified” and
+“active Bloei.me participant” and never presents verification as procurement
+approval, credit assessment, technical competence, or trusted-supplier
+certification.
 
-If a funding organization's tenant enrollment is suspended before delivery
-starts, its pledge is deactivated and its budget reservation is released.
-Restoration requires a new pledge. If suspension happens after delivery starts,
-the locked pledge remains and the organization may only administer that
-commitment: review, vote, replace its representative, or move its reservation.
-It cannot endorse, create another pledge, increase its cap, or join another
-campaign in that tenant until restored.
+If a funding organization is suspended before delivery starts, its pledges are
+deactivated and reservations released. Restoration requires new pledges. If
+suspension happens after delivery starts, locked pledges remain and the
+organization may only administer those commitments: review, vote, replace its
+representative, or move a reservation. It cannot endorse, create another pledge,
+or increase a cap until restored.
+
+### Component identity and stewardship
+
+An `OpenSourceComponent` exists once per deployment. A verified organization may
+claim a stewardship relationship, supported by official source-control access,
+project websites, published governance, release or package authority, trademark
+authorization where relevant, or confirmation through an established official
+channel. A deployment operator resolves duplicates, disputed claims, transfers,
+and succession with protected evidence and public factual metadata.
+
+A component may have one primary maintainer organization, several co-maintainer
+organizations, community governance without an organizational primary, or no
+verified steward yet. Stewardship is versioned with role, scope, status
+`claimed`, `verified`, `disputed`, or `ended`, effective dates, evidence category,
+and audit history. It establishes upstream responsibility, not supplier quality,
+exclusive commercial rights, or guaranteed delivery.
+
+Component maintainers are people authorized within the scope of a stewardship
+organization or exceptionally assigned by the platform while governance is
+resolved. A primary maintainer may initiate a campaign, lead it, select another
+supplier team, confirm official release integration, or remain outside delivery.
+Third-party campaigns remain possible but must distinguish confirmed official
+work from an extension or fork. Every supplier still satisfies ordinary
+organization, representative, and campaign-confirmation requirements.
 
 ### Future multi-approval authorization
 
@@ -180,11 +233,12 @@ when representatives change without unnecessarily publishing personal data.
 
 The public product surface includes:
 
-- Published tenants, projects, proposals, campaigns, terms, versions, supplier
-  teams, lifecycle states, public reasons, evidence, and outcomes
+- Published components, stewardship, programs, proposals, campaigns, terms,
+  versions, supplier teams, lifecycle states, public reasons, evidence, and
+  outcomes
 - An organization's legal name, country and type, appropriate public registry
   identifier, official website, identity-verification source category and date,
-  and approved tenant participation
+  and platform participation status
 - Pledging organizations, their maximum caps and worst-case amounts, projected
   and final contributions, aggregate coverage, and supplier-funded shortfalls
 - Activated amendments and organization-level consent results, including
@@ -200,12 +254,12 @@ authorization requests, and future contract requirements or evidence. A
 funding organization and the supplier team can see that organization's
 settlement-note status; the status is never public.
 
-Tenant administrators privately see enrollment applications, rejection and
-suspension reasons, moderation reports, and their tenant's review queues.
-Pending or rejected enrollment is not published. Approved participation is
-public. When suspension affects a public campaign or prior participation, its
-factual effect may be public, but protected evidence and detailed reasons stay
-private unless a lawful and proportionate public reason is required.
+Platform operators privately see identity and participation review records;
+moderators see only assigned moderation cases. Active or suspended participation
+is public where operationally relevant, but protected evidence and detailed
+reasons stay private unless a lawful and proportionate public reason is
+required. Component-claim and unsuccessful supplier-draft evidence is likewise
+restricted.
 
 Only authorized deployment operators may access raw identity-verification
 evidence, recovery evidence, protected fraud reports, internal actor identifiers,
@@ -213,7 +267,7 @@ and security logs. The application avoids retaining raw identity documents when
 a registry reference is sufficient. Access to protected data is purpose-bound,
 audited, and subject to a defined retention policy.
 
-Ordinary community contributions may use a person's chosen public display name.
+Ordinary discussion contributions may use a person's chosen public display name.
 Official pledges, consents, objections, ballots, supplier actions, and settlement
 actions use the organization as the public actor. A person may opt into a public
 profile, but authorization never requires publication of their legal name.
@@ -245,14 +299,13 @@ Authority stays separated:
 
 - Moderators may label, request correction, quarantine, hide, redact, restore,
   or take no action on content.
-- Project maintainers curate proposals and may request campaign corrections.
-- Tenant administrators govern tenant participation and may invoke existing
-  campaign suspension or forced-failure processes.
-- Deployment operators handle global identity review and exceptional legal,
-  fraud, security, and recovery actions.
+- Component maintainers curate proposals and may request campaign corrections
+  within their assigned scope.
+- Deployment operators govern platform participation and handle exceptional
+  identity, legal, fraud, security, recovery, and forced-failure actions.
 - Funding organizations judge delivery through objections and voting.
 
-Signed-in users can make ordinary community reports. An accessible electronic
+Signed-in users can make ordinary content reports. An accessible electronic
 illegal-content notice accepts a report without an account and requires contact
 details, the exact target, a sufficiently substantiated explanation, and a
 good-faith declaration, subject to legally required exceptions. Bloei.me
@@ -318,8 +371,8 @@ V1 implements reporting, a basic queue, reasoned reversible content decisions,
 public tombstones, notices, a basic appeal, emergency handling, deterministic
 safety checks, and protected audit history. When an AI provider is configured,
 v1 supports warnings, classification, prioritization, and reversible temporary
-quarantine. Configurable tenant policies, mandatory second review, advanced
-automation, trusted reporters, bulk operations, cross-tenant detection,
+quarantine. Configurable component policies, mandatory second review, advanced
+automation, trusted reporters, bulk operations, cross-component detection,
 transparency analytics, and external dispute-resolution integration may follow
 later.
 
@@ -331,22 +384,72 @@ The primary product flow is:
 
 ### Ideas and proposals
 
-- Any signed-in user can privately submit an idea to a tenant or project.
+- Any signed-in user can privately submit an idea against one or more components.
 - Moderators review the submission before it becomes public.
-- Project maintainers turn suitable ideas into outcome-focused public
-  proposals.
-- An identity-verified organization with approved tenant enrollment can add one
-  advisory endorsement to a proposal.
+- A component maintainer in scope turns a suitable idea into an outcome-focused
+  public proposal. Cross-component proposals require confirmation from every
+  maintainer whose official component participation is claimed.
+- An active identity-verified organization can add one advisory endorsement to
+  a proposal.
 - Endorsement is separate from funding and does not bind prioritization.
 - Comments, updates, notifications, flagging, and moderation are native
   Bloei.me functionality.
-- Turning a proposal into a campaign is a deliberate maintainer action, never
-  an automatic result of endorsements.
+- Turning a proposal into a campaign is deliberate supplier and maintainer work,
+  never an automatic result of endorsements.
+
+Ideas use `needs clarification`, `duplicate`, `maintainer review`, `out of
+scope`, or `content rejected` dispositions. A proposal is owned by its component
+curation process rather than its original submitter, while optional public
+attribution remains possible. Proposal states are `open`, `campaign forming`,
+`campaign funding`, `delivered`, `closed`, or `archived`. One proposal may
+produce different or sequential campaigns, but Bloei.me does not allow two
+active funding campaigns to promise the same outcome silently.
+
+### Campaign formation and supplier selection
+
+An eligible supplier may express interest in a public proposal, be invited by a
+component maintainer, suggest terms, assemble a supplier team, and submit a
+private campaign draft. Expressions and unsuccessful drafts are private by
+default; a supplier may publicly show its interest. No organization can pledge
+against a draft.
+
+Several suppliers may prepare private drafts. Maintainers may select one, ask
+for revision, encourage a combined team, split meaningfully different outcomes
+into related proposals, or select none. Bloei.me does not run an automatic
+auction and does not require the lowest price. Suitability may consider scope,
+objective criteria, feasibility, maximum price, timing, public delivery history,
+licensing, capacity, risk, and community need.
+
+The selected campaign publishes a concise selection and upstream rationale
+without naming unsuccessful suppliers or exposing their drafts. Selection is
+component curation rather than a claim of procurement compliance or supplier
+certification. A supplier may request platform review of undisclosed conflicts,
+discrimination, policy breach, or misrepresentation, but has no automatic right
+to publication.
+
+A primary maintainer may form and lead a campaign directly without a mandatory
+supplier competition. The page discloses when a steward is also a supplier.
+Affiliation is expected and transparent rather than prohibited. V1 permits one
+authorized component-maintainer approval; a future four-eyes policy may require
+a distinct internal approver, but no unrelated external technical reviewer.
+
+Before publication, the lead and every co-supplier confirm their participation,
+public naming, representative authority, combined ceiling, external allocation
+boundary, licensing position, and campaign responsibilities. Every component
+whose official modification or release is promised has the required maintainer
+confirmation. A campaign with uncertain upstream acceptance must be labelled as
+an extension, fork, or unconfirmed contribution rather than promise an official
+release.
+
+Before the first pledge, a public campaign may be corrected, withdrawn, or
+replaced with public version history and reason. After the first pledge, the
+existing amendment protections apply. Competing suppliers cannot replace the
+published team by republishing around funder consent.
 
 ### Campaign terms
 
-Every published campaign identifies exactly one identity-verified and tenant-
-approved **lead supplier** and may identify any number of equally eligible
+Every published campaign identifies exactly one identity-verified, active
+**lead supplier** and may identify any number of equally eligible
 **co-suppliers**. The lead supplier is the single accountable contact for
 campaign administration, coordinates the shared delivery, and submits it to
 Bloei.me. Co-suppliers publicly confirm their participation before publication.
@@ -409,8 +512,8 @@ uses a formal campaign amendment:
 
 1. The lead supplier drafts a public before-and-after description, rationale,
    revised terms, and budget effect.
-2. A project maintainer confirms that the proposal is a genuine scope or terms
-   change rather than an ordinary supplier overrun.
+2. An in-scope component maintainer confirms that the proposal is a genuine
+   scope or terms change rather than an ordinary supplier overrun.
 3. New pledges and pledge-cap increases pause while consent is open.
 4. Every existing funding organization receives a fresh consent window and
    must explicitly accept. Silence and rejection both withhold consent.
@@ -425,8 +528,9 @@ uses a formal campaign amendment:
 The consent window defaults to 14 calendar days and may be set from 7–30 days.
 Only one amendment may be open for consent; additional drafts do not affect the
 campaign. All continuing and newly added co-suppliers confirm participation
-before the project maintainer opens funder consent. An organization may change
-or withdraw its position until activation. The lead may withdraw the proposal.
+before an in-scope component maintainer opens funder consent. An organization
+may change or withdraw its position until activation. The lead may withdraw the
+proposal.
 The final valid consent activates the amendment immediately, so its confirmation
 warns that it may be decisive and irreversible.
 
@@ -440,9 +544,9 @@ passed delivery deadline only marks the campaign overdue. A supplier or forced-
 failure suspension pauses the amendment countdown.
 
 Clarifications are public and notified to existing funders. A funder may
-challenge one as material; a non-conflicted maintainer or tenant administrator
-then records whether it remains a clarification or must be proposed as an
-amendment. Activated amendments form an immutable version chain with their
+challenge one as material; a non-conflicted component maintainer or platform
+operator then records whether it remains a clarification or must be proposed as
+an amendment. Activated amendments form an immutable version chain with their
 exact organization consents.
 
 Adding or removing a co-supplier and replacing the lead supplier are material
@@ -473,9 +577,10 @@ presentation property rather than another lifecycle state.
 ### Time, deadlines, and pauses
 
 Bloei.me stores authoritative instants in UTC. Every campaign has one immutable
-IANA timezone inherited initially from its tenant. Public dates name that
-timezone and may additionally show the viewer's local equivalent. Server and
-database time govern actions; browser countdowns are informative only.
+IANA timezone defaulted initially from deployment configuration. Public dates
+name that timezone and may additionally show the viewer's local equivalent.
+Server and database time govern actions; browser countdowns are informative
+only.
 
 Funding and delivery deadlines are exact local date-times. Interaction periods
 use calendar days in the campaign timezone and close at the same local clock
@@ -518,9 +623,10 @@ authoritative; email delivery failures are recorded but never pause time.
 
 ### Campaign permissions and conflicts
 
-Project maintainers curate proposals, approve campaign publication, and confirm
-that a proposed amendment is genuinely material. Lead-supplier representatives
-edit drafts, invite co-suppliers, start delivery, propose amendments, submit
+Component maintainers curate in-scope proposals, approve campaign publication
+and official upstream claims, and confirm that a proposed amendment is
+genuinely material. Lead-supplier representatives edit drafts, invite
+co-suppliers, start delivery, propose amendments, submit
 evidence and final price, respond to objections, request voting, declare
 failure, and complete settlement notes. Co-supplier representatives confirm or
 decline participation but cannot administer the campaign. Funding
@@ -531,10 +637,13 @@ position, and ballot.
 Supplier organizations are ineligible to pledge to their own campaign and
 therefore never review or vote on their own delivery. A person who represents a
 campaign supplier cannot act for a funder on that campaign. Maintainer and
-supplier affiliation is permitted when publicly disclosed, but publication or
-amendment validation then requires another non-conflicted maintainer or tenant
-administrator. Exceptional operator actions never impersonate an organization
-and require a reason and immutable audit event.
+supplier affiliation is permitted when publicly disclosed. Steward-led
+publication uses the applicable internal approval policy and names the
+affiliation; v1 requires one authorized approval and future four-eyes policy may
+require a distinct internal approver, but not an unrelated external reviewer. A
+personally conflicted maintainer does not validate a disputed amendment.
+Exceptional operator actions never impersonate an organization and require a
+reason and immutable audit event.
 
 ## Organization budgets
 
@@ -550,7 +659,8 @@ An organization may define multiple budgets. Each budget has:
 - Net total amount
 - Valid-from and expiration dates
 - Administrative processing buffer, defaulting to 14 days
-- An explicit allowlist of tenants in which the budget may be used
+- An optional allowlist of components whose formal campaign targets may use the
+  budget; otherwise it is available network-wide
 - Authorized funding representatives
 - Lifecycle status and append-only history
 
@@ -564,7 +674,8 @@ A budget can back a pledge only when:
 
 - The budget and campaign currencies match.
 - The budget is active.
-- The campaign's tenant is in the budget's allowlist.
+- Every formal campaign target is allowed by the budget's component scope, when
+  such a scope is configured.
 - The funding representative is authorized to use it.
 - Its available amount covers the pledge's complete maximum exposure.
 - Its expiry covers the campaign's ultimate delivery date, review period, and
@@ -601,9 +712,9 @@ use.
 A budget total may be increased. It may only be reduced when the new total
 still covers all consumed and reserved amounts. Expiration can be extended; it
 can only be shortened when every active reservation remains eligible. Budgets
-with financial history are archived rather than deleted. Adding a tenant to a
-budget allowlist enables future use there. Removing one blocks new reservations
-but preserves existing ones and their history.
+with financial history are archived rather than deleted. Adding a component to
+a budget scope enables future use for matching campaigns. Removing one blocks
+new reservations but preserves existing ones and their history.
 
 If delivery becomes overdue, budget managers receive escalating warnings and
 may move the private reservation to another eligible budget without modifying
@@ -642,7 +753,7 @@ existing pledge data.
 - Representative identity, budget information, and settlement-note completion
   are private.
 
-V1 uses a trust-based flow: the identity-verified, tenant-approved organization
+V1 uses a trust-based flow: the identity-verified, active organization
 appoints its roles and an authorized representative confirms authority to
 commit the selected budget. Bloei.me does not require or validate a signed
 contract. Verification and approval do not prove statutory authority,
@@ -670,7 +781,7 @@ If the latest funding date arrives before automatic or manual start, the
 campaign expires. Once delivery has started, that deadline no longer closes
 pledging; new organizations may continue to join until delivery submission.
 
-New identity-verified organizations with approved enrollment may pledge
+New identity-verified active organizations may pledge
 throughout delivery, and existing organizations may increase their caps. Each
 change updates the projected allocation and its transactional budget
 reservations. Joining a campaign that is already delivering requires an
@@ -832,27 +943,28 @@ or corrective work follows a separate process and preserves settlement history.
 
 ### Suspension, cancellation, and failure
 
-Before delivery starts, the lead supplier, project maintainer, or tenant
-administrator may cancel a campaign with a public reason. All pledges and
-reservations release immediately.
+Before delivery starts, the lead supplier or an in-scope component maintainer
+may cancel a campaign with a public reason. All pledges and reservations release
+immediately.
 
 After delivery starts, cancellation is unavailable. The lead supplier may
-publicly declare failure at any time. A tenant administrator may propose forced
-failure with a public reason; this opens a seven-day lead-supplier response
-period and pauses new pledges, cap increases, review, voting, and settlement.
-The administrator may withdraw or confirm failure afterward. A deployment
-operator may bypass the delay for a legal, fraud, or security emergency.
+publicly declare failure at any time. A non-conflicted in-scope component
+maintainer or deployment operator may propose forced failure with a public
+reason; this opens a seven-day lead-supplier response period and pauses new
+pledges, cap increases, review, voting, and settlement. The proposer may withdraw
+or confirm failure afterward. A deployment operator may bypass the delay for a
+legal, fraud, or security emergency.
 Failure creates no settlement notes, releases reservations, and preserves the
 public outcome and produced open-source work.
 
-If any supplier organization loses verified identity or its tenant enrollment
-is suspended, the campaign is suspended. New pledges, cap increases, delivery
+If any supplier organization loses verified identity or active platform
+participation, the campaign is suspended. New pledges, cap increases, delivery
 submission, review, voting, and settlement are blocked, and active review or
 voting countdowns pause. Existing commitments remain reserved. Restoration
 resumes the remaining timer duration; the original funding and delivery
-deadlines do not change. The tenant administrator may instead use the public
-failure process. Verification or approval loss after accepted settlement does
-not alter that settlement.
+deadlines do not change. An in-scope component maintainer or deployment operator
+may instead use the public failure process. Verification or participation loss
+after accepted settlement does not alter that settlement.
 
 ### Settlement notes
 
@@ -907,7 +1019,7 @@ audit event rather than erasing the record.
 
 ## Legal and contracting boundary
 
-The initial pilot relies on identity-verified, tenant-approved organizations and
+The initial pilot relies on identity-verified, active organizations and
 authorized representatives rather than platform-required signed agreements.
 Suppliers knowingly rely on these operational commitments without Bloei.me
 guaranteeing enforceability or payment. The payee-free settlement note remains
@@ -934,8 +1046,9 @@ assumptions and review questions are maintained in [legal.md](legal.md).
 - Dutch and English message bundles
 - Locally hosted, progressively enhanced, WCAG 2.2 AA user interface
 
-Modules cover tenancy, identity, organizations, budgets, proposals, campaigns,
-pledges, delivery, settlement, moderation, notifications, and auditing.
+Modules cover identity, organizations, components, programs, budgets,
+proposals, campaigns, pledges, delivery, settlement, moderation, notifications,
+and auditing.
 
 Core value types include:
 
@@ -947,7 +1060,12 @@ Core value types include:
 - `CampaignVisibility`
 - `OrganizationIdentityStatus(provisional, verified, reviewRequired, closed,
   merged)`
-- `TenantEnrollmentStatus(pending, approved, rejected, suspended)`
+- `PlatformParticipationStatus(active, suspended, closed)`
+- `OpenSourceComponent` identity, hierarchy, source locations, licences, and
+  versioned stewardship
+- Proposal and campaign component targets with relationship, upstream status,
+  promised release, and maintainer confirmation
+- Optional programs as non-isolating curated collections
 - Organization-owned membership roles
 - Versioned organization authorization policies and requests, with v1 enforcing
   one immediate approval
@@ -958,7 +1076,7 @@ Core value types include:
 - `AcceptancePolicy(reviewDays, approvalThresholdBps)`
 - `OrganizationBallot(accept, reject)` with deemed acceptance when absent
 - `BudgetValidity(validFrom, expiresOn, processingBufferDays)`
-- Explicit tenant allowlists on budgets
+- Optional explicit component scopes on budgets
 - Primary campaign lifecycle states plus orthogonal hold and overdue conditions
 - Settlement lines for organizations and supplier contributions
 - `SettlementNoteStatus(open, completed)` controlled by the lead supplier
@@ -969,10 +1087,10 @@ Core value types include:
 - Provider-neutral `ModerationAssessment` values and deterministic policy
   decisions, without model access to domain commands
 
-PostgreSQL tenant isolation is enforced in the database where applicable and
-backed by application-level authorization. State-changing workflows use
-transactions, optimistic or explicit locking where required, and append-only
-audit events.
+PostgreSQL authorization follows explicit organization, component, program,
+campaign, and moderation-case scopes and is backed by application-level checks.
+State-changing workflows use transactions, optimistic or explicit locking where
+required, and append-only audit events.
 
 ### Evidence, jobs, and notifications
 
@@ -989,7 +1107,7 @@ audit events.
 
 ### Interfaces and future integrations
 
-Stable public pages cover tenants, projects, proposals, campaigns,
+Stable public pages cover components, programs, proposals, campaigns,
 organizations, evidence, and settlements. Private management pages cover
 budgets, moderation, verification, and settlement-note completion.
 
@@ -1006,20 +1124,21 @@ is optional and campaign behavior never depends on a particular model.
 - Keep OIDC and SMTP configurable external services.
 - Include readiness and health endpoints, structured logs, metrics, database
   migrations, backup guidance, and reverse-proxy documentation.
-- Keep tenant provisioning and hosted commercial agreements operator-managed
+- Keep deployment provisioning and hosted commercial agreements operator-managed
   in v1.
 
 ## Implementation sequence
 
 1. **Foundation:** build, license, CI, changelog, database migrations, module
    boundaries, and bilingual design system.
-2. **Tenancy and identity:** OIDC, tenant routing, branding, organization
-   identity verification, account control, tenant approval, roles, and auditing.
+2. **Identity and component catalog:** OIDC, organization identity verification,
+   account control, platform participation, component identity, stewardship,
+   roles, and auditing.
 3. **Budgets:** budget administration, spender authorization, ledger,
    eligibility, transactional reservations, transfers, and inline creation.
-4. **Community workflow:** projects, private ideas, proposals, endorsements,
-   comments, reporting, reversible moderation, optional AI assistance, appeals,
-   and notifications.
+4. **Public workflow:** components, optional programs, private ideas, proposals,
+   endorsements, campaign formation, supplier selection, comments, reporting,
+   reversible moderation, optional AI assistance, appeals, and notifications.
 5. **Funding:** supplier teams, campaign versions and amendments, deadlines,
    attestations, budget-backed pledges, fair allocation, and atomic campaign
    start.
@@ -1073,10 +1192,13 @@ without explicit permission.
   withdrawal, supersession on resubmission, required rejection reasons,
   moderation without position loss, and atomic settlement after acceptance.
 - Test authoritative-source identity verification, initial account control,
-  tenant approval, rejection, resubmission, suspension, restoration, event-
-  driven review, appeals, role replacement, administrator recovery, minimal
-  evidence retention, and audited duplicate merges.
-- Test tenant-scoped budget allowlists across multiple approved enrollments.
+  platform activation, suspension, restoration, event-driven review, appeals,
+  role replacement, administrator recovery, minimal evidence retention, and
+  audited duplicate merges.
+- Test component identity, hierarchy, stewardship claims, transfers, forks,
+  official-release confirmation, campaign targets, and program curation.
+- Test optional component-scoped budgets against single- and multi-component
+  campaigns.
 - Test campaign cancellation, supplier suspension with paused timers,
   voluntary failure, forced-failure notice, and emergency bypass.
 - Test self-funded completion and partial settlements with a supplier-
@@ -1093,7 +1215,7 @@ without explicit permission.
   policy versioning, temporary quarantine and restoration, human overrides,
   provider failure, disabled-AI operation, and the prohibition on model-driven
   domain commands.
-- Verify tenant isolation, role authorization, CSRF protection, content
+- Verify object-scoped authorization, role boundaries, CSRF protection, content
   sanitization, and image validation.
 - Run PostgreSQL integration and migration tests with Testcontainers.
 - Run Dutch and English browser journeys and automated WCAG 2.2 AA checks.
@@ -1102,8 +1224,8 @@ without explicit permission.
 
 The Epistola pilot must:
 
-- Receive budget-backed pledges from at least three identity-verified,
-  tenant-approved organizations.
+- Receive budget-backed pledges from at least three identity-verified, active
+  organizations.
 - Preserve the exact trust-based authority confirmation for each pilot pledge.
 - Reject a concurrent or direct budget overcommit.
 - Start automatically when coverage reaches 100%.
@@ -1121,22 +1243,22 @@ The Epistola pilot must:
 
 - `bloei.me` is the controlled product domain; trademark registration is out of
   scope.
-- Epistola is the first tenant, but the core contains no Epistola-specific or
-  GitHub-specific concepts.
+- Epistola supplies the first components and pilot campaign, but the core
+  contains no Epistola-specific or GitHub-specific concepts.
 - Published campaigns and limited moderation tombstones are public in v1.
   Budgets, cost centers, representatives, protected moderation case data, and
   settlement-note completion remain private.
 - Every pledge requires one budget in v1; the data model prepares for several
   budgets per pledge later.
-- Organizations and budgets are global within one deployment, while tenant
-  enrollment and budget eligibility remain explicit.
+- Organizations, components, and budgets are canonical within one deployment;
+  campaign and budget eligibility remain explicit.
 - Bloei.me manages commitments and settlement evidence, not bank funds or
   statutory accounts.
-- V1 trusts identity-verified, tenant-approved organizations and authorized
+- V1 trusts identity-verified, active organizations and authorized
   representatives without requiring signed contracts; it makes no legal,
   procurement, supplier-quality, or payment guarantee.
 - Each campaign has one lead supplier and may have co-suppliers, but Bloei.me
   does not divide their work, price, settlement, or external invoices.
 - Payees, payments, invoice administration, advance or milestone invoicing, tax
-  calculation, debt collection, tenant billing, campaign fees, support
-  management, and GitHub synchronization are outside v1.
+  calculation, debt collection, hosted subscription billing, campaign fees,
+  support management, and GitHub synchronization are outside v1.
