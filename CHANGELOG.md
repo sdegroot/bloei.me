@@ -11,6 +11,8 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 - Initial product and implementation plan.
 - Initial product and architecture decision register.
+- End-to-end product scenarios covering organization onboarding, budgeting,
+  funding, delivery, review, and settlement.
 
 ### Changed
 

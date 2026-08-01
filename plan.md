@@ -6,7 +6,8 @@ Last updated: 2026-08-01
 
 This document describes the agreed product and implementation direction for
 Bloei.me. The reasons behind the choices are recorded in
-[decisions.md](decisions.md).
+[decisions.md](decisions.md). Concrete end-to-end journeys are documented in
+[scenarios.md](scenarios.md).
 
 ## Product summary
 
