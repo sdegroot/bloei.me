@@ -130,8 +130,16 @@ The primary product flow is:
 
 ### Campaign terms
 
-Every published campaign identifies one verified supplier organization that
-is responsible for delivery and external invoicing. It records:
+Every published campaign identifies exactly one verified **lead supplier** and
+may identify any number of verified **co-suppliers**. The lead supplier is the
+single accountable contact for campaign administration, coordinates the shared
+delivery, and submits it to Bloei.me. Co-suppliers publicly confirm their
+participation before publication.
+
+The campaign promises one combined outcome. Bloei.me does not assign scope,
+work packages, prices, settlement shares, or invoices to individual suppliers;
+the supplier team arranges those matters outside the platform. A campaign
+records:
 
 - One ISO-4217 currency and a maximum net price excluding tax
 - Outcome and scope
@@ -145,10 +153,41 @@ is responsible for delivery and external invoicing. It records:
 - A configurable acceptance threshold between 50% and 100%, defaulting to
   two-thirds; formal acceptance voting has no quorum
 
-The published price ceiling, scope, criteria, dates, supplier, and governance
-settings become immutable after the first pledge. A material change creates a
-new campaign version, supersedes the old version, releases its reservations,
-and requires every organization to pledge again.
+The published price ceiling, scope, criteria, dates, supplier team, and
+governance settings become protected after the first pledge. They can change
+only through the unanimous amendment process below.
+
+### Clarifications, additions, and material amendments
+
+A clarification may explain existing terms but cannot alter scope, acceptance
+criteria, price exposure, dates, supplier participation, or another obligation.
+It is appended publicly with an audit trail and requires no funder consent.
+Optional additional work uses a separate linked campaign so that the original
+outcome and commitments remain independent.
+
+A material change is permitted only before the first delivery submission and
+uses a formal campaign amendment:
+
+1. The lead supplier drafts a public before-and-after description, rationale,
+   revised terms, and budget effect.
+2. A project maintainer confirms that the proposal is a genuine scope or terms
+   change rather than an ordinary supplier overrun.
+3. New pledges and pledge-cap increases pause while consent is open.
+4. Every existing funding organization receives a fresh consent window and
+   must explicitly accept. Silence and rejection both withhold consent.
+5. Bloei.me revalidates every affected budget. Any increased maximum exposure
+   is reserved atomically, and changed dates must remain within budget validity.
+6. The amendment becomes the canonical campaign version only if every funding
+   organization consents and every reservation succeeds. Their existing
+   pledges then carry to that version with the recorded consent.
+7. Otherwise the amendment expires, the original version remains binding, and
+   pledging resumes under its original terms.
+
+Adding or removing a co-supplier and replacing the lead supplier are material
+changes. A supplier cannot use an amendment to pass on an ordinary overrun;
+without changed scope, the published maximum remains the supplier team's risk.
+The lead supplier may continue work at its own risk during consent but cannot
+submit final delivery until the amendment closes.
 
 Published campaigns are public in v1. Visibility and inherited access policy
 remain explicit domain concepts so private campaigns can be introduced later
@@ -251,7 +290,7 @@ existing pledge data.
 - Its worst-case monetary exposure is that percentage of the published maximum
   price, and the organization's budget reserves that complete amount.
 - Confirmation explains that the campaign starts automatically at 100%
-  coverage, may be started earlier by the supplier, and locks the commitment
+  coverage, may be started earlier by the lead supplier, and locks the commitment
   when delivery starts.
 - The public record shows the organization, maximum cap, projected share,
   worst-case amount, campaign activity, and final net settlement amount.
@@ -262,10 +301,10 @@ Before delivery starts, an organization can increase, reduce, move, or
 withdraw its pledge. When aggregate caps reach 100%, the campaign atomically
 starts delivery without reconfirmation.
 
-Below 100%, the supplier may manually start delivery at any coverage level,
+Below 100%, the lead supplier may manually start delivery at any coverage level,
 including zero. This action is irreversible and publicly records the coverage
-at which the supplier accepted responsibility for the uncovered share. Once
-delivery starts, existing pledges can no longer be reduced or withdrawn.
+at which the supplier team accepted responsibility for the uncovered share.
+Once delivery starts, existing pledges can no longer be reduced or withdrawn.
 
 If the latest funding date arrives before automatic or manual start, the
 campaign expires. Once delivery has started, that deadline no longer closes
@@ -279,8 +318,8 @@ locks immediately.
 
 An exceptional post-start reduction requires a deployment operator, a public
 reason, and an immutable audit event. Any shortfall after work starts is the
-supplier's risk. A campaign started below full coverage prominently shows the
-supplier's uncovered percentage and worst-case monetary exposure.
+supplier team's risk. A campaign started below full coverage prominently shows
+the supplier team's uncovered percentage and worst-case monetary exposure.
 
 Public campaign pricing shows the maximum price, aggregate coverage, committed
 amount at the ceiling, current supplier-funded gap, and the coverage captured
@@ -290,7 +329,7 @@ at 100%, even if the sum of organization caps is higher.
 
 ### Fair-share calculation
 
-Allocation uses max-min fair water filling against the supplier's final price:
+Allocation uses max-min fair water filling against the campaign's final price:
 
 1. Divide the remaining target equally among participating organizations.
 2. Lock any organization whose maximum cap is below that equal share.
@@ -302,26 +341,26 @@ For caps of 10%, 30%, 100%, and 100%, the allocation is 10%, 30%, 30%, and
 becomes 10%, 22.5%, 22.5%, 22.5%, and 22.5%.
 
 When combined caps reach at least 100%, water filling allocates the complete
-final price. When a supplier starts and delivers below full coverage, every
-organization reaches at most its cap and the supplier absorbs the unallocated
-remainder.
+final price. When the lead supplier starts and delivers below full coverage,
+every organization reaches at most its cap and the supplier team absorbs the
+unallocated remainder.
 
 Pledge caps are stored in basis points. Monetary values are stored in currency
 minor units. Rounding is deterministic and never exceeds the exact maximum
-amount displayed during confirmation. The supplier bears any unavoidable
-fractional-currency shortfall. The supplier also absorbs delivery overruns and
-retains any delivery efficiency margin.
+amount displayed during confirmation. The supplier team bears any unavoidable
+fractional-currency shortfall and delivery overruns, and retains any delivery
+efficiency margin.
 
 ## Delivery, review, and settlement
 
 ### Delivery evidence
 
-The supplier publishes sanitized text, external links, and raster images as
-evidence. V1 does not accept arbitrary document uploads.
+The lead supplier publishes the supplier team's sanitized text, external links,
+and raster images as evidence. V1 does not accept arbitrary document uploads.
 
-With the first delivery submission, the supplier declares a final net price
+With the first delivery submission, the lead supplier declares a final net price
 from zero through the published maximum. Bloei.me does not require an itemized
-cost statement or audit: the supplier is free to charge less, while the
+cost statement or audit: the supplier team is free to charge less, while the
 published ceiling remains the funders' guaranteed worst case.
 
 The first delivery submission atomically:
@@ -343,15 +382,16 @@ price but creates no funder review, settlement, or invoice obligations.
 - If nobody objects, delivery is automatically accepted when the review period
   ends.
 - An objection must identify an unmet acceptance criterion.
-- The supplier may correct the work and resubmit, restarting the review period.
+- The lead supplier may correct the work and resubmit, restarting the review
+  period.
 - No independent reviewer is required.
 
 A declared price within the previously accepted ceiling is not itself grounds
 for an objection. Bloei.me does not assess the supplier's internal costs or
 margin.
 
-If the supplier contests a maintained objection, Bloei.me opens a fresh formal
-acceptance window equal to the campaign's configured review period:
+If the lead supplier contests a maintained objection, Bloei.me opens a fresh
+formal acceptance window equal to the campaign's configured review period:
 
 - The organizations frozen at the first delivery submission are eligible.
 - Each organization has one ballot with `accept` or `reject`; the maintained
@@ -370,26 +410,26 @@ acceptance window equal to the campaign's configured review period:
   does not pause the window.
 
 If the threshold passes, delivery is accepted. Otherwise it returns to revision
-without changing the locked price, allocations, or pledges. The supplier may
-revise and resubmit without an automatic attempt limit, or declare the campaign
-failed.
+without changing the locked price, allocations, or pledges. The lead supplier
+may revise and resubmit without an automatic attempt limit, or declare the
+campaign failed.
 
 ### Suspension, cancellation, and failure
 
-Before delivery starts, the supplier, project maintainer, or tenant
+Before delivery starts, the lead supplier, project maintainer, or tenant
 administrator may cancel a campaign with a public reason. All pledges and
 reservations release immediately.
 
-After delivery starts, cancellation is unavailable. The supplier may publicly
-declare failure at any time. A tenant administrator may propose forced failure
-with a public reason; this opens a seven-day supplier response period and pauses
-new pledges, cap increases, review, voting, and settlement. The administrator
-may withdraw or confirm failure afterward. A deployment operator may bypass
-the delay for a legal, fraud, or security emergency. Failure creates no
-settlement or invoices, releases reservations, and preserves the public outcome
-and produced open-source work.
+After delivery starts, cancellation is unavailable. The lead supplier may
+publicly declare failure at any time. A tenant administrator may propose forced
+failure with a public reason; this opens a seven-day lead-supplier response
+period and pauses new pledges, cap increases, review, voting, and settlement.
+The administrator may withdraw or confirm failure afterward. A deployment
+operator may bypass the delay for a legal, fraud, or security emergency.
+Failure creates no settlement or invoices, releases reservations, and preserves
+the public outcome and produced open-source work.
 
-If the supplier organization loses tenant verification, the campaign is
+If any supplier organization loses tenant verification, the campaign is
 suspended. New pledges, cap increases, delivery submission, review, voting, and
 settlement are blocked, and active review or voting countdowns pause. Existing
 commitments remain reserved. Restoration resumes the remaining timer duration;
@@ -410,21 +450,27 @@ Bloei.me:
 
 - Publishes final organization shares and net amounts
 - Exports authorized settlement data as CSV and JSON
-- Lets the supplier privately record `not invoiced`, `invoiced`, `disputed`,
-  `paid`, and `closed unpaid` states, with an optional private note and external
-  reference
+- Lets the lead supplier privately record an aggregate `not invoiced`,
+  `partially invoiced`, `fully invoiced`, `disputed`, `paid`, or
+  `closed unpaid` state per funding organization, with private notes and
+  external references
 - Does not collect money
 - Does not generate tax invoices
 - Does not calculate tax
 
-The supplier invoices every funding organization externally after accepted
-delivery and adds legally required VAT or other tax. Advance and milestone
-invoicing are not supported in v1. Invoice status never changes the immutable
-settlement or consumed budget, and v1 does not track partial payments,
-collections, or dispute resolution. Normal transitions are `not invoiced` to
-`invoiced`, `invoiced` to `disputed`, `paid`, or `closed unpaid`, and `disputed`
-back to `invoiced` or onward to either terminal state. Every transition is
-historical; correcting a terminal status requires an audited operator action.
+The supplier team decides externally whether the lead supplier invoices the
+complete amount or several suppliers issue separate invoices. Bloei.me records
+only the funding organization's total settlement obligation and never assigns
+amounts to suppliers. The combined external invoices must not exceed that
+obligation. Applicable VAT or other tax is added externally.
+
+Advance and milestone invoicing are not supported in v1. Aggregate invoice
+status and references provide operational visibility without modelling the
+supplier team's commercial arrangement. Status never changes the immutable
+settlement or consumed budget, and v1 does not track supplier-level invoice
+amounts, partial payments, collections, or dispute resolution. Every transition
+is historical; correcting a terminal status requires an audited operator
+action.
 
 An unsuccessful campaign creates no settlement or invoice. The failure,
 evidence, and produced open-source work remain visible.
@@ -462,6 +508,8 @@ Core value types include:
 - `Money(currency, minorUnits)`
 - `PercentageCap(basisPoints)`
 - `CampaignPrice(maximum, finalPrice?)`
+- `CampaignSupplierTeam(leadSupplier, coSuppliers)` without work or price
+  allocation
 - `CampaignVisibility`
 - `OrganizationEnrollmentStatus(pending, verified, rejected, suspended)`
 - Organization-owned membership roles
@@ -473,7 +521,9 @@ Core value types include:
 - Campaign states for supplier suspension, proposed failure, revision required,
   and self-funded delivery
 - Settlement lines for organizations and supplier contributions
-- `InvoiceStatus(notInvoiced, invoiced, disputed, paid, closedUnpaid)`
+- `InvoiceStatus(notInvoiced, partiallyInvoiced, fullyInvoiced, disputed,
+  paid, closedUnpaid)`
+- Versioned campaign amendments with explicit organization consents
 - Versioned pledge attestation
 
 PostgreSQL tenant isolation is enforced in the database where applicable and
@@ -522,8 +572,9 @@ export, and accounting integrations.
    eligibility, transactional reservations, transfers, and inline creation.
 4. **Community workflow:** projects, private ideas, proposals, endorsements,
    comments, moderation, and notifications.
-5. **Funding:** campaign versions, deadlines, attestations, budget-backed
-   pledges, fair allocation, and atomic campaign start.
+5. **Funding:** supplier teams, campaign versions and amendments, deadlines,
+   attestations, budget-backed pledges, fair allocation, and atomic campaign
+   start.
 6. **Delivery and settlement:** evidence, allocation freeze, review,
    objections, voting, budget consumption, exports, and invoice statuses.
 7. **Hardening and pilot:** security, concurrency, accessibility, operational
@@ -547,8 +598,11 @@ without explicit permission.
   immutable ledger history.
 - Enforce one budget allocation per pledge in v1 while testing the multi-row
   persistence model.
-- Test campaign versioning, deadlines, re-pledging, operator exceptions, and
-  overdue delivery.
+- Test campaign versioning, unanimous explicit amendment consent, non-response,
+  failed budget revalidation, deadlines, operator exceptions, and overdue
+  delivery.
+- Test lead- and co-supplier verification, confirmation, permissions, and
+  material supplier-team changes without modelling work allocation.
 - Test automatic start at full coverage and irreversible manual start at zero,
   partial, and full coverage.
 - Reject a final price above the ceiling and every attempt to alter it after
@@ -564,8 +618,9 @@ without explicit permission.
   voluntary failure, forced-failure notice, and emergency bypass.
 - Test self-funded completion and partial settlements with a supplier-
   contribution line.
-- Test valid and invalid private invoice-state transitions and audited terminal
-  corrections without changing settlement or budget consumption.
+- Test aggregate invoice-state transitions, multiple external references, and
+  audited terminal corrections without assigning supplier amounts or changing
+  settlement and budget consumption.
 - Test identity snapshots, personal anonymization, merge redirects, and
   exceptional redaction tombstones.
 - Verify tenant isolation, role authorization, CSRF protection, content
@@ -602,6 +657,8 @@ The Epistola pilot must:
   enrollment and budget eligibility remain explicit.
 - Bloei.me manages commitments and settlement evidence, not bank funds or
   statutory accounts.
+- Each campaign has one lead supplier and may have co-suppliers, but Bloei.me
+  does not divide their work, price, settlement, or external invoices.
 - Payments, advance invoicing, milestone invoicing, tax calculation, debt
   collection, tenant billing, campaign fees, support management, and GitHub
   synchronization are outside v1.

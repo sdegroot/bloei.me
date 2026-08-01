@@ -15,6 +15,10 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   funding, delivery, review, and settlement.
 - Edge-case scenarios for tenant enrollment, organizational continuity,
   suspension, failure, negative consent, and historical integrity.
+- Scope-change scenarios covering clarification, linked additions, unanimous
+  amendments, non-response, and budget revalidation.
+- Multi-supplier scenarios covering supplier-team creation, replacement,
+  combined delivery, and externally arranged invoicing.
 
 ### Changed
 
@@ -30,3 +34,9 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   states.
 - Defined historical identity snapshots, personal anonymization, duplicate
   recovery, and exceptional audited redaction.
+- Replaced mandatory re-pledging after every material change with explicit
+  unanimous campaign amendments backed by successful budget revalidation.
+- Allowed one lead supplier and optional co-suppliers per campaign while
+  keeping work, price, and invoice allocation outside Bloei.me.
+- Made invoice administration aggregate per funding organization so several
+  external supplier invoices do not create platform-level supplier allocations.

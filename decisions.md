@@ -114,8 +114,7 @@ superseded.
 ## D-010 — Use one supplier and a fixed net campaign price
 
 - **Date:** 2026-08-01
-- **Status:** Partially superseded by D-035; the one-supplier decision remains
-  accepted
+- **Status:** Superseded by D-035 for price and D-049 for supplier participation
 - **Decision:** Each campaign names one verified supplier organization and one
   fixed net price in a single ISO currency.
 - **Why:** One accountable delivery and invoicing party keeps settlement
@@ -171,7 +170,7 @@ superseded.
 ## D-015 — Freeze campaign terms after the first pledge
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Superseded by D-048
 - **Decision:** Material campaign terms become immutable after the first
   pledge. A material change creates a new version and requires re-pledging.
 - **Why:** An organization must know that the scope, price, dates, supplier,
@@ -522,7 +521,7 @@ superseded.
 ## D-044 — Pause campaigns when supplier verification is lost
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Accepted and expanded by D-049
 - **Decision:** Supplier suspension blocks pledging, delivery, review, voting,
   and settlement while preserving existing commitments.
 - **Why:** Bloei.me must not settle with an unverified supplier, but immediate
@@ -547,7 +546,7 @@ superseded.
 ## D-046 — Keep external invoice administration deliberately small
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Accepted and expanded by D-049
 - **Decision:** Track `not invoiced`, `invoiced`, `disputed`, `paid`, and
   `closed unpaid` privately, with an optional note and external reference.
 - **Why:** Suppliers need basic operational visibility without turning Bloei.me
@@ -569,3 +568,46 @@ superseded.
 - **Consequences:** Renames and audited merges link historical snapshots to the
   current canonical organization. Redaction never silently erases the existence
   of a published record.
+
+## D-048 — Require unanimous explicit consent for material amendments
+
+- **Date:** 2026-08-01
+- **Status:** Accepted; supersedes D-015
+- **Decision:** Protect material campaign terms after the first pledge, but
+  permit an amendment before the first delivery submission when every existing
+  funding organization explicitly consents and every affected budget remains
+  eligible. Silence means no consent.
+- **Why:** Scope, cost, dates, and delivery assumptions can genuinely change
+  during open-source work. Automatically cancelling every commitment is
+  unnecessarily disruptive, while negative consent is inappropriate when an
+  organization is being asked to accept a different obligation.
+- **Consequences:** Amendments show the before-and-after terms and rationale,
+  pause new pledges and cap increases, revalidate dates, and atomically reserve
+  any increased exposure. Accepted pledges carry to the new version only with
+  recorded consent. If one organization rejects, does not respond, or cannot
+  reserve the additional exposure, the original terms remain binding. Mere
+  clarifications need no consent; optional additions use linked campaigns; an
+  ordinary cost overrun remains the supplier team's risk.
+
+## D-049 — Use one lead supplier with optional co-suppliers
+
+- **Date:** 2026-08-01
+- **Status:** Accepted; supersedes the one-supplier part of D-010 and expands
+  D-044 and D-046
+- **Decision:** Every campaign has exactly one verified lead supplier and may
+  name verified co-suppliers. The lead supplier administers the campaign and
+  submits one combined delivery. Bloei.me does not specify which supplier does
+  which work or allocate price, settlement, or invoices among them.
+- **Why:** Several organizations may collaborate on one outcome, but their
+  internal division of work and invoicing is a commercial arrangement rather
+  than part of funder governance. One lead keeps responsibility and platform
+  permissions unambiguous.
+- **Consequences:** Co-suppliers confirm public participation before campaign
+  publication. Supplier-team changes after a pledge are material amendments.
+  Loss of verification by any supplier pauses the campaign. The team may use
+  one invoice or several external invoices, but Bloei.me records only each
+  funder's aggregate settlement obligation. The lead records `not invoiced`,
+  `partially invoiced`, `fully invoiced`, `disputed`, `paid`, or
+  `closed unpaid` with external references, without supplier-level amounts.
+  Combined invoices must not exceed the obligation, and supplier disputes are
+  resolved outside Bloei.me.

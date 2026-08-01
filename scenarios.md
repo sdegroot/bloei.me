@@ -17,8 +17,10 @@ the rules in [plan.md](plan.md) and the rationale in
 - **Budget manager:** creates budgets and authorizes their use.
 - **Funding representative:** pledges and votes for an organization.
 - **Project maintainer:** curates proposals and publishes campaigns.
-- **Supplier:** commits to an outcome, delivers it, and invoices funders after
-  acceptance.
+- **Lead supplier:** administers a campaign, coordinates its combined outcome,
+  submits delivery, and coordinates external invoicing after acceptance.
+- **Co-supplier:** publicly participates in delivery without receiving a
+  platform-defined work package or share of the campaign price.
 
 One person can hold several roles. For example, the first representative of a
 small organization may be its organization administrator, budget manager, and
@@ -157,40 +159,41 @@ Water filling produces these projected shares:
 | Organization D | 100% | 30% |
 
 No organization can be charged more than its cap. The exact monetary amounts
-remain projections until the supplier submits delivery and locks the final
+remain projections until the lead supplier submits delivery and locks the final
 price.
 
-## Scenario 5 — The supplier starts before full coverage
+## Scenario 5 — The lead supplier starts before full coverage
 
 ### Starting point
 
 A campaign has a €100,000 maximum price but currently has only 40% coverage.
-The supplier believes the work is strategically valuable and is willing to
-take the remaining risk.
+The supplier team believes the work is strategically valuable and is willing
+to take the remaining risk.
 
 ### Flow
 
-1. The supplier reviews the pledged coverage and maximum committed amount.
+1. The lead supplier reviews the pledged coverage and maximum committed amount.
 2. It manually starts delivery at 40% coverage.
 3. Bloei.me requires confirmation that the action is irreversible and that the
-   supplier bears every uncovered final-price share.
+   supplier team bears every uncovered final-price share.
 4. Existing pledges lock immediately.
-5. The public campaign records the start coverage and displays the supplier's
-   current uncovered exposure.
+5. The public campaign records the start coverage and displays the supplier
+   team's current uncovered exposure.
 6. Other organizations can still pledge until the first delivery submission.
 7. Every late pledge explicitly acknowledges that it locks immediately because
    work has already started.
 
 ### Zero-coverage variation
 
-The supplier may start at zero coverage and finance the work entirely itself.
+The lead supplier may start at zero coverage and the supplier team may finance
+the work entirely itself.
 The public campaign remains open to later pledges during delivery. If nobody
-ever pledges, the supplier bears the complete final price.
+ever pledges, the supplier team bears the complete final price.
 
 ### Deadline variation
 
-If the supplier neither starts manually nor reaches full coverage before the
-funding deadline, the campaign expires and all budget reservations are
+If the lead supplier neither starts manually nor reaches full coverage before
+the funding deadline, the campaign expires and all budget reservations are
 released. Once delivery has started, the funding deadline no longer closes the
 pledge window.
 
@@ -225,7 +228,8 @@ covered 100%.
 
 ### Flow
 
-1. The supplier completes the outcome and decides to charge €82,000.
+1. The supplier team completes the outcome and the lead supplier decides to
+   charge €82,000.
 2. It submits the delivery evidence and declares €82,000 as the final net price.
 3. Bloei.me atomically:
    - Permanently closes pledging
@@ -236,16 +240,16 @@ covered 100%.
 4. Later evidence corrections cannot increase or decrease the final price.
 5. With no objection, Bloei.me accepts delivery when the review period ends.
 6. It creates the immutable settlement and consumes the final reserved amounts.
-7. The supplier invoices each organization externally and adds applicable tax.
+7. The supplier team arranges external invoicing and adds applicable tax.
 
 ### Result
 
 The organizations benefit from the €18,000 reduction. Bloei.me does not require
-the supplier to disclose internal costs or justify why it selected €82,000.
+the supplier team to disclose internal costs or justify why it selected €82,000.
 
 ### Zero-price variation
 
-The supplier may declare a final price of zero. Bloei.me releases every
+The lead supplier may declare a final price of zero. Bloei.me releases every
 reservation, creates a public zero settlement, and produces no invoice
 obligations.
 
@@ -253,7 +257,7 @@ obligations.
 
 ### Starting point
 
-The supplier manually started a campaign at 60% coverage and no additional
+The lead supplier manually started a campaign at 60% coverage and no additional
 organizations joined. It declares a €90,000 final price.
 
 ### Flow
@@ -263,26 +267,27 @@ organizations joined. It declares a €90,000 final price.
 3. Bloei.me records the €36,000 remainder as supplier-funded exposure.
 4. Pledgers review the complete outcome using the same acceptance criteria as a
    fully funded campaign.
-5. After acceptance, the supplier invoices only the organization settlement
-   lines and absorbs the remainder.
+5. After acceptance, the supplier team invoices only the organization
+   settlement lines and absorbs the remainder.
 
 ### Result
 
-Starting early never allows the supplier to transfer its funding risk to the
-pledging organizations.
+Starting early never allows the supplier team to transfer its funding risk to
+the pledging organizations.
 
 ## Scenario 9 — A pledger objects to delivery
 
 ### Starting point
 
-The supplier submits a stable release, evidence, and a locked final price.
+The lead supplier submits a stable release, evidence, and a locked final price.
 
 ### Flow
 
 1. Rivierenstad identifies that one published accessibility criterion is not
    demonstrated by the evidence.
 2. Its funding representative submits an objection referencing that criterion.
-3. The supplier corrects the work or supplies better evidence and resubmits.
+3. The lead supplier coordinates corrections or supplies better evidence and
+   resubmits.
 4. The complete review period starts again.
 5. If the disagreement remains, Bloei.me opens a fresh formal acceptance
    window.
@@ -461,45 +466,53 @@ organizations pledged but before delivery started.
 
 ### Flow
 
-1. The supplier cannot edit the maximum price, scope, criteria, dates, or
-   acceptance policy in place.
-2. A project maintainer creates a new campaign version with the revised terms.
-3. The old version becomes superseded and releases all pledges and reservations.
-4. Every organization receives notice and decides whether to pledge again.
+1. The lead supplier drafts an amendment showing the old and new standard,
+   acceptance criteria, delivery date, maximum price, and reason for the change.
+2. A project maintainer confirms that this is a genuine scope change rather
+   than an ordinary cost overrun.
+3. Bloei.me pauses new pledges and cap increases.
+4. Every funding organization receives a consent deadline and must explicitly
+   approve; silence does not count as consent.
+5. The revised price requires additional reservations, and the later date is
+   revalidated against every backing budget.
+6. All organizations consent and every reservation succeeds atomically.
+7. The revised version becomes canonical and the consented pledges carry
+   forward. Pledging resumes under the amended terms.
 
 ### Result
 
 No organization is silently moved to commercial or acceptance terms it did not
-approve.
+approve, and the supplier does not have to abandon a viable campaign merely
+because its genuine scope changed.
 
 ## Scenario 18 — Cancellation and failure are different
 
 ### Cancellation before start
 
-The supplier, project maintainer, or tenant administrator cancels a campaign
-with a public reason. All pledges and reservations release immediately.
+The lead supplier, project maintainer, or tenant administrator cancels a
+campaign with a public reason. All pledges and reservations release immediately.
 
 ### Supplier failure after start
 
-The supplier concludes that it cannot deliver. It declares the campaign failed,
-publishes the reason and produced work, releases reservations, and creates no
-settlement or invoices.
+The lead supplier concludes that the supplier team cannot deliver. It declares
+the campaign failed, publishes the reason and produced work, releases
+reservations, and creates no settlement or invoices.
 
 ### Tenant-forced failure
 
 1. A tenant administrator publishes a proposed failure and reason.
 2. New pledges, cap increases, review, voting, and settlement pause for seven
    days.
-3. The supplier responds with evidence of progress or accepts failure.
+3. The lead supplier responds with evidence of progress or accepts failure.
 4. The administrator withdraws or confirms failure after the response period.
 5. A deployment operator may bypass the delay only for a legal, fraud, or
    security emergency.
 
-## Scenario 19 — Supplier verification is suspended
+## Scenario 19 — A supplier's verification is suspended
 
 ### Starting point
 
-The supplier loses tenant verification while delivery review has five days
+A co-supplier loses tenant verification while delivery review has five days
 remaining.
 
 ### Flow
@@ -523,7 +536,8 @@ settlement.
 ### Starting point
 
 Ten organizations funded a campaign with a two-thirds acceptance threshold.
-Rivierenstad maintains a criterion-based objection after the supplier responds.
+Rivierenstad maintains a criterion-based objection after the lead supplier
+responds.
 
 ### Flow
 
@@ -551,12 +565,12 @@ Rivierenstad maintains a criterion-based objection after the supplier responds.
 
 ### Starting point
 
-The supplier started at zero coverage and no organization pledged before
+The lead supplier started at zero coverage and no organization pledged before
 delivery submission.
 
 ### Flow
 
-1. The supplier publishes its evidence and final price.
+1. The lead supplier publishes the combined evidence and final price.
 2. Bloei.me marks the campaign `delivered self-funded`.
 3. No funding organization exists to review or vote.
 4. Bloei.me creates no settlement or invoice obligations.
@@ -572,14 +586,16 @@ lines reconcile exactly to the final price.
 ### Starting point
 
 Delivery was accepted and the immutable settlement allocated €12,000 to
-Rivierenstad. The supplier issued its invoice externally.
+Rivierenstad. The supplier team issued its invoices externally.
 
 ### Flow
 
-1. The supplier changes the private line from `invoiced` to `disputed`.
-2. It records a private note and reference to its external accounting system.
+1. The lead supplier changes the aggregate private line from `fully invoiced`
+   to `disputed`.
+2. It records a private note and the relevant external references.
 3. The settlement and Rivierenstad's consumed budget remain unchanged.
-4. After external resolution, the supplier records `paid` or `closed unpaid`.
+4. After external resolution, the lead supplier records `paid` or
+   `closed unpaid`.
 
 ### Result
 
@@ -606,3 +622,157 @@ A published evidence image accidentally exposes personal information. A
 platform operator redacts it for privacy reasons. The page retains a public
 tombstone explaining that an exceptional redaction occurred, and the immutable
 audit history records who performed it and why.
+
+## Scenario 24 — An amendment does not receive unanimous consent
+
+### Starting point
+
+Five organizations have pledged. The lead supplier proposes a larger scope and
+a higher maximum price, but one organization rejects and another does not
+respond before the consent deadline.
+
+### Flow
+
+1. Bloei.me records three consents, one rejection, and one non-response.
+2. The amendment expires because explicit unanimity was not reached.
+3. Any provisional additional reservations are released.
+4. The original campaign version and pledges remain binding.
+5. Pledging and cap increases resume under the original terms.
+6. The supplier team may deliver the original outcome, propose another
+   amendment, or declare failure if it cannot deliver.
+
+### Result
+
+Silence can accept an already-promised delivery after notice, but it can never
+authorize a new financial or delivery obligation.
+
+## Scenario 25 — The supplier clarifies scope without changing it
+
+### Starting point
+
+A criterion says that an export must use an open standard, but funders ask
+which published version of that standard the existing wording refers to.
+
+### Flow
+
+1. The lead supplier drafts a clarification that does not alter the promised
+   behavior, price, date, supplier team, or acceptance test.
+2. A project maintainer confirms that no obligation changes.
+3. Bloei.me appends the clarification publicly with its author and timestamp.
+4. Delivery and pledging continue without a consent window.
+
+### Boundary
+
+A supposed clarification that narrows compatibility or changes an acceptance
+test is a material amendment instead.
+
+## Scenario 26 — Optional additional work becomes a linked campaign
+
+### Starting point
+
+During delivery, funders suggest a useful dashboard that is not required for
+the original promised outcome.
+
+### Flow
+
+1. The lead supplier and project maintainer leave the original campaign
+   unchanged.
+2. They create a linked proposal and campaign for the dashboard.
+3. Organizations decide independently whether to fund it.
+4. Acceptance or failure of either campaign does not determine the other.
+
+### Result
+
+Useful additions do not become scope creep or force existing funders into a
+larger commitment.
+
+## Scenario 27 — A campaign is delivered by several suppliers
+
+### Starting point
+
+Supplier A leads a campaign and wants Suppliers B and C to participate in the
+combined outcome.
+
+### Flow
+
+1. Supplier A is recorded as the lead supplier and adds B and C as
+   co-suppliers while the campaign is still a draft.
+2. All three organizations must be verified in the tenant.
+3. B and C confirm that they may be shown publicly as participants.
+4. The campaign publishes one outcome, maximum price, set of criteria, and
+   supplier team; it publishes no supplier work packages or price shares.
+5. Supplier A administers the campaign and submits the combined delivery.
+6. Funders review and accept the outcome as a whole.
+
+### Result
+
+Bloei.me gives funders one accountable campaign while leaving collaboration
+inside the supplier team.
+
+## Scenario 28 — A co-supplier leaves during delivery
+
+### Starting point
+
+A co-supplier withdraws after pledges have locked, but the lead supplier can
+still deliver the original outcome with another partner.
+
+### Flow
+
+1. The lead supplier proposes removing the co-supplier and, if appropriate,
+   adding the replacement through a material amendment.
+2. Bloei.me pauses new pledges and obtains explicit consent from every funding
+   organization.
+3. If all consent and all supplier organizations are verified, the supplier
+   team changes and delivery continues.
+4. If unanimity is not reached, the original supplier terms remain. The lead
+   supplier must still deliver under them or declare failure.
+
+### Lead-supplier variation
+
+Replacing the lead supplier follows the same unanimous process and explicitly
+transfers campaign administration. A co-supplier cannot take control on its own.
+
+## Scenario 29 — Suppliers arrange invoicing themselves
+
+### Starting point
+
+Accepted settlement records that Rivierenstad owes €20,000 toward a campaign
+delivered by one lead supplier and two co-suppliers.
+
+### Flow
+
+1. The supplier team decides externally that the lead will invoice €15,000 and
+   one co-supplier will invoice €5,000.
+2. Bloei.me continues to show one €20,000 settlement obligation for
+   Rivierenstad and does not store either supplier allocation.
+3. The lead supplier records the aggregate status as `partially invoiced` and
+   adds the available external references.
+4. After all agreed invoices have been issued, it records `fully invoiced`.
+5. Rivierenstad ultimately pays the externally agreed invoices, and the lead
+   records the aggregate obligation as `paid`.
+
+### Boundaries
+
+The combined net invoices cannot exceed €20,000. Bloei.me does not decide who
+invoices, how suppliers share revenue, or how they resolve a disagreement.
+
+## Scenario 30 — An amendment exceeds one funder's available budget
+
+### Starting point
+
+Every funding organization supports a proposed scope increase, but one backing
+budget cannot reserve the organization's increased maximum exposure.
+
+### Flow
+
+1. The organization gives consent but Bloei.me cannot activate the amendment.
+2. Before the deadline, its budget manager may increase the budget or move the
+   pledge to another eligible budget.
+3. If all reservations then succeed, the amendment activates atomically.
+4. Otherwise it expires without changing the original campaign or consuming
+   any provisional reservation.
+
+### Result
+
+Verbal agreement never creates an unfunded commitment, and amendment activation
+cannot partially update the funding organizations.
