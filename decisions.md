@@ -799,3 +799,28 @@ superseded.
   identity, approved enrollment, representative confirmation, and maintainer
   publication, but receive no “trusted supplier” badge. Future eHerkenning may
   strengthen Dutch account control without becoming a v1 dependency.
+
+## D-061 — Make organizations public and operational data private
+
+- **Date:** 2026-08-01
+- **Status:** Accepted
+- **Decision:** Attribute public campaign, financial, supplier, objection, and
+  governance actions to organizations rather than their acting employees.
+  Publish the minimum organization and campaign information needed for an
+  auditable co-funding record while keeping personal actors, budgets, settlement
+  completion, enrollment review, verification evidence, and security data
+  restricted.
+- **Why:** Funders and the public need to see who committed what and how a
+  campaign was governed. Publishing employee identities or internal financial
+  and verification records adds privacy and security risk without improving
+  organization-level accountability.
+- **Consequences:** Public profiles show minimal legal identity, factual
+  verification metadata, and approved tenant participation. Pledges, amounts,
+  amendments, objections, final ballots, delivery, and settlement lines are
+  public at organization level. Pending or rejected enrollment and detailed
+  suspension reasons stay private; a suspension's factual public effect may be
+  shown when relevant. Settlement-note completion is shared only with the
+  funder and supplier team. Internal actor attribution remains in protected
+  audit history, account deletion anonymizes the person rather than erasing the
+  organization action, and every future public API or export must use the same
+  explicit public projection as the website.

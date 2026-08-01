@@ -1280,3 +1280,98 @@ domain during an active campaign.
 A simple address correction updates the profile with history and does not
 automatically suspend participation. Identity verification has no scheduled
 expiry; review is triggered by meaningful events.
+
+## Scenario 52 — A visitor inspects a publicly funded campaign
+
+### Starting point
+
+A person who is not signed in wants to understand who funded a delivered
+campaign and how acceptance was reached.
+
+### Flow
+
+1. The public campaign page shows its supplier team, terms, version history,
+   evidence, lifecycle events, and final price.
+2. It names each pledging organization and shows its maximum exposure,
+   projected share, and final contribution.
+3. It shows organization-owned amendment consents, objections, and final ballot
+   classification, including deemed acceptance.
+4. It does not show acting employees, organization memberships, budgets, cost
+   centers, reservations, settlement-note completion, or verification evidence.
+5. The visitor can follow an organization link to its minimal legal profile and
+   factual verification and tenant-participation status.
+
+### Result
+
+The funding and governance record is independently understandable without
+publishing internal financial or personal data.
+
+## Scenario 53 — An employee performs an official organization action
+
+### Starting point
+
+An authorized municipal funding representative consents to a material campaign
+amendment.
+
+### Flow
+
+1. Bloei.me validates the employee's active membership, role, budget authority,
+   and applicable approval policy.
+2. The protected audit event records the employee, authority result, time, and
+   exact amendment version.
+3. The public campaign history records the municipality's consent and not the
+   employee's name.
+4. If that employee later leaves or deletes the account, the municipality's
+   decision remains unchanged and the personal profile is anonymized according
+   to retention rules.
+
+### Result
+
+The organization remains publicly accountable while Bloei.me retains only the
+restricted personal evidence needed to operate and audit authorization.
+
+## Scenario 54 — Participation review stays private
+
+### Starting point
+
+A verified organization requests enrollment in a tenant, and the tenant rejects
+the first application.
+
+### Flow
+
+1. The applicant and authorized tenant administrators can see the application
+   and private rejection reason.
+2. Public visitors see neither the pending request nor the rejection.
+3. After correction and approval, the organization's profile publicly shows it
+   as an approved participant in that tenant.
+4. A later suspension that affects an active public campaign shows the factual
+   hold and its public operational reason where required, but protected evidence
+   and internal review detail remain restricted.
+
+### Result
+
+The platform communicates statuses that affect public commitments without
+turning unsuccessful applications or sensitive investigations into public
+records.
+
+## Scenario 55 — A future public export cannot reveal private fields
+
+### Starting point
+
+A later release adds a public campaign API or downloadable transparency export.
+
+### Flow
+
+1. The interface reads from the same explicit public projection used by the
+   public website.
+2. Automated tests assert that budgets, memberships, actor identifiers,
+   verification evidence, private moderation data, and settlement-note status
+   are absent.
+3. An authenticated organization export uses a separate permission-scoped
+   projection and records access to protected data.
+4. Images in public evidence have already been decoded, re-encoded, and stripped
+   of metadata.
+
+### Result
+
+Adding another interface does not silently expand what Bloei.me publishes.

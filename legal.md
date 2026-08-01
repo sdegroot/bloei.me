@@ -151,6 +151,45 @@ before public launch.
 Bloei.me must continue to avoid holding or routing funds unless a separately
 reviewed and appropriately regulated payment model is deliberately introduced.
 
+## Privacy and public records
+
+Bloei.me's working privacy position is transparency at the organization level
+and data minimization at the person level. Public campaign records identify
+legal organizations and their commitments, amendments, objections, ballots,
+deliveries, and final contributions. Acting employees, memberships, budgets,
+verification evidence, settlement-note completion, and security data are not
+public merely because they support a public organization action.
+
+The GDPR applies to information about identified or identifiable natural
+persons. It generally does not cover information concerning legal persons as
+such, but organization records may still contain personal data, particularly
+for sole proprietors, named representatives, free-text objections, and small
+organizations. Bloei.me therefore cannot treat every organization-associated
+field as non-personal.
+
+The product should apply purpose limitation, data minimization, storage
+limitation, and privacy by design and default. In practice this means:
+
+- Avoid raw identity documents when authoritative registry references suffice
+- Separate public organization projections from protected operational records
+- Restrict and audit access to verification, recovery, actor, fraud, and
+  security evidence
+- Define retention periods by record category rather than retaining all private
+  data with the permanent public campaign history
+- Sanitize free text and evidence before publication and strip image metadata
+- Anonymize personal profiles on deletion while preserving organization-owned
+  history where there is a documented lawful basis
+- Leave a public tombstone when exceptional redaction is necessary
+
+The hosted service and self-hosted deployments may have different controller,
+joint-controller, or processor relationships among the deployment operator,
+tenant, and participating organizations. Product documentation must not assign
+those legal roles by label alone. The actual purposes, means, contracts, and
+deployment arrangement require specialist review before launch. The same review
+must establish lawful bases, privacy notices, data-subject request handling,
+retention schedules, processor agreements, breach procedures, and whether a
+data-protection impact assessment is required.
+
 ## Platform terms and records needed before launch
 
 The pilot should have proportionate, reviewed documents for:
@@ -181,6 +220,13 @@ consent, and delivery submission.
    operator, tenant, maintainers, funders, lead supplier, and co-suppliers?
 8. What retention and access rules apply to public commitments, verification
    evidence, audit records, and future signed agreements?
+9. Which party is controller, joint controller, or processor for each processing
+   purpose in hosted and self-hosted deployments?
+10. Which lawful basis supports each public and protected record, and how should
+    access, rectification, objection, erasure, and restriction requests affect
+    immutable organization history?
+11. Do the scale, public-sector participation, identity checks, or other risks
+    require a data-protection impact assessment?
 
 ## Primary references
 
@@ -192,6 +238,9 @@ consent, and delivery submission.
   on European crowdfunding service providers
 - [EU Regulation 910/2014, eIDAS](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32014R0910),
   especially Article 25 on electronic signatures
+- [EU Regulation 2016/679, GDPR](https://eur-lex.europa.eu/eli/reg/2016/679/oj),
+  especially Articles 5, 17, 25, and 32 and Recitals 14 and 26 on personal data,
+  erasure, security, data minimization, and privacy by design and default
 - [PIANOo: Open Source Aanbesteden](https://www.pianoo.nl/nl/actueel/agenda/open-source-aanbesteden-hoe-werkt-dat)
   as public-procurement practice context
 

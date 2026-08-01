@@ -170,6 +170,61 @@ The same mechanism can later govern pledges, cap increases, amendment consent,
 reservation transfers, and settlement-note completion without changing the v1
 one-approval user experience.
 
+### Information visibility and personal data
+
+Bloei.me provides transparency at the organization level. Public financial and
+governance actions name the responsible organization, not the employee who
+performed them. The exact actor, authority evaluation, and approval evidence
+remain in a restricted audit trail. This preserves accountable campaign history
+when representatives change without unnecessarily publishing personal data.
+
+The public product surface includes:
+
+- Published tenants, projects, proposals, campaigns, terms, versions, supplier
+  teams, lifecycle states, public reasons, evidence, and outcomes
+- An organization's legal name, country and type, appropriate public registry
+  identifier, official website, identity-verification source category and date,
+  and approved tenant participation
+- Pledging organizations, their maximum caps and worst-case amounts, projected
+  and final contributions, aggregate coverage, and supplier-funded shortfalls
+- Activated amendments and organization-level consent results, including
+  non-response or rejection
+- Organization-owned objections, criterion references, moderated public reasons,
+  and final explicit-acceptance, deemed-acceptance, or rejection classifications
+- Public settlement lines and exceptional redaction tombstones
+
+The following remains private to the owning organization and specifically
+authorized members: memberships, organization-role assignments, budget totals,
+balances, cost centers, eligibility rules, reservations, transfers, internal
+authorization requests, and future contract requirements or evidence. A
+funding organization and the supplier team can see that organization's
+settlement-note status; the status is never public.
+
+Tenant administrators privately see enrollment applications, rejection and
+suspension reasons, moderation reports, and their tenant's review queues.
+Pending or rejected enrollment is not published. Approved participation is
+public. When suspension affects a public campaign or prior participation, its
+factual effect may be public, but protected evidence and detailed reasons stay
+private unless a lawful and proportionate public reason is required.
+
+Only authorized deployment operators may access raw identity-verification
+evidence, recovery evidence, protected fraud reports, internal actor identifiers,
+and security logs. The application avoids retaining raw identity documents when
+a registry reference is sufficient. Access to protected data is purpose-bound,
+audited, and subject to a defined retention policy.
+
+Ordinary community contributions may use a person's chosen public display name.
+Official pledges, consents, objections, ballots, supplier actions, and settlement
+actions use the organization as the public actor. A person may opt into a public
+profile, but authorization never requires publication of their legal name.
+
+Every public page, search index, future API, feed, and public export must be
+generated from an explicit public projection rather than by serializing internal
+domain records. Private exports are permission-scoped. Public evidence is
+sanitized before publication, including image metadata removal. Account deletion
+anonymizes the personal actor while retaining the organization-owned action;
+exceptional legal, privacy, or security redaction leaves a public tombstone.
+
 ## Proposals and campaigns
 
 The primary product flow is:

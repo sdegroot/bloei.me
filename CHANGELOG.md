@@ -29,6 +29,9 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   future signed-contract scenarios.
 - Identity, account-control, tenant-approval, supplier-labeling, and event-driven
   re-verification scenarios.
+- Public/private visibility scenarios covering organization-level transparency,
+  protected employee attribution, private participation review, and safe future
+  exports.
 
 ### Changed
 
@@ -67,3 +70,6 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   optional external-contract requirement for later municipal expenditure.
 - Separated deployment-level legal identity verification from tenant-level
   participation approval and explicitly rejected supplier-quality certification.
+- Defined an organization-attributed public record while keeping personal
+  actors, budgets, verification evidence, enrollment review, settlement-note
+  completion, and security data private.
