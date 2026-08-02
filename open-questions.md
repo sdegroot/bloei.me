@@ -265,16 +265,6 @@ the item to the resolved log at the bottom of this document.
 - **Decision trigger:** Write the deployment design and data-processing
   inventory.
 
-### Q-023 — Which external component-source integrations come first?
-
-- **Decision horizon:** Deferred
-- **Current inclination:** Store curated source links in v1; add repository and
-  package-registry synchronization only after canonical identity and
-  stewardship workflows are proven.
-- **Why it remains open:** GitHub is common but not universal, and automated
-  metadata can conflict with maintained Bloei.me records.
-- **Decision trigger:** Pilot operators identify repetitive verification work.
-
 ### Q-024 — What does future split-budget pledging look like?
 
 - **Decision horizon:** Deferred
@@ -397,6 +387,15 @@ the item to the resolved log at the bottom of this document.
   artifact.
 
 ## Resolved questions
+
+### Q-023 — Which external component-source integrations come first?
+
+- **Resolved:** 2026-08-02 by D-070
+- **Answer:** Start with provider-neutral component repository links and
+  external work references. Validate and periodically refresh public GitHub
+  metadata through a read-only adapter without installing a GitHub App.
+- **Follow-through:** Private repository access, GitHub writes, webhooks, and
+  providers beyond link-only support remain later capabilities.
 
 ### Q-035 — Should Exposed replace jOOQ?
 

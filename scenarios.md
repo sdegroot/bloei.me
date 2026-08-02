@@ -10,6 +10,9 @@ the rules in [plan.md](plan.md) and the rationale in
 ## Actors used in the scenarios
 
 - **Member:** submits ideas and participates in discussion.
+- **Delegated API client:** acts for a signed-in person through an
+  operator-registered OAuth client and never gains more authority than that
+  person currently has in Bloei.me.
 - **Platform operator:** verifies identity, governs platform participation, and
   performs exceptional audited actions.
 - **Organization administrator:** manages an organization's identity and role
@@ -1667,3 +1670,211 @@ now proposes delivery as an independent fork after organizations pledged.
 
 Component metadata cannot be changed to evade the outcome that funders agreed
 to finance.
+
+## Scenario 68 — A visitor discovers public funding through the API
+
+### Starting point
+
+A civic-technology website wants to show current Bloei.me campaigns without
+requiring its visitors to sign in.
+
+### Flow
+
+1. The website reads the versioned public component and campaign collections.
+2. It follows opaque cursors rather than calculating page numbers.
+3. Responses expose organization-attributed public facts but no personal actor,
+   budget, cost center, verification evidence, or moderation case data.
+4. The website stores the returned ETag and receives an unchanged response on a
+   conditional refresh.
+5. Links in the representation point to the canonical Bloei.me public pages and
+   API resources.
+
+### Result
+
+Public reuse receives the same deliberately projected information as the web
+interface without creating a second transparency policy.
+
+## Scenario 69 — A community site submits an idea for its signed-in user
+
+### Starting point
+
+A user signs in to an operator-approved community-site integration and grants
+it Bloei.me read and write scopes through Authentik.
+
+### Flow
+
+1. Authentik issues a token intended for the Bloei.me API after authorization
+   code flow with PKCE.
+2. The client submits an idea and explicitly identifies the organization on
+   whose behalf the user is acting.
+3. Bloei.me checks the token scope, current membership, role, platform
+   participation, component access, and content rules at command time.
+4. The accepted idea enters the same private curation queue as a web submission.
+5. The audit record preserves the person, organization, OAuth client, request,
+   and policy result.
+
+### Result
+
+An integration uses Bloei.me's workflow without impersonating an organization
+or bypassing current authorization.
+
+## Scenario 70 — An API pledge is safely retried
+
+### Starting point
+
+A funding representative has reviewed a campaign version and authorizes a
+delegated client to place a pledge from an eligible budget.
+
+### Flow
+
+1. The request carries the financial OAuth scope, acting organization, exact
+   campaign and terms versions, explicit pledge attestation, budget, cap,
+   `If-Match`, and an idempotency key.
+2. Bloei.me rechecks role, budget authority, participation, conflicts,
+   deadlines, capacity, and protected terms inside the transaction.
+3. The pledge and maximum reservation commit atomically.
+4. The client loses the first response and retries with the same key and
+   semantically identical body.
+5. Bloei.me returns the original result without another reservation or public
+   commitment. Reusing the key with a different body is rejected.
+
+### Result
+
+Network retries cannot duplicate a financial or governance action.
+
+## Scenario 71 — Delegated authority disappears before an API command
+
+### Starting point
+
+A client holds an unexpired token, but the user has since lost the funding role
+or organization membership.
+
+### Flow
+
+1. The client submits a correctly scoped pledge command.
+2. Bloei.me validates the token audience and client but does not treat token
+   claims as durable organization authority.
+3. Current membership and role evaluation rejects the command.
+4. No budget reservation, pledge, audit success, or public event is created.
+5. The response uses a stable problem code without revealing protected
+   organization details.
+
+### Result
+
+Delegated clients cannot continue using authority after Bloei.me revokes it.
+
+## Scenario 72 — Public and protected event feeds remain separate
+
+### Starting point
+
+A public dashboard follows campaign changes, while a funding representative's
+integration also needs protected events for its own organization.
+
+### Flow
+
+1. The dashboard polls the anonymous public feed and receives only allowlisted
+   public event envelopes.
+2. The delegated client polls the authorized feed and receives public events
+   plus events currently visible through its memberships and roles.
+3. Both clients persist opaque cursors and tolerate at-least-once delivery.
+4. Event envelopes identify a resource and type but do not copy raw audit or
+   protected domain payloads.
+5. After the feed window expires, clients resynchronize through authoritative
+   resource collections.
+
+### Result
+
+Integrations can follow change without outbound webhooks or a data-leaking
+global event log.
+
+## Scenario 73 — Several components share one GitHub repository
+
+### Starting point
+
+A public monorepository contains several separately fundable open-source
+components.
+
+### Flow
+
+1. A component maintainer adds the GitHub repository as a primary source link
+   for one component and an additional source for another.
+2. Bloei.me normalizes the URL and queues metadata validation through the fixed
+   GitHub provider endpoint.
+3. The provider returns a stable repository identifier, canonical owner/name,
+   visibility, archive state, default branch, last push, and licence
+   observation.
+4. Bloei.me stores one canonical repository identity and separate typed
+   component associations.
+5. Observed metadata appears with its source and freshness but does not replace
+   either component's curated name, licence, stewardship, or supported release.
+
+### Result
+
+Repository identity is reusable without collapsing distinct components.
+
+## Scenario 74 — A linked repository changes or becomes unavailable
+
+### Starting point
+
+A previously validated GitHub repository is renamed, archived, deleted, or
+temporarily inaccessible during refresh.
+
+### Flow
+
+1. A stable external identifier lets Bloei.me recognize a rename and update the
+   canonical URL while retaining redirect history.
+2. Archival becomes an observed warning and does not automatically close the
+   component or campaign.
+3. A `404`, rate limit, timeout, or provider outage records a categorized sync
+   failure and schedules bounded retry.
+4. Bloei.me retains the curated association and last successful observation
+   instead of deleting history.
+5. Maintainers can request a recheck, but only ordinary component governance can
+   replace or remove the link.
+
+### Result
+
+External provider state informs people without governing Bloei.me records.
+
+## Scenario 75 — A campaign references GitHub work without importing it
+
+### Starting point
+
+A supplier wants to show the public issue, pull request, commit, and release
+that support campaign progress and delivery evidence.
+
+### Flow
+
+1. The supplier adds typed provider-neutral work references to progress and
+   delivery evidence.
+2. Bloei.me normalizes supported GitHub URLs and observes allowlisted public
+   metadata such as canonical URL, kind, title, state, and freshness.
+3. The GitHub objects remain external references rather than Bloei.me ideas,
+   proposals, objections, or acceptance criteria.
+4. Closing an issue or merging a pull request does not mark delivery accepted.
+5. Evidence remains reviewable under the campaign's own criteria even if a
+   linked object later changes or disappears.
+
+### Result
+
+Code-hosting evidence is useful context, not an external workflow authority.
+
+## Scenario 76 — A client requests a deliberately unavailable integration
+
+### Starting point
+
+An integration attempts to use a service account, platform-admin endpoint,
+outbound webhook, private GitHub repository, GitHub write action, or MCP tool.
+
+### Flow
+
+1. Bloei.me exposes none of those capabilities in v1.
+2. OAuth client credentials cannot substitute for a delegated person.
+3. Operator and moderator actions remain in protected internal web tooling.
+4. Public GitHub observation has no installation token or write permission.
+5. No MCP endpoint or protocol capability is advertised.
+
+### Result
+
+Deferred capabilities cannot be accidentally inferred from the presence of the
+REST API or public GitHub metadata.

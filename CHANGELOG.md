@@ -47,6 +47,9 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   security, operations, testing, repository structure, and delivery slices.
 - An isolated local development-authentication design with seeded personas and
   a retained OIDC contract test.
+- API and repository-integration scenarios covering delegated OAuth,
+  idempotency, authority revocation, event visibility, shared repositories,
+  provider failures, external work references, and deferred capabilities.
 
 ### Changed
 
@@ -99,3 +102,6 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   programs.
 - Replaced jOOQ with the Exposed JDBC SQL DSL while retaining Flyway as the
   migration authority and repository boundaries as an escape path.
+- Replaced the blanket v1 integration deferral with a complete
+  non-administrative REST API, provider-neutral repository links, read-only
+  public GitHub observations, cursor event feeds, and an explicit MCP deferral.

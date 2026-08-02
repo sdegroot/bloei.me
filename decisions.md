@@ -357,7 +357,7 @@ superseded.
 ## D-031 — Keep integrations behind internal ports
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Superseded by D-069, D-070, and D-071
 - **Decision:** Define internal ports for progress, verification,
   notifications, storage, settlement export, and accounting, but expose no
   public API, webhooks, or connector installation in v1.
@@ -980,3 +980,64 @@ superseded.
   DSL cannot express cleanly. Integration tests must detect drift between
   Flyway schemas and Exposed table declarations and verify locking,
   transactions, JSONB, and concurrent financial workflows.
+
+## D-069 — Make REST a complete non-administrative product interface
+
+- **Date:** 2026-08-02
+- **Status:** Accepted; supersedes the no-public-API part of D-031
+- **Decision:** Publish a versioned `/api/v1` REST API. Allow anonymous reads of
+  public records and delegated-user OAuth access to every organization,
+  maintainer, supplier, funder, reporting, and appeal-submission workflow that
+  the web interface supports. Keep platform verification, participation,
+  moderation decisions, appeal handling, security diagnostics, and exceptional
+  operator actions out of the public API.
+- **Why:** External community sites, organizational systems, and future clients
+  should be able to use Bloei.me without duplicating its domain rules. Full
+  workflow parity creates a dependable interface rather than a growing set of
+  integration-specific exceptions, while keeping the highest-risk platform
+  administration on protected internal tooling.
+- **Consequences:** Authentik issues audience-bound tokens using authorization
+  code with PKCE to operator-registered clients. OAuth scopes constrain the
+  client and current Bloei.me authorization is checked again for every command.
+  Financial and governance commands require exact version attestations,
+  optimistic preconditions, and idempotency keys. Public and authorized cursor
+  event feeds support polling; outbound webhooks, service accounts, dynamic
+  client registration, and public administration APIs are deferred.
+
+## D-070 — Link provider-neutral repositories and observe public GitHub data
+
+- **Date:** 2026-08-02
+- **Status:** Accepted; resolves Q-023 and supersedes the no-GitHub-specific-
+  fields part of D-031
+- **Decision:** Model canonical provider-neutral code repositories separately
+  from components. Let components link multiple repositories and let proposals,
+  campaigns, progress, and delivery evidence reference external issues, pull
+  requests, commits, and releases. Implement GitHub as the first read-only
+  public-metadata provider with validation and periodic refresh.
+- **Why:** Open-source funding needs a durable connection to the code and work
+  it affects, but a GitHub-only domain model would exclude other forges and let
+  external metadata conflict with maintained Bloei.me facts.
+- **Consequences:** Provider observations never overwrite curated component
+  data or change stewardship, campaign scope, delivery, review, or acceptance.
+  GitHub validation uses fixed API hosts, stable external identifiers, cached
+  allowlisted metadata, visible freshness, and resilient failure states. V1 has
+  no GitHub App installation, private-repository access, inbound GitHub
+  webhooks, issue synchronization, or GitHub write actions.
+
+## D-071 — Defer MCP until the domain and REST contracts stabilize
+
+- **Date:** 2026-08-02
+- **Status:** Accepted; supersedes the undifferentiated integration deferral in
+  D-031
+- **Decision:** Do not ship an MCP endpoint or SDK dependency in v1. Preserve
+  application commands, audience-aware queries, typed schemas, and OAuth
+  boundaries so a later remote MCP adapter can expose Bloei.me resources and
+  tools without embedding an AI model or routing back through REST.
+- **Why:** MCP is useful for agent discovery and action, but implementing it
+  alongside the first public API would stabilize two external contracts at
+  once. The REST and application-service boundaries should prove their names,
+  permissions, and failure semantics first.
+- **Consequences:** Future MCP uses Streamable HTTP, audience-bound OAuth, and
+  the same application authorization and confirmation policy as every other
+  adapter. No MCP client can gain platform-admin access or bypass organization
+  roles. Adding MCP later requires its own accepted decision and threat model.
