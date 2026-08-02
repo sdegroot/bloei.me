@@ -2,18 +2,19 @@
 
 Status: Living plan
 
-Last updated: 2026-08-01
+Last updated: 2026-08-02
 
 This document describes the agreed product and implementation direction for
 Bloei.me. An interactive overview is available in
 [functional-design.html](functional-design.html). The reasons behind the choices
 are recorded in [decisions.md](decisions.md). Concrete end-to-end journeys are
 documented in [scenarios.md](scenarios.md). The proposed software design is in
-[solution-architecture.md](solution-architecture.md). The trust-based pilot
-assumptions, unresolved legal questions, and future signed-contract direction
-are recorded separately in [legal.md](legal.md). Product, operational, and
-implementation choices that still need a decision are tracked in
-[open-questions.md](open-questions.md).
+[solution-architecture.md](solution-architecture.md), with the public interface
+contract in [api-and-integrations.md](api-and-integrations.md). The trust-based
+pilot assumptions, unresolved legal questions, and future signed-contract
+direction are recorded separately in [legal.md](legal.md). Product,
+operational, and implementation choices that still need a decision are tracked
+in [open-questions.md](open-questions.md).
 
 ## Product summary
 
@@ -72,6 +73,13 @@ fork, or changing a promised release after the first pledge is material.
 Self-hosting creates a separate deployment and canonical network at its own root
 domain. Hosted and self-hosted installations use the same artifact, but do not
 share identities or records unless federation is deliberately designed later.
+
+Canonical code repositories are provider-neutral records linked to one or more
+components. Components may have several repositories and at most one marked
+primary. Proposals, campaigns, progress, and delivery evidence may also refer
+to external issues, pull requests, commits, and releases without importing
+their lifecycle into Bloei.me. GitHub is the first read-only public-metadata
+provider; observed metadata never overrides curated component or campaign facts.
 
 ### Identity and roles
 
@@ -1056,9 +1064,9 @@ assumptions and review questions are maintained in [legal.md](legal.md).
 - Dutch and English message bundles
 - Locally hosted, progressively enhanced, WCAG 2.2 AA user interface
 
-Modules cover identity, organizations, components, programs, budgets,
-proposals, campaigns, pledges, delivery, settlement, moderation, notifications,
-and auditing.
+Modules cover identity, organizations, components, repositories, programs,
+budgets, proposals, campaigns, pledges, delivery, settlement, moderation,
+notifications, and auditing.
 
 Core value types include:
 
@@ -1073,6 +1081,8 @@ Core value types include:
 - `PlatformParticipationStatus(active, suspended, closed)`
 - `OpenSourceComponent` identity, hierarchy, source locations, licences, and
   versioned stewardship
+- Provider-neutral `CodeRepository`, `ComponentRepositoryLink`, provider
+  observations, and typed external-work references
 - Proposal and campaign component targets with relationship, upstream status,
   promised release, and maintainer confirmation
 - Optional programs as non-isolating curated collections
@@ -1121,11 +1131,21 @@ Stable public pages cover components, programs, proposals, campaigns,
 organizations, evidence, and settlements. Private management pages cover
 budgets, moderation, verification, and settlement-note completion.
 
-V1 has no public JSON API, webhook framework, GitHub-specific fields, or
-connector installation UI. Internal ports should exist for future progress
-sources, organization verification, notifications, object storage, settlement
-export, accounting integrations, and AI moderation. AI provider configuration
-is optional and campaign behavior never depends on a particular model.
+V1 publishes a versioned REST API with anonymous public reads and delegated-user
+OAuth parity for organization, maintainer, supplier, funder, reporting, and
+appeal-submission workflows. Platform verification, moderation decisions,
+exceptional operations, and security administration remain internal. Public
+and authorized cursor feeds support polling; service accounts, outbound
+webhooks, and dynamic OAuth client registration are deferred. The normative
+interface and GitHub behavior are defined in
+[api-and-integrations.md](api-and-integrations.md).
+
+Internal ports continue to isolate organization verification, notifications,
+object storage, settlement export, accounting, repository providers, and AI
+moderation. The GitHub adapter validates and refreshes allowlisted public
+metadata without an app installation or write permission. V1 has no MCP
+endpoint; a later adapter will call application services directly after the
+domain and REST contracts stabilize.
 
 ### Deployment
 
@@ -1146,7 +1166,8 @@ is optional and campaign behavior never depends on a particular model.
    roles, and auditing.
 3. **Budgets:** budget administration, spender authorization, ledger,
    eligibility, transactional reservations, transfers, and inline creation.
-4. **Public workflow:** components, optional programs, private ideas, proposals,
+4. **Public workflow and API:** components, repository links, GitHub public
+   metadata, optional programs, private ideas, proposals,
    endorsements, campaign formation, supplier selection, comments, reporting,
    reversible moderation, optional AI assistance, appeals, and notifications.
 5. **Funding:** supplier teams, campaign versions and amendments, deadlines,
@@ -1229,6 +1250,13 @@ without explicit permission.
   sanitization, and image validation.
 - Run PostgreSQL integration and migration tests with Testcontainers.
 - Run Dutch and English browser journeys and automated WCAG 2.2 AA checks.
+- Contract-test OpenAPI, OAuth scopes and audience, delegated authorization,
+  public/private projections, ETags, idempotency, and REST/web command parity.
+- Test public and authorized event-feed visibility, ordering, opaque cursors,
+  at-least-once delivery, expiry, and resynchronization.
+- Test repository URL normalization, SSRF protection, GitHub refresh, rename,
+  archive, provider failure, rate limiting, and the prohibition on external
+  lifecycle automation.
 
 ### Pilot acceptance
 
@@ -1254,7 +1282,7 @@ The Epistola pilot must:
 - `bloei.me` is the controlled product domain; trademark registration is out of
   scope.
 - Epistola supplies the first components and pilot campaign, but the core
-  contains no Epistola-specific or GitHub-specific concepts.
+  contains no Epistola-specific or GitHub-only domain concepts.
 - Published campaigns and limited moderation tombstones are public in v1.
   Budgets, cost centers, representatives, protected moderation case data, and
   settlement-note completion remain private.
@@ -1271,4 +1299,5 @@ The Epistola pilot must:
   does not divide their work, price, settlement, or external invoices.
 - Payees, payments, invoice administration, advance or milestone invoicing, tax
   calculation, debt collection, hosted subscription billing, campaign fees,
-  support management, and GitHub synchronization are outside v1.
+  support management, private GitHub access, GitHub writes, outbound webhooks,
+  service accounts, and MCP are outside v1.

@@ -2,7 +2,7 @@
 
 Status: Proposed architecture
 
-Last updated: 2026-08-01
+Last updated: 2026-08-02
 
 This document translates the accepted functional design into a buildable
 software architecture. It should be read with the
@@ -62,24 +62,26 @@ Bloei.me must provide:
 flowchart LR
     visitor[Public visitor]
     member[Organization member]
+    client[Delegated API client]
     operator[Platform operator or moderator]
     oidc[OIDC provider\nAuthentik initially]
     mail[SMTP provider]
     storage[S3-compatible\nobject storage]
     ai[Optional AI\nmoderation provider]
-    registry[Future registries\nand source hosts]
+    github[GitHub public API]
     external[External contracting,\ninvoicing and payment]
 
     bloei[Bloei.me\nopen-source co-funding network]
 
     visitor -->|reads public records| bloei
     member -->|submits and acts for an organization| bloei
+    client -->|REST reads and delegated commands| bloei
     operator -->|verifies, moderates and operates| bloei
     bloei -->|authentication| oidc
     bloei -->|notices and reminders| mail
     bloei -->|sanitized evidence images| storage
     bloei -.->|optional classification only| ai
-    bloei -.->|future metadata lookup| registry
+    bloei -->|allowlisted public metadata| github
     bloei -->|settlement information; no money movement| external
 ```
 
@@ -92,6 +94,7 @@ external agreements in v1.
 ```mermaid
 flowchart TB
     browser[Browser]
+    apiClient[OAuth API client]
     proxy[Reverse proxy / TLS]
     app[Bloei.me application\nSpring Boot modular monolith]
     jobs[Durable job runner\ninside the application]
@@ -100,9 +103,11 @@ flowchart TB
     oidc[OIDC provider]
     smtp[SMTP]
     ai[Optional AI provider]
+    github[GitHub public API]
     obs[Metrics, logs and alerts]
 
     browser -->|HTTPS: HTML + HTMX| proxy
+    apiClient -->|HTTPS: JSON + bearer token| proxy
     proxy --> app
     app -->|OIDC authorization code flow| oidc
     app --> db
@@ -111,6 +116,7 @@ flowchart TB
     jobs --> db
     jobs --> smtp
     jobs -.-> ai
+    jobs --> github
     app --> obs
     jobs --> obs
 ```
@@ -127,6 +133,7 @@ the same image can run separate replicas without creating another codebase.
 | Application framework | Spring Boot 4 |
 | Module enforcement | Spring Modulith |
 | Web | Spring MVC, Thymeleaf, HTMX, local CSS and minimal JavaScript |
+| Public API | Spring MVC JSON adapters and a source-controlled OpenAPI 3.1 contract |
 | Authentication | Spring Security OAuth2/OIDC client |
 | Database | PostgreSQL |
 | SQL access | Exposed JDBC SQL DSL; no Exposed DAO |
@@ -187,16 +194,20 @@ flowchart LR
     delivery[delivery]
     settlement[settlement]
     moderation[moderation]
+    repositories[repositories]
     communications[communications]
     audit[audit]
 
     organizations --> identity
     catalog --> organizations
+    catalog --> repositories
     proposals --> organizations
     proposals --> catalog
+    proposals --> repositories
     campaigns --> organizations
     campaigns --> catalog
     campaigns --> proposals
+    campaigns --> repositories
     funding --> organizations
     funding --> catalog
     funding --> campaigns
@@ -204,6 +215,7 @@ flowchart LR
     delivery --> campaigns
     delivery --> funding
     delivery --> settlement
+    delivery --> repositories
     moderation --> organizations
     communications -. consumes events .-> organizations
     communications -. consumes events .-> campaigns
@@ -367,6 +379,20 @@ Owns the tamper-evident application audit stream and authorized audit queries.
 Every important command writes an audit fact in the same transaction as the
 business change. Audit payloads use a versioned, allowlisted schema and avoid
 copying raw sensitive evidence.
+
+### 6.12 `repositories`
+
+Owns:
+
+- provider-neutral canonical code repository identity;
+- allowlisted observed metadata and synchronization state;
+- canonical URL history and provider-stable external identifiers;
+- normalized issues, pull requests, commits, and releases; and
+- provider ports, with GitHub as the first read-only implementation.
+
+Catalog, proposal, campaign, and delivery modules own their typed associations
+to repository or external-work IDs. Repository observations cannot command
+those modules or translate provider state into Bloei.me lifecycle changes.
 
 ## 7. Module internals and code organization
 
@@ -554,9 +580,10 @@ Use one PostgreSQL database with a schema per business module where practical:
 
 ```text
 identity.*       organizations.*       catalog.*
-proposals.*      campaigns.*           funding.*
-delivery.*       settlement.*          moderation.*
-communications.* audit.*               platform.*
+repositories.*   proposals.*           campaigns.*
+funding.*        delivery.*            settlement.*
+moderation.*     communications.*       audit.*
+platform.*
 ```
 
 Rules:
@@ -654,6 +681,26 @@ protocol stub. A separate optional Compose profile may run Authentik for a
 production-like smoke test. The convenient local path must not become the only
 tested authentication path.
 
+### 14.2 REST and event interfaces
+
+REST is a separate inbound adapter over application commands and audience-aware
+queries. It publishes no generic entity store and does not make HTTP calls back
+into the same application. The source-controlled OpenAPI 3.1 contract, OAuth
+scopes, ETag policy, idempotency behavior, problem codes, public/private
+projections, and cursor feeds are normative in
+[api-and-integrations.md](api-and-integrations.md).
+
+Public REST controllers expose anonymous read projections. Delegated controllers
+validate an Authentik token intended for `bloei-api`, then pass the authenticated
+person, explicit acting organization, OAuth client, scopes, versions, and
+request metadata into the same command handlers used by HTML forms. Platform-
+operator and moderator decision controllers remain outside the public API
+adapter and OpenAPI document.
+
+An event-feed projection consumes allowlisted durable events. It exposes a
+90-day, at-least-once public feed and an audience-filtered authorized feed using
+opaque cursors. It is not the audit log or a state-reconstruction mechanism.
+
 ## 15. Evidence and object-storage pipeline
 
 ```mermaid
@@ -700,7 +747,8 @@ Jobs include:
 - outbox delivery;
 - notification rendering and SMTP delivery;
 - evidence cleanup; and
-- retention tasks once policy is accepted.
+- retention tasks once policy is accepted; and
+- repository metadata validation, scheduled refresh, and bounded retry.
 
 Every job is safe to run more than once. A delayed job reads current state and
 the authoritative deadline before acting. Notices keep channel, template
@@ -748,12 +796,17 @@ Before pilot launch:
 - sanitize rich text using an allowlist and store the original only where a
   protected moderation or evidence purpose requires it;
 - rate-limit login callbacks, invitations, submissions, comments, reports,
-  uploads, and notification-producing actions;
+  uploads, API clients, event feeds, repository refresh, and notification-
+  producing actions;
 - encrypt transport everywhere and storage through platform-managed keys;
 - keep application, migration, backup, and read-only operational database roles
   separate;
 - never put verification evidence, personal actors, cost centers, or AI input in
   ordinary logs;
+- validate API token audience and scopes, prohibit cookie authentication on API
+  writes, and allow protected browser CORS only for registered client origins;
+- construct repository-provider calls from parsed allowlisted identifiers and
+  never fetch a submitted hostname or follow a redirect outside that provider;
 - make secrets runtime configuration, never image or repository content;
 - scan dependencies and the OCI image, produce an SBOM, and sign release images;
   and
@@ -783,11 +836,14 @@ At minimum:
 - job queue depth, oldest due job, retries, and dead letters;
 - outbox age and notification delivery results;
 - evidence validation failures and storage latency;
+- REST request outcomes, event-feed lag, idempotency conflicts, and OAuth
+  failures by safe bounded category;
+- repository refresh age, provider outcomes, rate limits, and stale records;
 - campaign transition counts and deadline correction events; and
 - AI assessment latency, failure, override, and quarantine rates when enabled.
 
-Do not use organization, person, campaign, or content identifiers as unbounded
-metric labels.
+Do not use organization, person, campaign, repository, or content identifiers
+as unbounded metric labels.
 
 ### Logs and tracing
 
@@ -853,6 +909,14 @@ Q-022.
   evidence submission, acceptance, and role revocation.
 - Contract tests cover OIDC claims, SMTP messages, object storage, exports, and
   the optional AI assessment schema.
+- OpenAPI tests cover representations, RFC 9457 problems, OAuth scopes, ETags,
+  idempotency, public/private projections, and command parity with the web
+  adapter.
+- Repository-provider tests cover URL parsing, SSRF attempts, GitHub rename,
+  archive, rate limit, deletion, timeout, malformed responses, credential
+  redaction, and provider-state isolation.
+- Event-feed tests cover ordering, at-least-once duplicates, visibility,
+  revocation, cursor expiry, and authoritative resynchronization.
 - Migration tests upgrade a representative previous database and verify
   rollback through deployment recovery, not down migrations.
 
@@ -887,6 +951,7 @@ manual review at critical milestones.
 │   ├── delivery/
 │   ├── settlement/
 │   ├── moderation/
+│   ├── repositories/
 │   ├── communications/
 │   └── audit/
 ├── foundation/                  narrow technical and value support
@@ -912,13 +977,15 @@ layer first.
 
 1. **Executable foundation**
    - Gradle/JVM/Spring baseline, licence, formatting, CI, module verification,
-     PostgreSQL migration, bilingual page shell, security headers, and health.
+     PostgreSQL migration, bilingual page shell, REST/OpenAPI conventions,
+     security headers, and health.
 2. **Identity-to-organization slice**
    - OIDC login, provisional organization, membership, verification case,
      activation, public profile, protected operator view, and audit trail.
 3. **Component-to-proposal slice**
    - Canonical component, stewardship assignment, private idea, curation,
-     public proposal, endorsement, and moderation overlay.
+     repository linking, GitHub public metadata, public API projections,
+     proposal, endorsement, and moderation overlay.
 4. **Budget-to-pledge slice**
    - Private budget and ledger, authorization, publishable campaign fixture,
      pledge cap, reservation, fair-share projection, and concurrent-capacity
@@ -937,8 +1004,8 @@ layer first.
      lead-completed status, observability, recovery test, and pilot hardening.
 
 Each slice ends with module tests, PostgreSQL integration tests, an accessible
-browser journey, migration verification, local formatting, changelog update,
-and a Conventional Commit.
+browser journey, matching REST contract test, migration verification, local
+formatting, changelog update, and a Conventional Commit.
 
 ## 24. Architecture decision backlog
 

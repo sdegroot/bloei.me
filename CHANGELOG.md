@@ -50,6 +50,9 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - API and repository-integration scenarios covering delegated OAuth,
   idempotency, authority revocation, event visibility, shared repositories,
   provider failures, external work references, and deferred capabilities.
+- A normative REST, event-feed, repository, GitHub metadata, and future MCP
+  contract with concrete authorization, representations, commands, failure
+  semantics, security boundaries, and verification requirements.
 
 ### Changed
 

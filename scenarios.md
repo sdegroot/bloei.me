@@ -1,6 +1,6 @@
 # Bloei.me product scenarios
 
-Last updated: 2026-08-01
+Last updated: 2026-08-02
 
 These scenarios show how people and organizations use Bloei.me from initial
 registration through funding, delivery, review, and settlement. They supplement

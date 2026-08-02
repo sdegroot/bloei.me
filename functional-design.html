@@ -496,6 +496,7 @@
         <a href="#journey">Journey</a>
         <a href="#roles">Roles</a>
         <a href="#campaign">Campaign</a>
+        <a href="#interfaces">Interfaces</a>
         <a href="#scenarios">Scenarios</a>
         <a href="#questions">Questions</a>
       </nav>
@@ -505,7 +506,7 @@
   <main id="main">
     <div id="top" class="shell hero">
       <div>
-        <p class="eyebrow">Product blueprint · 1 August 2026</p>
+        <p class="eyebrow">Product blueprint · 2 August 2026</p>
         <h1>Fund what should <em>grow.</em></h1>
         <p class="lede">Bloei.me is one public network where verified organizations reserve innovation budgets and co-fund concrete open-source outcomes. It coordinates trust and evidence; money still moves outside the platform.</p>
         <div class="hero-actions">
@@ -693,15 +694,30 @@
       </div>
     </section>
 
+    <section id="interfaces">
+      <div class="shell">
+        <div class="section-heading">
+          <div><p class="eyebrow">08 · Interfaces</p><h2>One domain, several doors.</h2></div>
+          <p>The web interface and REST API use the same commands and authorization. Repository providers contribute observed context only. MCP waits until those contracts have proven stable.</p>
+        </div>
+        <div class="scope-grid">
+          <article class="scope-card surface"><span class="scope-type">REST · V1</span><h3>Public reads, delegated writes.</h3><p>Anonymous clients read public resources. Operator-approved OAuth clients act for signed-in people with current Bloei.me roles, version preconditions, attestations, and idempotency.</p><span class="outcome">Full workflow parity, except platform administration.</span></article>
+          <article class="scope-card surface"><span class="scope-type">Repositories · V1</span><h3>Link code without outsourcing governance.</h3><p>Components link provider-neutral repositories. GitHub public metadata and work items are validated and refreshed, but never change stewardship, scope, delivery, or acceptance.</p><span class="outcome">Read-only GitHub observation; no installation.</span></article>
+          <article class="scope-card surface"><span class="scope-type">MCP · Later</span><h3>Prepare the boundary, defer the protocol.</h3><p>A future remote MCP adapter can expose resources and tools through the same application services, OAuth audiences, and organization authorization.</p><span class="outcome">No MCP endpoint or dependency in v1.</span></article>
+        </div>
+        <p><a href="api-and-integrations.md">Read the complete API and integration contract →</a></p>
+      </div>
+    </section>
+
     <section id="scenarios">
       <div class="shell">
         <div class="section-heading">
-          <div><p class="eyebrow">08 · Scenario explorer</p><h2>How the system behaves.</h2></div>
-          <p>These representative flows cover the main design pressure points. The complete catalogue contains 67 detailed scenarios.</p>
+          <div><p class="eyebrow">09 · Scenario explorer</p><h2>How the system behaves.</h2></div>
+          <p>These representative flows cover the main design pressure points. The complete catalogue contains 76 detailed scenarios.</p>
         </div>
         <div class="scenario-tools">
           <div class="search-wrap"><label for="scenario-search">Filter scenarios</label><input id="scenario-search" data-testid="scenario-search" type="search" placeholder="Try budget, objection, supplier…"></div>
-          <span class="result-count" id="result-count" aria-live="polite">12 scenarios</span>
+          <span class="result-count" id="result-count" aria-live="polite">14 scenarios</span>
         </div>
         <div class="scenario-grid" id="scenario-grid">
           <article class="scenario-card surface" data-search="organization registration identity verify municipality"><span class="scenario-tag">Onboarding</span><h3>A municipality joins</h3><p>An employee signs in, registers or claims the organization, proves identity and account control, accepts terms, and receives delegated roles.</p></article>
@@ -716,16 +732,18 @@
           <article class="scenario-card surface" data-search="settlement note completed payment lead supplier payee invoice"><span class="scenario-tag">Settlement</span><h3>The lead closes the note</h3><p>Bloei.me states what each pledger contributes, not to whom. The lead marks external settlement complete; pledgers do not mark payment.</p></article>
           <article class="scenario-card surface" data-search="moderation ai warning quarantine appeal"><span class="scenario-tag">Safety</span><h3>AI flags risky wording</h3><p>An optional assistant warns or prioritizes; temporary quarantine remains reversible and human-reviewed. It never governs campaigns.</p></article>
           <article class="scenario-card surface" data-search="legal contract municipality signed agreement trust"><span class="scenario-tag">Later</span><h3>A municipality needs a contract</h3><p>The trust-based pilot can later require a versioned external signed agreement before a pledge activates.</p></article>
+          <article class="scenario-card surface" data-search="rest api oauth delegated pledge idempotency event feed"><span class="scenario-tag">API</span><h3>An integration acts for a user</h3><p>An approved OAuth client receives only delegated authority. High-impact commands carry exact versions, confirmation, and idempotency.</p></article>
+          <article class="scenario-card surface" data-search="github repository issue pull request commit release metadata"><span class="scenario-tag">Repository</span><h3>Code remains connected</h3><p>Provider-neutral links and refreshed public GitHub observations connect components and delivery evidence without importing GitHub governance.</p></article>
         </div>
-        <p><a href="scenarios.md">Read all 67 detailed scenarios →</a></p>
+        <p><a href="scenarios.md">Read all 76 detailed scenarios →</a></p>
       </div>
     </section>
 
     <section id="questions">
       <div class="shell">
         <div class="section-heading">
-          <div><p class="eyebrow">09 · Open decisions</p><h2>Designed enough to build, honest about the unknowns.</h2></div>
-          <p>Thirty-four questions remain. They are deliberately tracked outside the accepted decision register, with a current inclination and a trigger for resolving each one.</p>
+          <div><p class="eyebrow">10 · Open decisions</p><h2>Designed enough to build, honest about the unknowns.</h2></div>
+          <p>Thirty-three questions remain. They are deliberately tracked outside the accepted decision register, with a current inclination and a trigger for resolving each one.</p>
         </div>
         <div class="question-summary"><p>Five groups below summarize the register. Legal review is required before relying on enforceability, procurement, privacy, or regulatory conclusions.</p><a class="button secondary" href="open-questions.md">Open full register</a></div>
         <div class="question-groups">
@@ -733,14 +751,14 @@
           <details><summary>Governance and moderation · 5</summary><ul><li>Suspension and appeals</li><li>Operational staffing and service levels</li><li>AI moderation launch scope</li><li>Forced-failure authority</li></ul></details>
           <details><summary>Finance, contracts, and law · 6</summary><ul><li>Legal meaning of pledges</li><li>Municipal agreements and procurement</li><li>Retention and privacy roles</li><li>Tax and invoicing guidance</li></ul></details>
           <details><summary>Service sustainability · 3</summary><ul><li>Hosted operator and governance</li><li>Long-term platform funding</li><li>Funding/support hand-off</li></ul></details>
-          <details><summary>Implementation · 14</summary><ul><li>Authentik configuration and sessions</li><li>Infrastructure, PostgreSQL, jobs, and storage</li><li>Identifiers, module layout, and authoring format</li><li>Evidence processing and observability</li><li>CI, supply chain, integrations, and split-budget evolution</li></ul></details>
+          <details><summary>Implementation · 13</summary><ul><li>Authentik configuration and sessions</li><li>Infrastructure, PostgreSQL, jobs, and storage</li><li>Identifiers, module layout, and authoring format</li><li>Evidence processing and observability</li><li>CI, supply chain, providers, and split-budget evolution</li></ul></details>
           <details><summary>Already decided</summary><ul><li>One canonical network</li><li>Maximum price, not a range</li><li>Lead plus optional co-suppliers</li><li>Negative consent after objection</li><li>Payee-free settlement notes</li></ul></details>
         </div>
 
         <div class="v1-strip" aria-label="Release boundary">
-          <div class="v1-card surface"><strong>Build for v1</strong><span>Organization verification, roles, budgets, proposals, campaigns, pledges, delivery review, settlement notes, moderation basics, and audit history.</span></div>
+          <div class="v1-card surface"><strong>Build for v1</strong><span>Core funding workflow, REST parity, cursor feeds, repository links, GitHub public observations, moderation basics, and audit history.</span></div>
           <div class="v1-card surface"><strong>Prepare, don’t expose yet</strong><span>Multiple budgets per pledge, four-eyes authorization, signed-contract requirement, and provider-neutral AI integration points.</span></div>
-          <div class="v1-card surface"><strong>Learn before committing</strong><span>Programs, platform revenue, external source synchronization, advanced AI, federation, and any future tenancy model.</span></div>
+          <div class="v1-card surface"><strong>Learn before committing</strong><span>MCP, GitHub writes and private access, webhooks, programs, platform revenue, advanced AI, federation, and future tenancy.</span></div>
         </div>
       </div>
     </section>
@@ -749,7 +767,7 @@
   <footer>
     <div class="shell footer-inner">
       <div><a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">↗</span>bloei.me</a><p>Functional design derived from the living product plan and accepted decisions. It explains intended behavior; the Markdown documents remain authoritative.</p></div>
-      <nav class="doc-links" aria-label="Design documents"><a href="plan.md">Plan</a><a href="decisions.md">Decisions</a><a href="scenarios.md">Scenarios</a><a href="legal.md">Legal</a><a href="open-questions.md">Open questions</a></nav>
+      <nav class="doc-links" aria-label="Design documents"><a href="plan.md">Plan</a><a href="decisions.md">Decisions</a><a href="api-and-integrations.md">API</a><a href="scenarios.md">Scenarios</a><a href="legal.md">Legal</a><a href="open-questions.md">Open questions</a></nav>
     </div>
   </footer>
 

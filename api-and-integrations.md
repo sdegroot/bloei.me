@@ -1,0 +1,466 @@
+# Bloei.me API and integration contract
+
+Status: Accepted functional contract
+
+Last updated: 2026-08-02
+
+This document defines the v1 public REST API, provider-neutral code-repository
+model, first GitHub metadata adapter, cursor event feeds, and the boundary for a
+later MCP adapter. It applies the product rules in [plan.md](plan.md), the
+accepted decisions in [decisions.md](decisions.md), and the module and security
+boundaries in [solution-architecture.md](solution-architecture.md).
+
+## 1. Interface boundary
+
+Bloei.me has three inbound interface classes:
+
+1. The server-rendered web interface for people.
+2. The `/api/v1` REST interface for public reuse and delegated-user clients.
+3. A future remote MCP interface for AI-enabled clients.
+
+The web and REST adapters call the same application commands and queries. The
+web application does not call itself through HTTP. MCP is not present in v1 and
+will later call application APIs directly rather than proxying REST.
+
+The public REST API covers every organization, component-maintainer, supplier,
+funder, report-submission, and appeal-submission workflow available through the
+web interface. It deliberately excludes:
+
+- organization identity verification and account-control review;
+- platform participation suspension and restoration;
+- moderation decisions and appeal handling;
+- security and operational diagnostics;
+- exceptional campaign, identity, deadline, merge, or audit operations; and
+- management of OAuth clients, secrets, or deployment configuration.
+
+These excluded operations remain available only through protected internal
+operator or moderator interfaces.
+
+## 2. HTTP and representation conventions
+
+### Base and media types
+
+- The first stable base path is `/api/v1`.
+- Successful representations use `application/json` encoded as UTF-8.
+- Errors use `application/problem+json` following RFC 9457.
+- The source-controlled OpenAPI 3.1 document is served at
+  `/api/v1/openapi.json`; generated controller verification must match it.
+- Breaking removals, renamed fields, changed meanings, or narrowed enum values
+  require `/api/v2`. Additive optional fields and new endpoints may remain in
+  v1.
+
+### Value types
+
+```json
+{
+  "id": "opaque-string-id",
+  "amount": { "currency": "EUR", "minorUnits": 8000000 },
+  "percentage": { "basisPoints": 2750 },
+  "occurredAt": "2026-08-02T12:00:00Z",
+  "deadline": {
+    "localDate": "2026-09-30",
+    "timezone": "Europe/Amsterdam",
+    "instant": "2026-09-30T22:00:00Z"
+  }
+}
+```
+
+- IDs are opaque strings and never encode an entity type or authorization
+  information.
+- Money always carries ISO currency and signed 64-bit minor units.
+- Percentages use integer basis points; JSON floating-point percentages are not
+  accepted.
+- Instants use RFC 3339 UTC. Campaign deadlines also expose their immutable
+  local date and IANA timezone.
+- Enum values are lowercase kebab-case and are stable within an API version.
+- User-authored text includes its authored-language tag where known.
+
+### Collections and links
+
+Collection requests accept `limit` and `cursor`:
+
+- default limit: `50`;
+- maximum limit: `200`;
+- cursor: opaque and tied to the collection's stable sort order; and
+- response links: `self`, `next`, and `previous` where available.
+
+Every representation includes its canonical API `self` link. Public resources
+also include their canonical HTML link. Clients must not construct URLs from
+IDs or slugs.
+
+### Caching and correlation
+
+- Read representations provide an ETag derived from their API projection
+  version, not from serialized bytes or a database timestamp alone.
+- Conditional GET supports `If-None-Match` and `304 Not Modified`.
+- Mutable resources expose an ETag and require `If-Match` when a command depends
+  on a version previously reviewed by the actor.
+- Bloei.me accepts or assigns `X-Request-Id` and returns it in responses and
+  problem details. It is correlation data, not an idempotency guarantee.
+
+## 3. OAuth and delegated authority
+
+### OAuth clients
+
+Authentik is the authorization server for hosted Bloei.me. A third-party client
+must be registered by a platform operator after review of:
+
+- client name and responsible organization;
+- public or confidential client type;
+- exact redirect URIs;
+- requested Bloei.me scopes;
+- privacy and support links;
+- allowed browser origins where applicable; and
+- incident and removal contact.
+
+V1 supports authorization code with PKCE. Tokens must be issued for the
+`bloei-api` audience. Dynamic client registration, device flow, password grants,
+personal access tokens, client credentials, and organization service accounts
+are not supported.
+
+### Scopes
+
+- `bloei:read`: read protected resources visible to the delegated person.
+- `bloei:write`: perform non-financial organization, maintainer, supplier,
+  reporting, and appeal-submission commands.
+- `bloei:finance`: read budgets and perform budget, pledge, amendment-consent,
+  and delivery-acceptance ballot commands.
+
+Public reads require no token and no scope. A scope limits what the OAuth client
+may request; it never grants an application role. Every protected command also
+checks current person, organization membership, role, budget authorization,
+platform participation, conflicts, approval policy, and object state.
+
+Roles and memberships are not accepted from request claims as durable
+authority. Revocation or suspension therefore takes effect on the next API
+command even when the access token remains valid.
+
+### Acting organization
+
+Organization authority is always explicit:
+
+- organization-owned resources are nested below `/organizations/{id}`; or
+- a campaign command body contains an `actingOrganizationId` where the target
+  is not organization-nested.
+
+There is no ambient organization header or session default. Bloei.me verifies
+that the delegated person may perform the exact action for the supplied
+organization.
+
+## 4. Public resource API
+
+Anonymous public reads include:
+
+| Resource family | Primary collection |
+| --- | --- |
+| Components and stewardship | `GET /api/v1/components` |
+| Code repositories | `GET /api/v1/repositories` |
+| Organizations | `GET /api/v1/organizations` |
+| Programs and curated collections | `GET /api/v1/programs` when programs are enabled |
+| Proposals and endorsements | `GET /api/v1/proposals` |
+| Campaigns and supplier teams | `GET /api/v1/campaigns` |
+| Campaign progress and evidence | nested below `/campaigns/{id}` |
+| Review, objections, and organization positions | nested below `/campaigns/{id}/review` |
+| Final contributions and settlement | nested below `/campaigns/{id}/settlement` |
+| Public change events | `GET /api/v1/events` |
+
+Published restrictions use the same public tombstone rules as HTML pages. Raw
+moderated text, personal actors, budgets, cost centers, verification evidence,
+protected cases, settlement-note completion, and security data never appear in
+anonymous representations.
+
+## 5. Protected queries and commands
+
+### Protected queries
+
+The delegated-user API includes:
+
+- `GET /api/v1/me` for person preferences, memberships, current roles, and
+  available organization contexts;
+- `GET /api/v1/me/events` for the authorized cursor feed;
+- protected organization membership and role views for organization
+  administrators;
+- organization-private budget, authorization, reservation, and ledger views;
+- private idea, supplier-formation, campaign-draft, amendment, moderation-
+  notice, report, and appeal views available to the actor; and
+- protected settlement-note completion state for eligible lead suppliers;
+  operator access remains in the internal interface.
+
+### Command families
+
+The REST contract uses resource creation and explicit domain-command
+subresources rather than a generic state field.
+
+| Capability | Representative operations |
+| --- | --- |
+| Organization administration | register or claim organization, maintain profile, invite or remove member, assign or revoke role, accept terms |
+| Components | propose component, maintain metadata, claim or transfer stewardship, add or remove repository link |
+| Programs | create or edit program and curate its canonical component, proposal, and campaign references when enabled |
+| Ideas and proposals | create/edit/submit idea, curate or publish proposal, endorse, comment, close or merge proposal |
+| Supplier formation | create/revise/withdraw supplier draft, confirm participation, select supplier team |
+| Campaigns | create/edit/publish campaign, clarify terms, start early, cancel, propose or resolve failure |
+| Budgets | create/amend/close budget, authorize funder, transfer eligible pledge backing |
+| Pledges | place/change/withdraw pledge before start and place or increase eligible late pledge |
+| Amendments | propose, confirm supplier participation, consent or reject, withdraw, expire |
+| Delivery | publish progress, add work references, upload sanitized evidence, submit/resubmit delivery and final price |
+| Review | object, respond, withdraw objection, cast or change organization ballot |
+| Settlement | export contributions, complete or request reopening of a settlement note |
+| Safety | submit report, respond to notice where allowed, file appeal |
+
+Each concrete operation receives its own OpenAPI operation identifier, request
+schema, required OAuth scope, application authority, state precondition, audit
+event, and problem-code set. Operator-only command handlers have no public REST
+controller or OpenAPI operation.
+
+### High-impact command envelope
+
+Financial, governance, delivery, and terminal commands require:
+
+```json
+{
+  "actingOrganizationId": "organization-id",
+  "termsVersionId": "exact-reviewed-version",
+  "confirmation": {
+    "confirmed": true,
+    "statementVersion": "pledge-confirmation-v1"
+  }
+}
+```
+
+The domain-specific fields appear alongside this envelope. Bloei.me stores the
+actor, organization, OAuth client, scopes, exact terms and statement versions,
+request body hash, idempotency key, timestamp, and policy result. A generic
+`confirmed` value without the expected statement and terms versions is invalid.
+
+### Idempotency
+
+`Idempotency-Key` is required for commands that create commitments, reserve or
+consume budget, change protected terms, submit delivery, record an objection or
+ballot, or enter a terminal state.
+
+- Keys are scoped to OAuth client, delegated person, acting organization, and
+  operation.
+- The server stores the canonical request hash and committed response for 24
+  hours.
+- An identical retry returns the original status and representation.
+- Reuse with a different canonical request returns `409` with problem code
+  `idempotency-key-reused`.
+- Processing and response persistence share the business transaction whenever
+  the command changes PostgreSQL state.
+
+## 6. Responses and failures
+
+Normal creation returns `201 Created` with `Location`. A synchronous command
+returns `200` with the resulting projection. Repository metadata resolution and
+other deliberately asynchronous integration work returns `202 Accepted` with
+a status-resource link. Empty successful removal returns `204`.
+
+Problem responses contain:
+
+```json
+{
+  "type": "https://bloei.me/problems/stale-resource",
+  "title": "The resource changed",
+  "status": 412,
+  "code": "stale-resource",
+  "detail": "Review the current campaign version before trying again.",
+  "instance": "/api/v1/requests/request-id",
+  "requestId": "request-id",
+  "errors": []
+}
+```
+
+Stable status use includes:
+
+- `400` malformed syntax or unsupported query shape;
+- `401` missing, invalid, expired, or wrong-audience token;
+- `403` insufficient OAuth scope or current application authority;
+- `404` absent resource or a protected resource the actor may not discover;
+- `409` domain-state, uniqueness, deadline, capacity, or idempotency conflict;
+- `412` failed ETag precondition;
+- `422` structurally valid command rejected by named domain validation;
+- `428` missing required `If-Match` or `Idempotency-Key` precondition; and
+- `429` rate limit with a bounded retry indication.
+
+Problem details do not reveal protected membership, budget, verification,
+moderation, or security facts to an unauthorized client.
+
+## 7. Cursor event feeds
+
+### Feeds
+
+- `GET /api/v1/events` exposes only allowlisted public-change events.
+- `GET /api/v1/me/events` exposes public events plus protected events the
+  delegated person may currently access.
+
+The authorized feed checks current visibility when read. It is not the raw
+audit stream and does not make past protected access recoverable after
+revocation.
+
+### Envelope
+
+```json
+{
+  "eventId": "opaque-event-id",
+  "type": "campaign.delivery-submitted",
+  "occurredAt": "2026-08-02T12:00:00Z",
+  "subject": { "type": "campaign", "id": "campaign-id" },
+  "visibility": "public",
+  "resource": "/api/v1/campaigns/campaign-id",
+  "cursor": "opaque-next-position"
+}
+```
+
+- Delivery is at least once; clients deduplicate by `eventId`.
+- Ordering is deterministic by committed event position.
+- Event envelopes point to current resource representations instead of copying
+  mutable or protected payloads.
+- The delivery projection retains 90 days. Durable business and audit retention
+  is governed separately.
+- A client whose cursor expired receives `410` and resynchronizes through
+  resource collections before starting from the current feed position.
+- Outbound webhook registration, delivery, replay, and filtering are not in v1.
+
+## 8. Repository and external-work model
+
+### Canonical repository
+
+The `repositories` module owns a canonical `CodeRepository` with:
+
+- opaque Bloei.me ID;
+- provider: `github`, `gitlab`, `forgejo`, or `other`;
+- normalized provider host and canonical HTTPS URL;
+- provider-stable external ID where an adapter supports it;
+- observed owner path and repository name;
+- observed `public` visibility in v1;
+- archived state, default branch, last push, and licence SPDX observation;
+- synchronization status, last attempt, last success, next attempt, and safe
+  categorized error; and
+- canonical-URL history for provider renames.
+
+The first synchronization statuses are `not-monitored`, `pending`, `current`,
+`stale`, `rate-limited`, `unavailable`, and `invalid`.
+
+### Component association
+
+A `ComponentRepositoryLink` belongs to the catalog module and contains:
+
+- component and repository IDs;
+- purpose: `primary-source`, `additional-source`, `documentation`,
+  `infrastructure`, `example`, `mirror`, or `other`;
+- whether it is the component's primary repository;
+- maintainer-provided public note; and
+- creator organization, actor, and audit timestamps.
+
+A component may have many repository links and at most one marked primary. One
+repository may serve many components, including monorepository children. A
+component link is curator-owned and is not deleted automatically when provider
+metadata changes.
+
+### External work
+
+The repository module normalizes `ExternalWorkItem` records of kind `issue`,
+`pull-request`, `commit`, `release`, or `other`. A proposal, campaign, progress
+entry, or evidence version owns its association to an external-work ID and a
+relation such as `origin`, `implements`, `progress`, or `evidence`.
+
+Observed title, open/closed state, canonical URL, commit hash or provider key,
+and freshness are context only. An external state change never transitions a
+Bloei.me proposal, campaign, objection, delivery, or acceptance outcome.
+
+## 9. GitHub provider behavior
+
+V1 observes public `github.com` repositories and public work items. It uses no
+GitHub App installation, private-repository permission, webhook, or write
+scope.
+
+### Validation and refresh
+
+1. Parse a submitted GitHub HTTPS URL locally into an allowlisted repository or
+   work-item shape.
+2. Never request the submitted host. Construct requests only against the fixed,
+   configured GitHub API base URL.
+3. Persist the curated association and a `pending` observation, enqueue
+   immediate validation, and return its status link.
+4. On success, store only the allowlisted structured fields and provider-stable
+   ID.
+5. Refresh current records every 24 hours with jitter and conditional requests.
+6. Allow authorized maintainers or suppliers to request one rate-limited
+   recheck.
+
+A deployment may configure one read-only GitHub API credential to improve rate
+limits. Anonymous access remains a supported low-volume fallback. Secrets,
+provider response headers, and raw payloads do not enter public records or
+ordinary logs.
+
+### Failure behavior
+
+- A rename updates the canonical URL by stable provider ID and retains history.
+- Archive state becomes a warning, not a Bloei.me lifecycle transition.
+- `404` or provider deletion marks the observation unavailable but preserves
+  the curated association and last successful metadata.
+- `403`, `429`, provider reset information, timeouts, and `5xx` responses use
+  bounded backoff and do not create a public platform outage.
+- An invalid supported URL remains visible only to its authorized editor until
+  corrected or removed.
+- Unsupported GitLab, Forgejo, and other links can be curator-published with
+  `not-monitored` status; Bloei.me never fetches their arbitrary hosts in v1.
+
+## 10. MCP boundary
+
+V1 contains no MCP route, advertised capability, client library, server SDK, or
+MCP-specific domain object.
+
+A later remote MCP adapter must:
+
+- use Streamable HTTP;
+- implement protected-resource discovery and audience-bound OAuth;
+- expose public and authorized Bloei.me records as resources or read-only tools;
+- map state-changing tools to the same application commands, scopes,
+  attestations, idempotency, and audit policy as REST;
+- perform current organization authorization for every tool call;
+- avoid token passthrough to GitHub or any other provider; and
+- contain no embedded model or provider-specific AI decision authority.
+
+MCP receives a separate threat model and decision before implementation.
+
+## 11. Security and operational requirements
+
+- Apply separate anonymous, client, person, organization, and command rate
+  limits with stable safe error codes.
+- Restrict protected browser CORS to operator-approved client origins. Public
+  GET and HEAD responses may use `Access-Control-Allow-Origin: *` without
+  credentials.
+- Validate token issuer, signature, expiry, audience, client, and scopes.
+- Reject all write requests with browser cookies at API routes; REST uses bearer
+  tokens while the HTML interface retains CSRF-protected sessions.
+- Never make an outbound request to a user-supplied hostname or redirect outside
+  the provider allowlist.
+- Limit response sizes, filter parameters, upload sizes, and external metadata
+  lengths before storage or rendering.
+- Record API and provider metrics without unbounded organization, person,
+  repository, or content labels.
+- Audit client admission, scope changes, sensitive commands, repository-link
+  changes, manual refresh, provider-ID changes, and exceptional replay.
+
+## 12. Verification contract
+
+Implementation must cover:
+
+- OpenAPI schema and backwards-compatibility checks;
+- anonymous versus protected projection tests for every resource family;
+- OAuth issuer, audience, scope, PKCE-client, revocation, and current-role tests;
+- web/API application-command parity without HTTP self-calls;
+- ETag, conditional GET, stale `If-Match`, idempotent retry, changed-body key
+  reuse, and concurrent command tests;
+- exact high-impact terms and confirmation storage;
+- public and authorized feed ordering, duplication, cursor expiry, visibility,
+  and role-revocation tests;
+- provider URL parsing and SSRF tests including credentials, ports, Unicode,
+  encoded separators, redirects, and lookalike hosts;
+- GitHub success, rename, archive, `404`, rate limit, timeout, `5xx`, stale
+  metadata, malformed payload, and credential-redaction tests;
+- monorepository and multi-repository associations;
+- external-work references that never drive campaign transitions; and
+- build/package tests proving no MCP endpoint, GitHub write permission, private-
+  repository credential, or public platform-admin controller exists in v1.

@@ -2,7 +2,7 @@
 
 Status: Living register
 
-Last updated: 2026-08-01
+Last updated: 2026-08-02
 
 This register contains product, operational, implementation, and legal choices
 that have not been accepted yet. Accepted choices belong in
