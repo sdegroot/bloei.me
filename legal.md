@@ -2,7 +2,7 @@
 
 Status: Exploratory working document
 
-Last updated: 2026-08-01
+Last updated: 2026-08-20
 
 This document records the current product assumptions, known legal questions,
 and intended review work for Bloei.me. It is not legal advice and does not claim
@@ -35,8 +35,8 @@ internal authority and applicable process.
 
 ## Functional meaning of a pledge
 
-Bloei.me treats a pledge as an organization-owned, conditional platform
-commitment:
+Bloei.me treats a pledge as a recorded, organization-owned funding commitment
+with conditions defined by the platform workflow:
 
 - It publicly identifies the funding organization and its maximum cap.
 - It reserves private organization budget.
@@ -94,9 +94,10 @@ policy, and applicable rules. Open-source publication does not itself establish
 an exemption.
 
 Bloei.me must not display a claim that a campaign or pledge is “procurement
-compliant.” Each organization makes its own assessment. One organization's
-legal basis does not automatically cover another organization in the same
-campaign.
+compliant.” Each organization makes its own assessment and records a versioned
+confirmation of responsibility for its procurement route, internal approvals,
+and legal review. One organization's legal basis does not automatically cover
+another organization in the same campaign.
 
 Before broader municipal use, specialist counsel and public procurement
 professionals should review at least:
@@ -133,9 +134,12 @@ careful factual language and retain versioned evidence.
 
 ## Future signed-contract capability
 
-A later release may let the platform, an organization, or a budget require an external
-signed agreement before a pledge becomes effective. This is prepared for but is
-not built in v1.
+A later release may let the platform, an organization, or a budget require an
+external signed agreement before a pledge becomes effective. V1 always uses
+`contract not required`; it adds no agreement persistence, upload, signature,
+or activation gate. Implementation begins only from a concrete participant
+requirement that identifies parties, procurement route, signing system,
+precedence, and evidence.
 
 The future policy should support:
 
@@ -203,15 +207,42 @@ limitation, and privacy by design and default. In practice this means:
   history where there is a documented lawful basis
 - Leave a public tombstone when exceptional redaction is necessary
 
-The hosted service and separate self-hosted deployments may have different
-controller, joint-controller, or processor relationships among the deployment
-operator and participating organizations. Component stewardship, supplier,
-funder, moderator, and program-curator labels do not assign those legal roles by
-themselves. The actual purposes, means, contracts, and deployment arrangement
-require specialist review before launch. The same review must establish lawful
-bases, privacy notices, data-subject request handling, retention schedules,
-processor agreements, breach procedures, and whether a data-protection impact
-assessment is required.
+The hosted pilot's working position treats the deployment operator as controller
+for core platform purposes, participating organizations as independent
+controllers for their own purposes, and instructed infrastructure providers as
+processors. It does not assume blanket joint controllership. A self-hosted
+operator assumes deployment-level controller responsibilities. Component
+stewardship, supplier, funder, moderator, and future program-curator labels do
+not assign those legal roles by themselves. Specialist review must confirm the
+actual purposes, means, contracts, lawful bases, privacy notices, data-subject
+request handling, processor agreements, breach procedures, and whether a data-
+protection impact assessment is required.
+
+### Working retention schedule
+
+The pilot applies category-specific defaults while specialist review remains
+open:
+
+- public campaign, proposal, component, and organization-attributed history:
+  service lifetime, with review when the hosted service closes;
+- core campaign, pledge, budget-allocation, settlement, and audit records: seven
+  years after terminal state;
+- organization identity decisions and snapshots: active life plus five years;
+- raw identity-verification evidence: no more than 90 days after the decision;
+- membership and authority history: two years after the relationship ends;
+- dismissed low-risk moderation material: six months; ordinary decided cases:
+  two years; serious, appealed, fraud, or safety cases: five years;
+- raw authentication, access, and security logs: 90 days; derived security
+  summaries: one year; confirmed incident records: five years;
+- notification delivery diagnostics: 90 days; idempotency records: 24 hours;
+  and rolling backups: 35 days.
+
+Successful and rejected raw image uploads are deleted immediately after
+terminal processing. Abandoned chunks expire after 24 hours. Sanitized accepted
+evidence and public moderation tombstones follow their parent public record.
+A documented legal hold suspends deletion only for its recorded scope and
+reason. Backup expiry eventually applies deletions without selectively editing
+immutable backup sets.
 
 ## Content moderation and AI assistance
 
@@ -229,13 +260,14 @@ for reports, actions, automation, accuracy, error rates, safeguards, complaints,
 and reversals. Campaign tombstones and aggregate reporting must not expose
 reporters, protected originals, personal actors, or fraud and security evidence.
 
-AI moderation remains assistive. A model can recommend or cause a reversible
-temporary quarantine through deterministic policy, but it cannot impose final
-organization sanctions or decide funding and delivery governance. Staff who
-operate and review the system need appropriate policy, language, safety, and AI
+AI moderation remains a future assistive capability and is not implemented in
+v1. A future model may warn, classify, prioritize, highlight, summarize, or
+draft private moderator text, but it cannot impose restrictions, final
+organization sanctions, appeals, or funding and delivery decisions. Staff who
+operate and review it need appropriate policy, language, safety, and AI
 literacy. Provider contracts, processing locations, retention, training use,
 security, model changes, performance testing, and incident handling require
-review before enabling a managed classifier.
+review before enabling a classifier.
 
 The AI Act classification and duties applicable to Bloei.me as a deployer or
 possible provider must be assessed against the actual selected model,
@@ -243,6 +275,15 @@ integration, intended purpose, and deployment. The current design does not
 claim that moderation assistance is high-risk or exempt. AI-generated public
 decision text receives human editorial review; automated involvement is
 disclosed to affected users in moderation notices.
+
+## Service-support boundary
+
+Bloei.me supports accounts, verification, budgets, pledges, moderation,
+campaigns, evidence, and settlement records within its own workflow. Component
+product questions, bugs, feature support, and vulnerability reports are routed
+to maintainer-owned systems displayed by Bloei.me. The platform does not proxy
+those tickets, inspect private vulnerability reports, or promise a maintainer's
+response time.
 
 ## Platform terms and records needed before launch
 

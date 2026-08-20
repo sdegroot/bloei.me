@@ -1139,3 +1139,55 @@ superseded.
   day decision. Appeals target three-business-day acknowledgement and a 14-day
   decision, with one reasoned 14-day extension. Failure is irreversible once
   reservations have been released.
+
+## D-077 — Fix the pilot commercial and support boundary
+
+- **Date:** 2026-08-20
+- **Status:** Accepted; resolves Q-013, Q-017, and Q-020 and narrows Q-012 and
+  Q-014
+- **Decision:** Describe a pledge as a recorded organizational funding
+  commitment without claiming that Bloei.me forms or determines an enforceable
+  contract. V1 always uses `contract not required` and implements no agreement
+  upload or signature workflow. Bloei.me publishes factual coordination and
+  selection records but no procurement-compliance claim; each pledger confirms
+  responsibility for its own approvals, procurement route, and legal review.
+  Settlement displays currency and net amounts but does not calculate VAT, name
+  a payee, allocate supplier invoices, or give tax advice. Bloei.me supports its
+  own funding workflow and routes component bugs, product support, and security
+  reports to maintainer-owned channels.
+- **Why:** Neutral, auditable records support the trust-based pilot without
+  turning product behavior into unsupported contract, procurement, tax, or
+  maintainer-service claims.
+- **Consequences:** Specialist review still determines final launch terms and
+  legal effect. Future external-agreement support starts only from a concrete
+  pilot requirement identifying parties, procurement route, signing system,
+  precedence, and evidence. Bloei.me never proxies or promises a maintainer's
+  response time.
+
+## D-078 — Adopt a reviewable pilot data-governance schedule
+
+- **Date:** 2026-08-20
+- **Status:** Accepted working policy; narrows Q-015 and Q-016 pending legal
+  review
+- **Decision:** The hosted operator acts as controller for core platform
+  purposes. Participating organizations act as independent controllers for
+  their own purposes, and vendors are processors where they act only on
+  instructions; do not assume blanket joint controllership. A self-hosted
+  operator assumes the deployment-level controller responsibilities. Retain
+  public history for the service lifetime subject to review, core campaign and
+  financial audit records for seven years, organization identity decisions for
+  active life plus five years, raw verification evidence for at most 90 days,
+  membership and authority history for two years, moderation data by severity
+  for six months, two years, or five years, raw security logs for 90 days and
+  summaries for one year, and incidents for five years. Retain notification
+  delivery diagnostics for 90 days, idempotency records for 24 hours, and
+  rolling backups for 35 days.
+- **Why:** Category-specific periods preserve public accountability and
+  financial auditability while avoiding indefinite retention of identity,
+  actor, moderation, and operational data.
+- **Consequences:** Legal holds suspend deletion with a recorded scope and
+  reason. Successful and rejected raw image uploads are deleted immediately
+  after terminal processing; abandoned chunks expire after 24 hours. Public
+  tombstones and sanitized accepted evidence follow their parent public record.
+  Provider selection, lawful bases, data-subject handling, processor terms,
+  and final periods remain launch legal-review items.

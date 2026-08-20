@@ -45,30 +45,21 @@ the item to the resolved log at the bottom of this document.
 ### Q-012 — When does a pledge become legally binding, if at all?
 
 - **Decision horizon:** Legal review
-- **Current inclination:** Run the initial pilot on verified-organization trust,
-  explicit confirmations, and complete audit records without claiming that
-  Bloei.me itself forms or enforces the supplier contract.
+- **Current inclination:** Call a pledge a recorded organizational funding
+  commitment, require versioned authority and intent confirmation, and avoid
+  claiming that Bloei.me forms, enforces, or determines a supplier contract.
 - **Why it remains open:** The platform records an organization-to-campaign
   commitment but deliberately does not name a payee in its settlement note.
 - **Decision trigger:** Legal review before public launch or any claim of
   enforceability.
 
-### Q-013 — What external agreement supports municipal expenditure?
-
-- **Decision horizon:** Legal review; deferred capability
-- **Current inclination:** Later allow a campaign to require a versioned,
-  externally signed agreement before a pledge activates.
-- **Why it remains open:** The appropriate parties, signatures, procurement
-  route, supplier-team structure, and precedence over campaign terms vary.
-- **Decision trigger:** A pilot municipality requires contractual evidence for
-  budget authorization.
-
 ### Q-014 — How is procurement responsibility explained and evidenced?
 
 - **Decision horizon:** Legal review
 - **Current inclination:** Bloei.me provides transparent coordination records
-  and selection rationale but does not represent supplier selection as a public
-  procurement procedure.
+  and selection rationale but no compliance label. Each pledger records a
+  versioned confirmation that its organization remains responsible for its
+  procurement route, internal approvals, and legal assessment.
 - **Why it remains open:** Aggregation, joint commissioning, subsidy, conflict,
   and tender obligations depend on the participating bodies and campaign.
 - **Decision trigger:** Legal review of the first public-sector campaign.
@@ -76,9 +67,11 @@ the item to the resolved log at the bottom of this document.
 ### Q-015 — Which exact records and retention periods apply?
 
 - **Decision horizon:** Launch blocker and legal review
-- **Current inclination:** Define separate schedules for public campaign
-  history, organization identity snapshots, protected verification evidence,
-  moderation cases, security logs, and future agreements.
+- **Current inclination:** Apply D-078's category-specific pilot schedule:
+  service-lifetime public history; seven-year core audit; active-life plus five-
+  year identity decisions; 90-day raw verification evidence; two-year authority
+  history; severity-based moderation; bounded logs, incidents, notifications,
+  idempotency records, uploads, and 35-day backups.
 - **Why it remains open:** Audit value, privacy minimization, limitation
   periods, procurement records, and self-hosted responsibilities differ.
 - **Decision trigger:** Complete the record inventory and privacy schedule.
@@ -86,32 +79,24 @@ the item to the resolved log at the bottom of this document.
 ### Q-016 — What are the controller and processor roles?
 
 - **Decision horizon:** Legal review
-- **Current inclination:** Assess each processing purpose separately for hosted
-  Bloei.me and document self-hosted operator responsibilities rather than using
-  one blanket label.
+- **Current inclination:** Treat the hosted operator as controller for core
+  purposes, participant organizations as independent controllers for their own
+  purposes, and instructed vendors as processors. Avoid blanket joint control;
+  a self-hosted operator assumes deployment-level controller responsibility.
 - **Why it remains open:** Identity verification, public commitments,
-  moderation, AI assistance, and hosting can involve different roles.
-- **Decision trigger:** Select hosting and AI providers and draft privacy terms.
-
-### Q-017 — What tax and invoicing guidance may Bloei.me display?
-
-- **Decision horizon:** Pilot decision and legal review
-- **Current inclination:** State only that settlement and invoicing happen
-  outside Bloei.me; avoid calculating VAT, naming a payee, or prescribing how
-  suppliers divide invoices.
-- **Why it remains open:** Funders may still need practical export fields and
-  explanatory language without the platform giving incorrect tax advice.
-- **Decision trigger:** Design the settlement-note export with pilot finance
-  teams.
+  moderation, and hosting can involve different roles; any future AI provider
+  adds a separate review before enablement.
+- **Decision trigger:** Select hosted processors and draft the privacy terms and
+  processing inventory.
 
 ## Service and sustainability
 
 ### Q-018 — Who operates and governs the hosted network?
 
 - **Decision horizon:** Launch blocker
-- **Current inclination:** One named legal operator publishes terms, privacy
-  information, decision authorities, incident contacts, and service
-  expectations.
+- **Current inclination:** Keep governing-organization identity, legal and
+  privacy contacts, security contact, and appointed operator roles as required
+  deployment configuration. Name the actual hosted entity before launch.
 - **Why it remains open:** The product design defines the platform role but not
   the operating entity or its long-term governance.
 - **Decision trigger:** Establish the hosted pilot.
@@ -119,23 +104,13 @@ the item to the resolved log at the bottom of this document.
 ### Q-019 — How is Bloei.me itself funded after the pilot?
 
 - **Decision horizon:** Evidence needed
-- **Current inclination:** Keep platform billing outside v1 and evaluate
-  sponsorship, membership, hosted-service fees, or grants using pilot costs and
-  demand.
-- **Why it remains open:** A campaign percentage could misalign incentives;
-  subscriptions or sponsorship may exclude smaller participants.
+- **Current inclination:** Keep the pilot free and public browsing free. Test a
+  later monthly hosted-service subscription per active verified organization,
+  without campaign percentages, seat charges, or transaction pricing.
+- **Why it remains open:** Price, billable activity, and waivers for small or
+  community organizations require pilot cost and demand evidence.
 - **Decision trigger:** Measure operating cost and willingness to pay during the
   pilot.
-
-### Q-020 — What service boundary separates funding from support?
-
-- **Decision horizon:** Pilot decision
-- **Current inclination:** Bloei.me supports its funding workflow and routes
-  product support, vulnerability reports, and general feedback to systems owned
-  by the relevant component maintainers.
-- **Why it remains open:** The separate support/feedback workstream has not yet
-  defined common hand-offs or service expectations.
-- **Decision trigger:** Define the support and feedback product separately.
 
 ## Implementation choices
 
@@ -234,6 +209,13 @@ the item to the resolved log at the bottom of this document.
 - **Answer:** Use proportionate appealable restrictions, severity-based service
   targets, advisory-only future AI, and distinct operator confirmation for
   irreversible forced failure.
+
+### Q-013, Q-017, and Q-020 — Deferred agreements and service boundaries
+
+- **Resolved:** 2026-08-20 by D-077
+- **Answer:** V1 has no external-agreement workflow, tax or invoice advice, or
+  component-support service. It records neutral commitments and settlement data
+  and routes component support to maintainer-owned channels.
 
 ### Q-025 — Do modules start as Gradle subprojects or packages?
 

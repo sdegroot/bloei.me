@@ -1155,7 +1155,8 @@ V1 does not require a signed expenditure contract in Bloei.me.
 1. The representative reviews the exact campaign version, cap, worst-case
    amount, locking rule, and legal-responsibility notice.
 2. They confirm that they are authorized by Rivierenstad to make the commitment
-   and use the selected budget.
+   and use the selected budget, and that Rivierenstad remains responsible for
+   its procurement route, internal approvals, and legal assessment.
 3. Bloei.me records the versioned confirmation and activates the pledge and
    reservation atomically.
 4. Bloei.me does not inspect a procurement file or claim that verification
@@ -1193,9 +1194,9 @@ external signed agreement is required before any pledge becomes effective.
 
 ### V1 boundary
 
-The first release prepares domain boundaries only. It does not upload contracts,
-provide electronic signatures, determine counterparties, or validate legal
-enforceability.
+The first release always uses `contract not required`. It does not persist or
+upload contracts, provide electronic signatures, determine counterparties, or
+validate legal enforceability.
 
 ## Scenario 48 — A Dutch organization proves identity and account control
 
@@ -1341,8 +1342,9 @@ amendment.
 3. The public campaign history records the municipality's consent and not the
    employee's name.
 4. If that employee later leaves or deletes the account, the municipality's
-   decision remains unchanged and the personal profile is anonymized according
-   to retention rules.
+   decision remains unchanged. Membership and authority history expires after
+   two years, while the organization action keeps the protected pseudonymous
+   reference required by the seven-year core audit record.
 
 ### Result
 

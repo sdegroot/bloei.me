@@ -89,6 +89,10 @@ Bloei.me coordinates commitments and outcomes. It does not hold funds, name the
 recipient of a contribution, issue invoices, divide supplier revenue, or sign
 external agreements in v1.
 
+It supports only its own funding workflow. Component support, bugs, feature
+requests, and vulnerability reports link to maintainer-owned systems and are
+not proxied into Bloei.me service obligations.
+
 ## 4. Runtime containers
 
 ```mermaid
@@ -807,9 +811,15 @@ Before pilot launch:
   and
 - test restore procedures, not only backup creation.
 
-Retention, controller/processor allocation, public-record lawful basis, DSA,
-and AI Act conclusions remain subject to Q-015, Q-016, and the dedicated legal
-review.
+D-078 supplies the reviewable pilot retention schedule and working privacy-role
+allocation. The hosted operator is controller for core purposes; participating
+organizations are independent controllers for their own purposes; instructed
+vendors are processors; and self-hosted operators assume deployment-level
+responsibility. Public history, audit, identity, authority, moderation, logs,
+incidents, notifications, idempotency, uploads, and backups each use their
+category-specific period from [legal.md](legal.md). Lawful bases, final periods,
+DSA, AI Act, and controller/processor conclusions remain subject to Q-015,
+Q-016, and specialist review.
 
 ## 19. Observability and operations
 

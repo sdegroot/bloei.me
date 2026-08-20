@@ -1075,18 +1075,34 @@ audit event rather than erasing the record.
 ## Legal and contracting boundary
 
 The initial pilot relies on identity-verified, active organizations and
-authorized representatives rather than platform-required signed agreements.
-Suppliers knowingly rely on these operational commitments without Bloei.me
-guaranteeing enforceability or payment. The payee-free settlement note remains
-informational and external processes determine legal counterparties and
-recipients.
+authorized representatives rather than platform-required signed agreements. A
+pledge is described as a recorded organizational funding commitment. The
+representative confirms authority, intent, budget use, and the organization's
+responsibility for procurement, internal approval, and legal review. Bloei.me
+does not claim to form or determine an enforceable contract. The payee-free
+settlement note remains informational and external processes determine legal
+counterparties, recipients, invoices, and tax treatment.
 
 Future municipal use may require an external signed agreement before a pledge
-becomes effective. Domain boundaries prepare a versioned contract-requirement
-policy and protected evidence metadata, but v1 provides neither contract upload
-nor electronic signing. A later implementation should integrate a suitable
-trust service rather than create its own signature mechanism. The current legal
-assumptions and review questions are maintained in [legal.md](legal.md).
+becomes effective. V1 always uses `contract not required` and provides no
+agreement persistence, upload, signing, or activation gate. A later
+implementation begins from a concrete participant requirement and should
+integrate a suitable trust service rather than create its own signature
+mechanism. The current legal assumptions, working retention schedule, and
+review questions are maintained in [legal.md](legal.md).
+
+### Service and sustainability boundary
+
+Bloei.me supports accounts, verification, budgets, pledges, moderation,
+campaigns, evidence, and settlement records. It displays maintainer-owned
+destinations for component bugs, product support, feature requests, and
+vulnerability reports without proxying tickets or promising maintainer service
+levels.
+
+Public browsing and the pilot remain free. A later hosted-service business
+model may charge a monthly amount per active verified organization. Pricing,
+billable activity, and community waivers require pilot evidence. V1 implements
+no subscription billing, campaign percentage, per-seat fee, or transaction fee.
 
 ## Technical architecture
 
@@ -1338,3 +1354,5 @@ The Epistola pilot must:
   calculation, debt collection, hosted subscription billing, campaign fees,
   support management, private GitHub access, GitHub writes, outbound webhooks,
   service accounts, and MCP are outside v1.
+- Component support and vulnerability handling remain in maintainer-owned
+  systems; Bloei.me provides routing links only.
