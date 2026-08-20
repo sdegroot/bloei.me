@@ -95,6 +95,14 @@ tasks.register<JavaExec>("playwrightInstall") {
     args("install", "chromium")
 }
 
+tasks.register<JavaExec>("playwrightInstallWithDeps") {
+    group = "verification"
+    description = "Installs Chromium and its operating-system dependencies for CI."
+    classpath = browserTest.runtimeClasspath
+    mainClass = "com.microsoft.playwright.CLI"
+    args("install", "--with-deps", "chromium")
+}
+
 tasks.register<Test>("browserTest") {
     group = "verification"
     description = "Runs browser and automated accessibility tests."
@@ -134,5 +142,7 @@ tasks.check {
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootBuildImage>("bootBuildImage") {
+    imageName = "bloei-me:${project.version}"
+    pullPolicy = org.springframework.boot.buildpack.platform.build.PullPolicy.IF_NOT_PRESENT
     environment.set(mapOf("BP_JVM_VERSION" to "25"))
 }

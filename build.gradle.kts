@@ -1,4 +1,5 @@
 import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.tasks.bundling.AbstractArchiveTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
@@ -45,6 +46,15 @@ subprojects {
     dependencies {
         "testImplementation"(kotlin("test-junit5"))
         "testRuntimeOnly"("org.junit.platform:junit-platform-launcher")
+    }
+
+    dependencyLocking {
+        lockAllConfigurations()
+    }
+
+    tasks.withType<AbstractArchiveTask>().configureEach {
+        isPreserveFileTimestamps = false
+        isReproducibleFileOrder = true
     }
 
     tasks.withType<Test>().configureEach {

@@ -2,7 +2,12 @@
 
 Status: Accepted functional contract
 
-Last updated: 2026-08-02
+Last updated: 2026-08-20
+
+Implementation status: this is the accepted target contract. The initial
+technology scaffold intentionally contains no REST or MCP project, dependency,
+or endpoint; the server-rendered interface and core feature boundaries are
+being established first.
 
 This document defines the v1 public REST API, provider-neutral code-repository
 model, first GitHub metadata adapter, cursor event feeds, and the boundary for a

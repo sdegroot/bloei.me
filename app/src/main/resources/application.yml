@@ -17,6 +17,8 @@ spring:
     jdbc:
       initialize-schema: never
       table-name: platform.spring_session
+  messages:
+    fallback-to-system-locale: false
   thymeleaf:
     cache: true
 

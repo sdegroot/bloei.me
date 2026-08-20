@@ -1,5 +1,7 @@
 package me.bloei.ui
 
+import me.bloei.runtime.WebConfiguration
+import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
@@ -15,7 +17,7 @@ import org.springframework.test.web.servlet.get
 
 @WebMvcTest(HomeController::class)
 @ActiveProfiles("test")
-@Import(HomeControllerTest.TestSecurityConfiguration::class)
+@Import(HomeControllerTest.TestSecurityConfiguration::class, WebConfiguration::class)
 class HomeControllerTest(
     @Autowired private val mockMvc: MockMvc,
 ) {
@@ -35,7 +37,18 @@ class HomeControllerTest(
         mockMvc.get("/").andExpect {
             status { isOk() }
             view { name("home") }
+            content { string(containsString("Van gedeelde behoefte naar aantoonbaar resultaat.")) }
         }
+    }
+
+    @Test
+    fun `home can switch to English`() {
+        mockMvc
+            .get("/") { param("lang", "en") }
+            .andExpect {
+                status { isOk() }
+                content { string(containsString("From shared demand to demonstrable outcomes.")) }
+            }
     }
 
     @Test

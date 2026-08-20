@@ -19,6 +19,15 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   DBOS workflow recovery across application restarts.
 - JVM-only Playwright and axe-core browser verification for responsive,
   keyboard-accessible, server-rendered pages.
+- A non-root local development image, PostgreSQL-first Compose stack, and
+  optional Authentik, S3Mock, and Mailpit profiles.
+- GitHub Actions gates for formatting, architecture, tests, accessibility,
+  coverage, SBOM generation, OCI verification, vulnerability and secret scans,
+  dependency review, and CodeQL.
+- Developer documentation for the two-project architecture, local personas,
+  Authentik OIDC testing, optional services, verification, and production
+  configuration.
+- The EUPL-1.2 project license and locked, reproducible JVM dependencies.
 - Initial product and implementation plan.
 - Initial product and architecture decision register.
 - End-to-end product scenarios covering organization onboarding, budgeting,
@@ -66,6 +75,11 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ### Changed
 
+- Simplified the proposed implementation from per-capability and adapter Gradle
+  projects to `core` feature packages plus one executable `app`, with REST and
+  MCP projects deferred until their interfaces are implemented.
+- Selected DBOS for durable workflows, PostgreSQL 18 and server-side sessions,
+  structured logs and Prometheus, and GitHub Actions supply-chain gates.
 - Replaced fixed campaign prices with an immutable maximum-price ceiling and a
   supplier-declared final price.
 - Allowed suppliers to start delivery below full coverage while accepting the

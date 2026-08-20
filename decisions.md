@@ -1,6 +1,6 @@
 # Bloei.me decision register
 
-Last updated: 2026-08-01
+Last updated: 2026-08-20
 
 This register records accepted product and architecture decisions and why they
 were made. Decisions are not silently rewritten when direction changes. A
@@ -1041,3 +1041,50 @@ superseded.
   the same application authorization and confirmation policy as every other
   adapter. No MCP client can gain platform-admin access or bypass organization
   roles. Adding MCP later requires its own accepted decision and threat model.
+
+## D-072 — Start with two production Gradle projects
+
+- **Date:** 2026-08-20
+- **Status:** Accepted; resolves Q-025
+- **Decision:** Use `core` for feature packages, persistence, migrations, and
+  durable workflows, and `app` for the Spring Boot runtime and server-rendered
+  UI. Enforce feature boundaries with Spring Modulith rather than one Gradle
+  project per capability. Add no empty REST, MCP, adapter, or foundation
+  projects.
+- **Why:** The feature-first boundary matters, but separate projects and fixed
+  internal layers would add ceremony before the business slices exist.
+- **Consequences:** Features expose types at their package root and add internal
+  `persistence`, `workflow`, or `integration` packages only when needed. Future
+  REST and MCP libraries may join the same application after their contracts
+  are ready.
+
+## D-073 — Use DBOS for durable workflows
+
+- **Date:** 2026-08-20
+- **Status:** Accepted; resolves Q-028
+- **Decision:** Use DBOS Transact with PostgreSQL for durable waits, retries,
+  and workflow recovery. Keep concrete workflow definitions in their owning
+  `core` feature and runtime configuration in `app`.
+- **Why:** Business workflows belong near their policies, while DBOS provides
+  tested persistence and recovery without maintaining a custom leasing and
+  retry framework.
+- **Consequences:** Workflows use deterministic identifiers and idempotent use
+  cases. The business model remains authoritative. V1 runs one stable executor;
+  active-active execution needs a separate decision. Add an outbox only when a
+  real committed domain event must launch a workflow.
+
+## D-074 — Fix the executable application foundation
+
+- **Date:** 2026-08-20
+- **Status:** Accepted; resolves Q-027, Q-029, Q-033, and Q-034
+- **Decision:** Baseline PostgreSQL 18, forward Flyway migrations,
+  PostgreSQL-backed browser sessions, structured logs, Actuator and Prometheus,
+  and GitHub Actions release gates. Use Authentik as the production OIDC
+  provider while retaining the isolated local-persona artifact.
+- **Why:** These choices make the scaffold executable, observable, testable,
+  and production-shaped without selecting a tracing backend or release-signing
+  identity prematurely.
+- **Consequences:** CI covers formatting, Modulith boundaries, unit,
+  PostgreSQL, DBOS recovery, OIDC, browser, accessibility, SBOM, OCI,
+  vulnerability, secret, dependency, and CodeQL checks. OTLP, publishing,
+  signing, and multi-replica execution remain deferred.

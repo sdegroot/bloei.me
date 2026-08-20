@@ -2,7 +2,7 @@
 
 Status: Living register
 
-Last updated: 2026-08-02
+Last updated: 2026-08-20
 
 This register contains product, operational, implementation, and legal choices
 that have not been accepted yet. Accepted choices belong in
@@ -275,16 +275,6 @@ the item to the resolved log at the bottom of this document.
 - **Decision trigger:** A verified organization has a concrete need to fund one
   pledge from multiple envelopes.
 
-### Q-025 — Do modules start as Gradle subprojects or packages?
-
-- **Decision horizon:** Implementation gate — before application scaffolding
-- **Current inclination:** Use one Gradle subproject per business module so
-  compile-time dependencies reinforce Spring Modulith boundaries.
-- **Why it remains open:** Separate builds improve enforcement but add initial
-  configuration and can slow feedback if configured poorly.
-- **Decision trigger:** Create a small foundation spike with two dependent
-  modules and measure build and test ergonomics.
-
 ### Q-026 — Which identifier and public-slug strategy is used?
 
 - **Decision horizon:** Implementation gate — before the first database
@@ -295,40 +285,6 @@ the item to the resolved log at the bottom of this document.
   locality, enumeration risk, and canonical URL behavior need validation.
 - **Decision trigger:** Benchmark and test the identifier type with PostgreSQL
   and the selected Kotlin libraries.
-
-### Q-027 — Which PostgreSQL baseline and migration layout are supported?
-
-- **Decision horizon:** Implementation gate — before application scaffolding
-- **Current inclination:** Select one supported PostgreSQL major version and use
-  schema-per-module, forward-only Flyway migrations.
-- **Why it remains open:** Hosted and self-hosted operational baselines and the
-  effect of cross-schema constraints on module independence need agreement.
-- **Decision trigger:** Choose the pilot deployment environment and run the
-  first cross-module transaction spike.
-
-### Q-028 — How are durable jobs and the outbox implemented?
-
-- **Decision horizon:** Implementation gate — before notification or deadline
-  work
-- **Current inclination:** Use small PostgreSQL-backed job and outbox tables with
-  leased `SKIP LOCKED` workers unless a focused maintained library clearly fits
-  the transaction and observability requirements.
-- **Why it remains open:** An in-house implementation is transparent but adds
-  retry, leasing, cleanup, and operational responsibility.
-- **Decision trigger:** Compare candidate libraries against paused timers,
-  idempotent deadline evaluation, and same-transaction outbox writes.
-
-### Q-029 — How are browser sessions stored and privileged sessions limited?
-
-- **Decision horizon:** Implementation gate — before OIDC integration
-- **Current inclination:** Use server-side PostgreSQL-backed sessions, secure
-  same-site cookies, session rotation, and a shorter inactivity limit for
-  operator work.
-- **Why it remains open:** The Authentik logout model, horizontal scaling,
-  recovery flows, remember-me behavior, and practical timeout lengths need a
-  threat model.
-- **Decision trigger:** Complete the authentication and account-takeover threat
-  model for Q-021.
 
 ### Q-030 — Which authoring format and sanitizer policy are used?
 
@@ -364,29 +320,44 @@ the item to the resolved log at the bottom of this document.
 - **Decision trigger:** Select the pilot infrastructure and run backup/restore
   plus unauthorized-access tests.
 
+## Resolved questions
+
+### Q-025 — Do modules start as Gradle subprojects or packages?
+
+- **Resolved:** 2026-08-20 by D-072
+- **Answer:** Use only `core` and `app` as production Gradle projects and use
+  Spring Modulith feature packages within `core`.
+
+### Q-027 — Which PostgreSQL baseline and migration layout are supported?
+
+- **Resolved:** 2026-08-20 by D-074
+- **Answer:** Baseline PostgreSQL 18 with forward-only Flyway migrations and
+  explicit platform, business, and DBOS schemas.
+
+### Q-028 — How are durable jobs and the outbox implemented?
+
+- **Resolved:** 2026-08-20 by D-073
+- **Answer:** Use DBOS for durable workflows and add a transactional outbox only
+  with the first real event-launched workflow.
+
+### Q-029 — How are browser sessions stored and privileged sessions limited?
+
+- **Resolved:** 2026-08-20 by D-074
+- **Answer:** Store sessions in PostgreSQL with secure, HTTP-only, same-site
+  cookies. Refine privileged timeout policy with the operator threat model.
+
 ### Q-033 — Which observability stack ships in v1?
 
-- **Decision horizon:** Implementation gate — before pilot deployment
-- **Current inclination:** Emit structured logs and Micrometer metrics from the
-  start; include OpenTelemetry tracing only if the chosen operations stack will
-  consume it.
-- **Why it remains open:** One process may not justify a tracing backend, but
-  job and notification correlation still benefits from trace-compatible IDs.
-- **Decision trigger:** Choose the pilot operations and alerting environment.
+- **Resolved:** 2026-08-20 by D-074
+- **Answer:** Start with structured logs, Actuator health, and Prometheus
+  metrics. Defer OTLP until an operations backend is selected.
 
 ### Q-034 — Which CI and software-supply-chain controls are required?
 
-- **Decision horizon:** Implementation gate — before the first release
-- **Current inclination:** Run formatting, module, unit, integration, migration,
-  browser, and accessibility checks; scan dependencies and images; generate an
-  SBOM; and sign release images.
-- **Why it remains open:** The CI platform, dependency update automation,
-  vulnerability policy, provenance format, signing identity, and release
-  process are not selected.
-- **Decision trigger:** Scaffold the build and define the first releasable OCI
-  artifact.
-
-## Resolved questions
+- **Resolved:** 2026-08-20 by D-074
+- **Answer:** Use GitHub Actions for the complete verification, SBOM, OCI,
+  vulnerability, secret, dependency, and CodeQL gates. Defer publishing and
+  signing.
 
 ### Q-023 — Which external component-source integrations come first?
 

@@ -121,9 +121,9 @@ flowchart TB
     jobs --> obs
 ```
 
-The web application and durable workers run from the same artifact. V1 may run
-them in one process. Configuration can later disable web or worker execution so
-the same image can run separate replicas without creating another codebase.
+The web application and durable workflows run from one artifact and one process
+in v1. The deployment uses one stable DBOS executor identity and does not run
+overlapping application replicas until active-active recovery is designed.
 
 ## 5. Technology baseline
 
@@ -133,13 +133,13 @@ the same image can run separate replicas without creating another codebase.
 | Application framework | Spring Boot 4 |
 | Module enforcement | Spring Modulith |
 | Web | Spring MVC, Thymeleaf, HTMX, local CSS and minimal JavaScript |
-| Public API | Spring MVC JSON adapters and a source-controlled OpenAPI 3.1 contract |
+| Public API | Planned as a later same-process interface; not part of the initial scaffold |
 | Authentication | Spring Security OAuth2/OIDC client |
 | Database | PostgreSQL |
 | SQL access | Exposed JDBC SQL DSL; no Exposed DAO |
 | Schema changes | Flyway forward migrations |
 | Object evidence | S3-compatible storage through an internal port |
-| Background work | PostgreSQL-backed jobs and transactional outbox |
+| Durable workflows | DBOS Transact using the application PostgreSQL instance |
 | Email | SMTP through a notification port |
 | Packaging | One OCI image; Compose reference deployment |
 | Localization | Dutch and English message bundles |
@@ -165,23 +165,23 @@ D-068 selects the Exposed JDBC SQL DSL and supersedes the jOOQ part of D-030.
 
 The baseline is **Exposed SQL DSL, without Exposed DAO**, because
 Bloei.me is domain-workflow-heavy rather than reporting-heavy and benefits from
-concise Kotlin persistence code. Repositories still map rows into domain values;
-Exposed table and result types never leave persistence adapters. Raw parameterized
-JDBC remains an escape hatch behind the same repository interface when a
+concise Kotlin persistence code. Feature persistence maps rows into domain
+values; Exposed table and result types never leave their owning feature. Raw
+parameterized JDBC remains an escape hatch when a
 PostgreSQL query is not expressed cleanly by the DSL.
 
 Testcontainers integration tests must prove Spring transaction participation,
 module schemas, row locking, `SKIP LOCKED`, JSONB, typed IDs, Flyway validation,
 and the pledge transaction as these capabilities are implemented. Do not use
-Exposed schema creation or migration utilities in production. Keeping Exposed
-inside repository adapters preserves the option to replace it if experience in
-Bloei.me or related Epistola software gives a reason to do so later.
+Exposed schema creation or migration utilities in production. Feature-owned
+persistence and Flyway migrations preserve the option to replace Exposed if
+experience provides a concrete reason.
 
 ## 6. Business modules
 
-Each top-level module is a Spring Modulith application module with an explicit
-API package. Its internal domain, application services, persistence, and web
-adapters are inaccessible to other modules.
+Each top-level feature package is a Spring Modulith application module. Types at
+the package root form its initial API; internal subpackages are inaccessible to
+other features unless deliberately exposed as a named interface.
 
 ```mermaid
 flowchart LR
@@ -396,33 +396,23 @@ those modules or translate provider state into Bloei.me lifecycle changes.
 
 ## 7. Module internals and code organization
 
-A module follows the same internal shape without exposing technical layers as
-global packages:
+A feature starts with only the types it needs. Technical subpackages appear
+when the feature gains those concerns; empty layer packages are not created:
 
 ```text
 nl.bloei.<module>
-├── api/                 public commands, queries, IDs and events
-├── domain/              aggregates, policies and value types
-├── application/         command handlers and workflow coordination
-├── adapter/
-│   ├── web/             MVC controllers, forms and views
-│   ├── persistence/     Exposed tables and repository adapters
-│   └── integration/     module-owned external adapters
-└── ModuleConfiguration.kt
+├── public commands, queries, IDs and events at the feature root
+├── model/               optional internal aggregates and policies
+├── persistence/         optional feature-owned Exposed tables and queries
+├── workflow/            optional concrete DBOS workflows
+└── integration/         optional provider-specific clients
 ```
 
-Cross-cutting technical support is deliberately small:
-
-- `foundation.time` provides the injected clock and deadline primitives.
-- `foundation.money` provides currency-safe money and deterministic rounding.
-- `foundation.web` provides security headers, error mapping, locale, and shared
-  view components.
-- `foundation.persistence` provides transaction and Exposed configuration, not
-  repositories or generic entity bases.
-- `foundation.testing` exists only in test fixtures.
-
-`foundation` must not become a home for shared business concepts. A concept
-belongs to the module with authority over its rules.
+Do not add ports, repositories, generic base entities, or engine-neutral
+workflow facades without an actual replaceable boundary. Shared business
+concepts stay with the feature that owns their rules. The `app` project owns UI
+composition and runtime configuration; it does not become a second business
+layer.
 
 ## 8. Domain identity and value handling
 
@@ -683,9 +673,10 @@ tested authentication path.
 
 ### 14.2 REST and event interfaces
 
-REST is a separate inbound adapter over application commands and audience-aware
-queries. It publishes no generic entity store and does not make HTTP calls back
-into the same application. The source-controlled OpenAPI 3.1 contract, OAuth
+REST will be a separate same-process interface over core commands and
+audience-aware queries. It is deliberately not scaffolded with the initial web
+application. When added, it publishes no generic entity store and does not make
+HTTP calls back into the same application. The source-controlled OpenAPI 3.1 contract, OAuth
 scopes, ETag policy, idempotency behavior, problem codes, public/private
 projections, and cursor feeds are normative in
 [api-and-integrations.md](api-and-integrations.md).
@@ -940,35 +931,20 @@ manual review at critical milestones.
 
 ```text
 .
-├── app/                         Spring Boot composition root
-├── modules/
-│   ├── identity/
-│   ├── organizations/
-│   ├── catalog/
-│   ├── proposals/
-│   ├── campaigns/
-│   ├── funding/
-│   ├── delivery/
-│   ├── settlement/
-│   ├── moderation/
-│   ├── repositories/
-│   ├── communications/
-│   └── audit/
-├── foundation/                  narrow technical and value support
-├── architecture-tests/         module, dependency and policy tests
-├── e2e/                         browser journeys and accessibility tests
-├── deploy/compose/              reference self-hosted deployment
-├── docs/                        future detailed operational documentation
+├── core/                        business features, persistence and workflows
+├── app/                         Boot runtime and server-rendered web UI
+├── deploy/                      optional local service configuration
+├── .github/workflows/           verification and security gates
+├── compose.yaml                 local app and PostgreSQL, optional profiles
 ├── build.gradle.kts
 ├── settings.gradle.kts
 └── gradle/libs.versions.toml
 ```
 
-A single Gradle build may use one subproject per business module. This makes
-compile-time dependencies explicit in addition to Spring Modulith runtime
-verification. If initial build overhead becomes disproportionate, modules can
-start as packages in one subproject, but their public APIs and verification
-rules must remain identical.
+Only `core` and `app` are production Gradle projects. Spring Modulith verifies
+feature-package boundaries inside `core`. Future REST or MCP interfaces may be
+added as libraries and loaded into the same application, but neither project or
+dependency exists in the initial scaffold.
 
 ## 23. Delivery slices
 
@@ -977,7 +953,7 @@ layer first.
 
 1. **Executable foundation**
    - Gradle/JVM/Spring baseline, licence, formatting, CI, module verification,
-     PostgreSQL migration, bilingual page shell, REST/OpenAPI conventions,
+     PostgreSQL migration, bilingual page shell,
      security headers, and health.
 2. **Identity-to-organization slice**
    - OIDC login, provisional organization, membership, verification case,
@@ -1004,24 +980,19 @@ layer first.
      lead-completed status, observability, recovery test, and pilot hardening.
 
 Each slice ends with module tests, PostgreSQL integration tests, an accessible
-browser journey, matching REST contract test, migration verification, local
-formatting, changelog update, and a Conventional Commit.
+browser journey, migration verification, local formatting, changelog update,
+and a Conventional Commit. REST contract tests join this gate only after the
+REST interface is introduced.
 
 ## 24. Architecture decision backlog
 
-Before scaffolding the application, confirm or spike these software-level
-choices:
+Confirm or spike these remaining software-level choices before their named
+feature slices:
 
-1. Q-025: package modules versus Gradle subprojects from the first commit.
-2. Q-026: exact time-sortable identifier type and public slug policy.
-3. Q-027: PostgreSQL version and schema-per-module migration layout.
-4. Q-028: PostgreSQL job/outbox implementation.
-5. Q-029: server-side session storage and privileged-session timeout policy.
-6. Q-030: rich-text authoring format and sanitizer allowlist.
-7. Q-031: evidence image limits and sanitizer library.
-8. Q-032: test and production object-storage adapters and serving approach.
-9. Q-033: observability stack and OpenTelemetry inclusion in v1.
-10. Q-034: CI, dependency policy, SBOM, and image-signing tooling.
+1. Q-026: exact time-sortable identifier type and public slug policy.
+2. Q-030: rich-text authoring format and sanitizer allowlist.
+3. Q-031: evidence image limits and sanitizer library.
+4. Q-032: test and production object-storage adapters and serving approach.
 
 These are implementation decisions, not changes to the functional rules. Once
 accepted, update [open-questions.md](open-questions.md), record consequential
