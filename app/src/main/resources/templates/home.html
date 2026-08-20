@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="nl" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" th:content="#{home.intro}">
+  <title th:text="#{site.name}">Bloei.me</title>
+  <link rel="stylesheet" href="/css/bloei.css">
+  <script defer src="/webjars/htmx.org/2.0.10/dist/htmx.min.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+  <div th:replace="~{fragments/shell :: dev-banner}"></div>
+  <div th:replace="~{fragments/shell :: header}"></div>
+  <main id="content">
+    <section class="shell hero">
+      <div>
+        <p class="eyebrow" th:text="#{home.eyebrow}">Samen investeren in open source</p>
+        <h1 th:text="#{home.title}">Van gedeelde behoefte naar aantoonbaar resultaat.</h1>
+        <p class="lede" th:text="#{home.intro}">Bloei.me helpt organisaties samen open source te financieren.</p>
+        <a class="button" href="/my" th:text="#{home.action}">Bekijk je werkruimte</a>
+      </div>
+      <div class="leaf-field" aria-hidden="true"><span>B</span></div>
+    </section>
+    <section class="shell cards" aria-label="Principles">
+      <article><h2 th:text="#{home.public}">Openbaar en controleerbaar</h2><p th:text="#{home.public.detail}"></p></article>
+      <article><h2 th:text="#{home.private}">Beschermd waar nodig</h2><p th:text="#{home.private.detail}"></p></article>
+    </section>
+  </main>
+  <div th:replace="~{fragments/shell :: footer}"></div>
+</body>
+</html>

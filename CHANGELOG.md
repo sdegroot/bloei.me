@@ -11,6 +11,10 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 - A pinned Java 25, Kotlin, Spring Boot, and two-project Gradle build foundation
   for the `core` business library and executable `app`.
+- A bilingual Thymeleaf and HTMX application shell with production OIDC,
+  PostgreSQL-backed sessions, Flyway, Actuator, and Prometheus configuration.
+- A separately compiled local persona login with an unmistakable development
+  banner and no presence in the production application artifact.
 - Initial product and implementation plan.
 - Initial product and architecture decision register.
 - End-to-end product scenarios covering organization onboarding, budgeting,

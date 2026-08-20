@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="nl" xmlns:th="http://www.thymeleaf.org">
+<body>
+  <header class="site-header" th:fragment="header">
+    <nav class="shell nav" aria-label="Primary navigation">
+      <a class="brand" href="/">
+        <span class="brand-mark" aria-hidden="true">B</span>
+        <span th:text="#{site.name}">Bloei.me</span>
+      </a>
+      <div class="nav-links">
+        <a href="/" th:text="#{nav.home}">Home</a>
+        <a href="/my" th:text="#{nav.workspace}">Mijn Bloei.me</a>
+        <a th:href="@{/(lang=${#locale.language == 'nl' ? 'en' : 'nl'})}" th:text="#{nav.language}">English</a>
+      </div>
+    </nav>
+  </header>
+
+  <aside class="dev-banner" role="status" th:fragment="dev-banner" th:if="${developmentMode}">
+    Development authentication is active — never use this artifact in production.
+  </aside>
+
+  <footer class="site-footer" th:fragment="footer">
+    <div class="shell">
+      <strong th:text="#{site.name}">Bloei.me</strong>
+      <span th:text="#{footer.tagline}">Een open netwerk voor gezamenlijke open-source innovatie.</span>
+    </div>
+  </footer>
+</body>
+</html>

@@ -20,6 +20,7 @@ dependencyManagement {
 }
 
 dependencies {
+    implementation(platform(libs.exposed.bom))
     implementation(libs.dbos.spring.boot)
     implementation(libs.dbos.spring.txstep)
     implementation("org.jetbrains.exposed:exposed-core")

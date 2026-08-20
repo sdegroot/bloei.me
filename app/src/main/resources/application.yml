@@ -1,0 +1,73 @@
+spring:
+  application:
+    name: bloei-me
+  profiles:
+    default: oidc
+  datasource:
+    url: ${BLOEI_DATABASE_URL:jdbc:postgresql://localhost:5432/bloei}
+    username: ${BLOEI_DATABASE_USERNAME:bloei}
+    password: ${BLOEI_DATABASE_PASSWORD:bloei}
+  flyway:
+    create-schemas: true
+    default-schema: platform
+    schemas: platform,bloei
+    locations: classpath:db/migration
+  session:
+    timeout: 8h
+    jdbc:
+      initialize-schema: never
+      table-name: platform.spring_session
+  thymeleaf:
+    cache: true
+
+server:
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        same-site: lax
+        secure: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+
+dbos:
+  executor-id: ${BLOEI_DBOS_EXECUTOR_ID:bloei-primary}
+  application:
+    name: bloei-me
+    version: ${BLOEI_VERSION:dev}
+  datasource:
+    schema: dbos
+    migrate: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: oidc
+  security:
+    oauth2:
+      client:
+        registration:
+          bloei:
+            provider: bloei
+            client-id: ${BLOEI_OIDC_CLIENT_ID}
+            client-secret: ${BLOEI_OIDC_CLIENT_SECRET}
+            scope: openid,profile,email
+        provider:
+          bloei:
+            issuer-uri: ${BLOEI_OIDC_ISSUER_URI}
+
+logging:
+  structured:
+    format:
+      console: logstash
