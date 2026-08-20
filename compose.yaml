@@ -3,7 +3,7 @@ services:
     image: bloei-me:dev
     build:
       context: .
-      dockerfile: app/Containerfile.dev
+      dockerfile: apps/app/Containerfile.dev
     environment:
       BLOEI_DATABASE_URL: jdbc:postgresql://postgres:5432/bloei
       BLOEI_DATABASE_USERNAME: bloei

@@ -20,7 +20,9 @@ allprojects {
     version = "0.1.0-SNAPSHOT"
 }
 
-subprojects {
+val buildProjects = subprojects.filter { it.childProjects.isEmpty() }
+
+configure(buildProjects) {
     apply(plugin = "java-library")
     apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
@@ -67,11 +69,11 @@ subprojects {
 }
 
 tasks.named("check") {
-    dependsOn(subprojects.map { "${it.path}:check" })
+    dependsOn(buildProjects.map { "${it.path}:check" })
 }
 
 tasks.register("ktlintFormat") {
     group = "formatting"
     description = "Formats Kotlin sources in every module."
-    dependsOn(subprojects.map { "${it.path}:ktlintFormat" })
+    dependsOn(buildProjects.map { "${it.path}:ktlintFormat" })
 }

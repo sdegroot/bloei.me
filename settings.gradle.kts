@@ -14,5 +14,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "bloei-me"
 
-include(":core")
-include(":app")
+include(":modules:core")
+include(":apps:app")

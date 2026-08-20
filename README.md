@@ -8,9 +8,9 @@ contains the product design and the executable application foundation.
 
 The production build deliberately has two Gradle projects:
 
-- `core` contains business feature packages, feature-owned persistence,
+- `modules/core` contains business feature packages, feature-owned persistence,
   Flyway migrations, and concrete DBOS workflows as those capabilities arrive.
-- `app` contains the Spring Boot composition root, Thymeleaf/HTMX interface,
+- `apps/app` contains the Spring Boot composition root, Thymeleaf/HTMX interface,
   OIDC security, database/session configuration, and operational endpoints.
 
 Spring Modulith verifies feature-package boundaries. There are no global
@@ -75,7 +75,7 @@ checks. Tests requiring Docker are skipped only when Docker is unavailable.
 Create the production OCI image with:
 
 ```shell
-./gradlew :app:bootBuildImage
+./gradlew :apps:app:bootBuildImage
 ```
 
 The build uses Buildpacks, targets JVM 25, and produces a non-root image. CI

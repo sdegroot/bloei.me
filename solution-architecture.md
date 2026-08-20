@@ -931,8 +931,10 @@ manual review at critical milestones.
 
 ```text
 .
-├── core/                        business features, persistence and workflows
-├── app/                         Boot runtime and server-rendered web UI
+├── modules/
+│   └── core/                    business features, persistence and workflows
+├── apps/
+│   └── app/                     Boot runtime and server-rendered web UI
 ├── deploy/                      optional local service configuration
 ├── .github/workflows/           verification and security gates
 ├── compose.yaml                 local app and PostgreSQL, optional profiles
@@ -941,10 +943,10 @@ manual review at critical milestones.
 └── gradle/libs.versions.toml
 ```
 
-Only `core` and `app` are production Gradle projects. Spring Modulith verifies
-feature-package boundaries inside `core`. Future REST or MCP interfaces may be
-added as libraries and loaded into the same application, but neither project or
-dependency exists in the initial scaffold.
+Only `modules/core` and `apps/app` are production Gradle projects. Spring
+Modulith verifies feature-package boundaries inside `modules/core`. Future REST
+or MCP interfaces may be added as libraries and loaded into the same
+application, but neither project or dependency exists in the initial scaffold.
 
 ## 23. Delivery slices
 

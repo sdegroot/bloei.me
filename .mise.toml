@@ -10,13 +10,13 @@ run = "./gradlew ktlintFormat"
 run = "./gradlew check"
 
 [tasks.browser-install]
-run = "./gradlew :app:playwrightInstall"
+run = "./gradlew :apps:app:playwrightInstall"
 
 [tasks.full-check]
-run = "./gradlew :app:fullCheck"
+run = "./gradlew :apps:app:fullCheck"
 
 [tasks.dev]
-run = "./gradlew :app:bootRunDev"
+run = "./gradlew :apps:app:bootRunDev"
 
 [tasks.up]
 run = "docker compose up --build"

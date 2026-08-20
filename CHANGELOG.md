@@ -75,6 +75,8 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ### Changed
 
+- Organized executable applications under `apps/` and reusable business
+  modules under `modules/`, following the shared repository convention.
 - Enforced an explicit self-only content security policy in production and
   development security chains.
 - Simplified the proposed implementation from per-capability and adapter Gradle

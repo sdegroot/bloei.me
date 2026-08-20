@@ -24,13 +24,13 @@ jobs:
         uses: gradle/actions/setup-gradle@3f131e8634966bd73d06cc69884922b02e6faf92 # v6
 
       - name: Format, architecture, unit, integration, and artifact checks
-        run: ./gradlew check :app:koverXmlReport
+        run: ./gradlew check :apps:app:koverXmlReport
 
       - name: Install Chromium and system dependencies
-        run: ./gradlew :app:playwrightInstallWithDeps
+        run: ./gradlew :apps:app:playwrightInstallWithDeps
 
       - name: Browser and accessibility checks
-        run: ./gradlew :app:browserTest
+        run: ./gradlew :apps:app:browserTest
 
       - name: Upload test and coverage reports
         if: always()
@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: sbom
-          path: app/build/reports/cyclonedx/application.cdx.json
+          path: apps/app/build/reports/cyclonedx/application.cdx.json
           if-no-files-found: error
           retention-days: 30
 
@@ -80,7 +80,7 @@ jobs:
         uses: gradle/actions/setup-gradle@3f131e8634966bd73d06cc69884922b02e6faf92 # v6
 
       - name: Build OCI image
-        run: ./gradlew :app:bootBuildImage --imageName=bloei-me:ci
+        run: ./gradlew :apps:app:bootBuildImage --imageName=bloei-me:ci
 
       - name: Verify non-root startup and health
         run: |
