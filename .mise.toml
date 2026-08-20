@@ -8,3 +8,8 @@ run = "./gradlew ktlintFormat"
 [tasks.check]
 run = "./gradlew check"
 
+[tasks.browser-install]
+run = "./gradlew :app:playwrightInstall"
+
+[tasks.full-check]
+run = "./gradlew :app:fullCheck"

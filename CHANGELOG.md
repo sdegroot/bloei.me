@@ -15,6 +15,10 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   PostgreSQL-backed sessions, Flyway, Actuator, and Prometheus configuration.
 - A separately compiled local persona login with an unmistakable development
   banner and no presence in the production application artifact.
+- PostgreSQL integration proofs for Flyway, Exposed transaction rollback, and
+  DBOS workflow recovery across application restarts.
+- JVM-only Playwright and axe-core browser verification for responsive,
+  keyboard-accessible, server-rendered pages.
 - Initial product and implementation plan.
 - Initial product and architecture decision register.
 - End-to-end product scenarios covering organization onboarding, budgeting,

@@ -9,6 +9,7 @@ spring-modulith = "2.1.0"
 exposed = "1.2.0"
 dbos = "1.0.0"
 playwright = "1.61.0"
+axe-playwright = "4.10.2"
 
 [libraries]
 spring-modulith-bom = { module = "org.springframework.modulith:spring-modulith-bom", version.ref = "spring-modulith" }
@@ -16,6 +17,7 @@ exposed-bom = { module = "org.jetbrains.exposed:exposed-bom", version.ref = "exp
 dbos-spring-boot = { module = "dev.dbos:transact-spring-boot-starter", version.ref = "dbos" }
 dbos-spring-txstep = { module = "dev.dbos:transact-spring-txstep-starter", version.ref = "dbos" }
 playwright = { module = "com.microsoft.playwright:playwright", version.ref = "playwright" }
+axe-playwright = { module = "com.deque.html.axe-core:playwright", version.ref = "axe-playwright" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
