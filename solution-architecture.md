@@ -268,11 +268,11 @@ Owns:
 - source locations, licence and supported-release metadata
 - versioned primary and co-maintainer stewardship
 - stewardship claims, confirmation, transfer, and challenge workflow
-- optional non-isolating programs and curation
+- future optional non-isolating programs and curation
 
-Programs can remain disabled in v1 without changing the component model. Exact
-component creation and stewardship rules remain Q-002 through Q-004 in the
-open-question register.
+Programs are disabled in v1 without changing the component model. Verified
+organizations privately propose components; operators approve canonical
+publication and adjudicate versioned stewardship under D-075.
 
 ### 6.4 `proposals`
 
@@ -358,6 +358,10 @@ Owns:
 It can restrict how content is displayed. It cannot transition a campaign,
 change a pledge or ballot, verify an organization, or suspend platform
 participation. Those actions remain with their governing modules.
+
+V1 implements no AI provider. The assessment boundary remains designed for a
+future advisory-only classifier whose structured output has no tools, domain
+commands, or direct restriction authority.
 
 ### 6.10 `communications`
 
@@ -769,8 +773,8 @@ flowchart LR
 The provider has no database credentials, browser tools, domain command port,
 or ability to follow instructions embedded in submitted text. Store structured
 assessment output and provider/model/policy versions, not hidden reasoning. AI
-failure must degrade to deterministic rules and human queues. Q-010 controls
-which optional behaviors are enabled for v1.
+failure must degrade to deterministic rules and human queues. V1 leaves this
+port unimplemented under D-076.
 
 ## 18. Security and privacy controls
 
@@ -991,14 +995,13 @@ REST interface is introduced.
 Confirm or spike these remaining software-level choices before their named
 feature slices:
 
-1. Q-026: exact time-sortable identifier type and public slug policy.
-2. Q-030: rich-text authoring format and sanitizer allowlist.
-3. Q-031: evidence image limits and sanitizer library.
-4. Q-032: test and production object-storage adapters and serving approach.
+1. Q-026: validate the accepted UUIDv7 and public slug policy in code.
+2. Q-030: complete the proposed ProseMirror ADR spike.
+3. Q-031 and Q-032: implement the accepted evidence-image and storage policy.
 
 These are implementation decisions, not changes to the functional rules. Once
 accepted, update [open-questions.md](open-questions.md), record consequential
-choices as architecture decision records under `docs/adr/`, and keep this
+choices as architecture decision records under `adr/`, and keep this
 document at the level of the current architecture.
 
 ## 25. Readiness gates before coding
@@ -1006,9 +1009,7 @@ document at the level of the current architecture.
 The application foundation can begin once these launch-affecting questions have
 an explicit temporary or final answer:
 
-- Q-002 through Q-004: component creation and stewardship workflow;
-- Q-007, Q-008, and Q-011: suspension, operating roles, and exceptional failure
-  authority;
+- Q-008: assign the two named operating contacts and protected rota;
 - Q-015 and Q-016: initial retention and privacy-role working policies;
 - Q-018: hosted operator; and
 - Q-021 and Q-022: OIDC and infrastructure configuration.

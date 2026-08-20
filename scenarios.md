@@ -394,14 +394,16 @@ the submitted source-control evidence does not establish official authority.
 1. A platform operator marks the stewardship claim `disputed` with a protected
    reason; the organization's verified identity and platform participation stay
    unchanged.
-2. The claimant supplies confirmation through the component's established
-   official channel.
+2. Existing stewards receive 14 days to respond, and the claimant supplies
+   confirmation through the component's established official channel.
 3. The operator verifies the relationship, scope, evidence category, and
    effective date.
 4. The claim becomes `verified`, and authorized people may receive component-
    maintainer roles.
 5. The public component page shows factual stewardship metadata without private
    evidence or reviewer identity.
+6. Bloei.me requests reconfirmation annually and after a material governance,
+   repository, domain, or organization-identity event.
 
 ### Result
 
@@ -524,7 +526,8 @@ reservations, and creates no settlement notes.
 2. New pledges, cap increases, review, voting, and settlement pause for seven
    days.
 3. The lead supplier responds with evidence of progress or accepts failure.
-4. The administrator withdraws or confirms failure after the response period.
+4. A platform operator distinct from the proposer withdraws or confirms failure
+   after the response period.
 5. A deployment operator may bypass the delay only for a legal, fraud, or
    security emergency.
 
@@ -1427,10 +1430,11 @@ A supplier's delivery explanation is hidden after an illegal-content notice.
 2. The supplier receives the restriction, facts, legal or terms ground, scope,
    automation use, and available review route.
 3. The supplier appeals and supplies additional context.
-4. A different qualified reviewer considers the protected original and case
-   history where practical.
+4. Bloei.me acknowledges the appeal within three business days. A different
+   qualified reviewer considers the protected original and case history.
 5. The reviewer either restores the explanation or confirms the restriction
-   with a new reasoned decision; the campaign page reflects the result.
+   with a new reasoned decision within 14 days; one reasoned 14-day extension
+   is available for a genuinely complex case.
 
 ### Result
 
@@ -1461,7 +1465,7 @@ organization.
 A report can trigger safeguards without giving moderators undeclared campaign
 or identity powers.
 
-## Scenario 59 — AI warns an author before publication
+## Scenario 59 — Future AI warns an author before publication
 
 ### Starting point
 
@@ -1484,7 +1488,7 @@ email address and an insulting phrase.
 AI prevents avoidable moderation work while the author keeps control of the
 meaning.
 
-## Scenario 60 — AI quarantine receives human review
+## Scenario 60 — Future AI quarantine receives human review
 
 ### Starting point
 
@@ -1628,7 +1632,7 @@ claims about official component inclusion.
 ### Starting point
 
 Several organizations want a public overview of Common Ground document-service
-work across multiple components and suppliers.
+work across multiple components and suppliers after v1.
 
 ### Flow
 
@@ -1645,7 +1649,9 @@ work across multiple components and suppliers.
 
 ### Result
 
-Local narrative and discovery do not fragment the funding network.
+The deferred program capability can later add local narrative and discovery
+without fragmenting the funding network. V1 creates none of these records or
+routes.
 
 ## Scenario 67 — A component target changes after pledging
 

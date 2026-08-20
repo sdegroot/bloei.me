@@ -78,6 +78,8 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ### Changed
 
+- Finalized pilot catalogue, stewardship, duplicate, proposal-lifecycle,
+  suspension, moderation-service, future-AI, and forced-failure policies.
 - Organized executable applications under `apps/` and reusable business
   modules under `modules/`, following the shared repository convention.
 - Enforced an explicit self-only content security policy in production and

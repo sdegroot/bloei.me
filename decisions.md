@@ -1088,3 +1088,54 @@ superseded.
   PostgreSQL, DBOS recovery, OIDC, browser, accessibility, SBOM, OCI,
   vulnerability, secret, dependency, and CodeQL checks. OTLP, publishing,
   signing, and multi-replica execution remain deferred.
+
+## D-075 — Fix pilot catalogue and proposal governance
+
+- **Date:** 2026-08-20
+- **Status:** Accepted; resolves Q-001 through Q-006
+- **Decision:** Defer programs beyond v1. Let verified organizations privately
+  propose components while platform operators approve canonical publication.
+  Operators adjudicate stewardship claims after a 14-day response period,
+  publish only safe evidence references, protect sensitive evidence, and
+  require annual and event-driven reconfirmation. Components without a verified
+  steward may host clearly labelled independent extensions, forks,
+  replacements, and unconfirmed campaigns, but no unsupported official claim.
+  Duplicate detection uses deterministic cues and human reports; maintainers
+  classify relationships with operator override. Proposals close through
+  explicit retained outcomes and become stale after 12 inactive months plus 30
+  days' notice. Maintainers approve reopening, and endorsements never transfer
+  or reactivate automatically.
+- **Why:** The pilot needs truthful canonical identity and durable public
+  history without premature program administration, automated equivalence
+  judgements, or implied upstream authority.
+- **Consequences:** V1 has no program persistence, route, role, or management
+  UI. Unresolved equivalent active campaigns cannot be published. Proposal
+  outcomes are `converted`, `duplicate`, `declined`, `withdrawn`, and `stale`;
+  reopening creates a new event and requires organizations to endorse the
+  current version again.
+
+## D-076 — Define pilot enforcement and moderation operations
+
+- **Date:** 2026-08-20
+- **Status:** Accepted; resolves Q-007, Q-009, Q-010, and Q-011
+- **Decision:** Platform restrictions use reasoned notice, the least
+  restrictive proportionate measure, a 14-day ordinary response period, and a
+  30-day appeal window without automatic stay. Emergency restrictions receive
+  review within 48 hours. Moderation uses published critical, high, and
+  standard service targets, and appeals go to a different reviewer within 14
+  days where possible. AI is an advisory-only future extension for warnings,
+  classification, summaries, and queue priority; it has no domain commands or
+  enforcement authority and is not implemented in v1. After a proposed forced
+  campaign failure and seven-day supplier response, a platform operator who is
+  distinct from the proposer makes the terminal decision.
+- **Why:** Reversible, separated authority protects participants while still
+  allowing urgent safeguards. Human accountability is required before model
+  quality, privacy, and language performance have been proven.
+- **Consequences:** Public restriction status remains neutral while protected
+  case data contains the detailed grounds. Critical reports target four-hour
+  acknowledgement, eight-hour protection, and 48-hour review; high reports
+  target one-business-day acknowledgement and three-business-day decision;
+  standard reports target three-business-day acknowledgement and ten-business-
+  day decision. Appeals target three-business-day acknowledgement and a 14-day
+  decision, with one reasoned 14-day extension. Failure is irreversible once
+  reservations have been released.

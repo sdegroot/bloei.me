@@ -28,123 +28,17 @@ When a question is resolved, add the decision and rationale to
 [decisions.md](decisions.md), update the plan and affected scenarios, and move
 the item to the resolved log at the bottom of this document.
 
-## Product and scope
-
-### Q-001 — Are programs part of v1?
-
-- **Decision horizon:** Pilot decision
-- **Current inclination:** Keep the data model and routes compatible with
-  programs, but launch without program administration unless the first pilot
-  needs a curated cross-component collection.
-- **Why it remains open:** Campaigns and component pages may provide enough
-  discovery initially. Programs add editorial work and UI without adding a
-  governance boundary.
-- **Decision trigger:** Select the first pilot campaigns and test whether they
-  can be found and explained without a curated collection.
-
-### Q-002 — Who may create a new canonical component?
-
-- **Decision horizon:** Launch blocker
-- **Current inclination:** Any signed-in organization may propose a component;
-  a platform operator verifies canonical identity before publication.
-- **Why it remains open:** Open creation reduces operator work but increases
-  duplicates, trademark confusion, and false upstream claims.
-- **Decision trigger:** Design the component proposal, duplicate-check, and
-  publication workflow.
-
-### Q-003 — How is stewardship claimed, challenged, and transferred?
-
-- **Decision horizon:** Launch blocker for official-upstream campaigns
-- **Current inclination:** Require public evidence, notify existing stewards,
-  preserve versioned history, and let a platform operator decide contested or
-  abandoned claims with an appeal path.
-- **Why it remains open:** Repositories, foundations, companies, and informal
-  maintainer groups establish authority differently.
-- **Decision trigger:** Specify acceptable evidence and the claim, response,
-  expiry, transfer, and appeal interfaces.
-
-### Q-004 — What happens when a component has no verified maintainer?
-
-- **Decision horizon:** Pilot decision
-- **Current inclination:** Permit clearly labelled independent extensions and
-  forks; require operator review before presenting an outcome as official.
-- **Why it remains open:** Blocking every campaign would strand unmaintained
-  software, while silently treating a supplier as upstream would mislead
-  funders.
-- **Decision trigger:** First proposal concerning an unmaintained or
-  community-governed component.
-
-### Q-005 — How are equivalent or duplicate outcomes detected?
-
-- **Decision horizon:** Evidence needed
-- **Current inclination:** Maintainer judgement with operator override and an
-  explicit relationship between related campaigns; no automatic text match.
-- **Why it remains open:** Two campaigns may overlap without being substitutes,
-  especially across releases or components.
-- **Decision trigger:** Two supplier drafts or campaigns target materially
-  overlapping outcomes.
-
-### Q-006 — How are proposals closed, merged, archived, or reopened?
-
-- **Decision horizon:** Pilot decision
-- **Current inclination:** Preserve public history and use explicit outcomes
-  such as `converted`, `duplicate`, `declined`, `withdrawn`, and `stale`.
-- **Why it remains open:** The retention period, reopening authority, and effect
-  on endorsements have not been chosen.
-- **Decision trigger:** Design proposal lifecycle screens and notifications.
-
 ## Governance and operations
-
-### Q-007 — What exact rules govern platform suspension and appeal?
-
-- **Decision horizon:** Launch blocker
-- **Current inclination:** Reasoned notice, proportionate reversible measures,
-  a protected appeal, and a different operator reviewing the appeal where
-  staffing permits.
-- **Why it remains open:** The grounds, urgency levels, response periods, and
-  authority for emergency action need an operational policy.
-- **Decision trigger:** Draft the platform participation and acceptable-use
-  terms.
 
 ### Q-008 — Who performs platform operations at launch?
 
 - **Decision horizon:** Launch blocker
-- **Current inclination:** Name accountable people for organization checks,
-  component claims, moderation, appeals, incident response, and exceptional
-  campaign operations; separate duties where practical.
-- **Why it remains open:** The functional roles are designed, but staffing,
-  service levels, absence cover, and escalation contacts are not assigned.
+- **Current inclination:** Staff two internal platform operators with a daily
+  routed on-call rota and no self-review. Keep names, direct contacts, absence
+  cover, and escalation details in the protected deployment runbook.
+- **Why it remains open:** The role split and service targets are decided, but
+  the actual people and contact rota must be assigned for the hosted pilot.
 - **Decision trigger:** Confirm pilot ownership and support hours.
-
-### Q-009 — Which moderation and appeal service levels apply?
-
-- **Decision horizon:** Pilot decision
-- **Current inclination:** Use severity-based targets, with prompt handling of
-  illegal-content and personal-data reports and published expectations rather
-  than unconditional guarantees.
-- **Why it remains open:** Real report volume and operator capacity are unknown.
-- **Decision trigger:** Write the moderation operations handbook.
-
-### Q-010 — Which AI moderation features ship in v1?
-
-- **Decision horizon:** Pilot decision
-- **Current inclination:** Start with author warnings and moderator
-  prioritization; enable temporary quarantine only after measured evaluation.
-- **Why it remains open:** Provider choice, data-processing terms, Dutch and
-  English evaluation sets, thresholds, costs, and human-review capacity remain
-  unknown.
-- **Decision trigger:** Complete an offline evaluation and privacy assessment.
-
-### Q-011 — What is the final authority for a forced campaign failure?
-
-- **Decision horizon:** Launch blocker
-- **Current inclination:** Keep supplier proposal, maintainer recommendation,
-  and platform exceptional action distinct, with recorded reasons and an
-  appeal where the outcome is not already irreversible.
-- **Why it remains open:** Cross-component campaigns can involve several
-  maintainers with conflicting views, and failure releases financial
-  reservations.
-- **Decision trigger:** Specify the exceptional campaign-operations runbook.
 
 ## Finance, contracts, and public-sector use
 
@@ -325,6 +219,21 @@ the item to the resolved log at the bottom of this document.
   plus unauthorized-access tests.
 
 ## Resolved questions
+
+### Q-001 through Q-006 — Catalogue and proposal governance
+
+- **Resolved:** 2026-08-20 by D-075
+- **Answer:** Programs are deferred; operators approve canonical components and
+  adjudicate stewardship; unmaintained components support truthful independent
+  work; and human-led duplicate and proposal-lifecycle policies preserve public
+  history.
+
+### Q-007, Q-009, Q-010, and Q-011 — Enforcement and moderation
+
+- **Resolved:** 2026-08-20 by D-076
+- **Answer:** Use proportionate appealable restrictions, severity-based service
+  targets, advisory-only future AI, and distinct operator confirmation for
+  irreversible forced failure.
 
 ### Q-025 — Do modules start as Gradle subprojects or packages?
 

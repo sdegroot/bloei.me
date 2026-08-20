@@ -42,10 +42,10 @@ and lead-confirmed completion of settlement notes.
 The hosted service is one canonical `bloei.me` network rather than a collection
 of community sites. Organizations register once, components have one canonical
 identity, and public proposals and campaigns are discoverable together. The
-primary routes are `/components`, `/proposals`, `/campaigns`, `/programs`,
-`/organizations`, and the signed-in `/my` area. A memorable component or
-program subdomain may later redirect to its canonical page but does not create
-another application, identity, policy, or authorization boundary.
+v1 routes are `/components`, `/proposals`, `/campaigns`, `/organizations`, and
+the signed-in `/my` area. A future `/programs` route or memorable program
+subdomain may redirect to its canonical page but does not create another
+application, identity, policy, or authorization boundary.
 
 An **open-source component** is the software, standard, service, library,
 connector, or other maintained building block affected by funded work. A
@@ -61,6 +61,9 @@ program may have branding and curators, but it is not a tenant: it has no
 separate organization enrollment, identity store, budget boundary, terms,
 private data silo, or campaign copy. One campaign can appear in several programs
 while retaining one canonical URL and record.
+
+Programs are deferred beyond v1. The pilot adds no program persistence, route,
+curator role, or administration UI.
 
 Every proposal targets at least one component. Every campaign targets one or
 more components and snapshots, for each formal target, whether it is modified,
@@ -204,11 +207,16 @@ or increase a cap until restored.
 ### Component identity and stewardship
 
 An `OpenSourceComponent` exists once per deployment. A verified organization may
+privately propose a record, but a deployment operator approves its canonical
+publication after duplicate and identity review. A verified organization may
 claim a stewardship relationship, supported by official source-control access,
 project websites, published governance, release or package authority, trademark
 authorization where relevant, or confirmation through an established official
-channel. A deployment operator resolves duplicates, disputed claims, transfers,
-and succession with protected evidence and public factual metadata.
+channel. Existing stewards receive 14 days to respond to a claim or transfer.
+A deployment operator resolves duplicates, disputed claims, transfers, and
+succession with protected evidence and safe public evidence references. Claims
+are reconfirmed annually and after material governance, repository, domain, or
+organization-identity events. Appeals follow platform appeal policy.
 
 A component may have one primary maintainer organization, several co-maintainer
 organizations, community governance without an organizational primary, or no
@@ -222,8 +230,10 @@ organization or exceptionally assigned by the platform while governance is
 resolved. A primary maintainer may initiate a campaign, lead it, select another
 supplier team, confirm official release integration, or remain outside delivery.
 Third-party campaigns remain possible but must distinguish confirmed official
-work from an extension or fork. Every supplier still satisfies ordinary
-organization, representative, and campaign-confirmation requirements.
+work from an independent extension, fork, replacement, or unconfirmed outcome.
+No campaign may imply official upstream support without confirmation. Every
+supplier still satisfies ordinary organization, representative, and campaign-
+confirmation requirements.
 
 ### Future multi-approval authorization
 
@@ -340,6 +350,21 @@ Affected authors and reporters receive the outcome where appropriate and may
 request review; a different qualified reviewer handles an appeal where
 practical.
 
+Published targets are not unconditional guarantees. Critical reports target
+acknowledgement within four hours, protective action within eight hours, and
+formal review within 48 hours. High reports target acknowledgement within one
+business day and decision within three business days. Standard reports target
+acknowledgement within three business days and decision within ten business
+days. Appeals target acknowledgement within three business days and decision
+within 14 calendar days, with one reasoned 14-day extension. Actual security
+incidents and personal-data breaches enter the incident process immediately.
+
+Participation restrictions use the least restrictive proportionate measure,
+reasoned notice, a 14-day ordinary response period, and a 30-day appeal window.
+Appeal does not automatically stay a restriction. Emergency action receives
+review within 48 hours, and a different operator reviews an appeal where
+staffing permits. Public status is neutral; detailed grounds remain protected.
+
 Campaign-relevant restrictions leave a limited public tombstone and public
 operational effects where necessary. Reports, reporter identity, protected
 originals, internal deliberation, and detailed fraud or security evidence stay
@@ -355,10 +380,9 @@ AI moderation is an optional, provider-neutral assistant behind a
 
 Deterministic checks remain authoritative for supported file types, decoding,
 metadata stripping, size limits, rate limits, and known malicious patterns. AI
-may detect risk categories and relevant spans, warn an author, suggest safer
-wording, classify and prioritize reports, identify duplicates, translate or
-summarize context, draft reasons, and temporarily quarantine high-confidence
-dangerous content for human review.
+may later detect risk categories and relevant spans, warn an author, suggest
+safer wording, classify and prioritize reports, translate or summarize context,
+and draft private moderator summaries.
 
 AI never independently deletes content permanently, rejects an appeal, changes
 an organization position, imposes an organization sanction, determines identity
@@ -386,10 +410,12 @@ and content already considered suspicious remains queued. Delivery and campaign
 deadlines do not wait indefinitely for a classifier.
 
 V1 implements reporting, a basic queue, reasoned reversible content decisions,
-public tombstones, notices, a basic appeal, emergency handling, deterministic
-safety checks, and protected audit history. When an AI provider is configured,
-v1 supports warnings, classification, prioritization, and reversible temporary
-quarantine. Configurable component policies, mandatory second review, advanced
+public tombstones, notices, appeal, emergency handling, deterministic safety
+checks, and protected audit history. It implements no model provider. AI
+warnings, classification, prioritization, summaries, and any evaluated
+reversible quarantine may follow only after Dutch and English evaluation,
+privacy and provider review, error and bias measurement, and explicit cost
+limits. Configurable component policies, mandatory second review, advanced
 automation, trusted reporters, bulk operations, cross-component detection,
 transparency analytics, and external dispute-resolution integration may follow
 later.
@@ -422,6 +448,15 @@ attribution remains possible. Proposal states are `open`, `campaign forming`,
 `campaign funding`, `delivered`, `closed`, or `archived`. One proposal may
 produce different or sequential campaigns, but Bloei.me does not allow two
 active funding campaigns to promise the same outcome silently.
+
+Terminal proposal outcomes are `converted`, `duplicate`, `declined`,
+`withdrawn`, and `stale`. Twelve months without substantive activity starts a
+30-day notice to the proposer, endorsers, and maintainers; a maintainer may keep
+the proposal open with a recorded reason. Proposers and endorsing organizations
+may request reopening, but a maintainer approves it, with operator intervention
+only through appeal or maintainer absence. Closure history remains public.
+Endorsements are frozen as history and never transfer or reactivate; each
+organization must endorse the current version again.
 
 ### Campaign formation and supplier selection
 
@@ -970,8 +1005,10 @@ publicly declare failure at any time. A non-conflicted in-scope component
 maintainer or deployment operator may propose forced failure with a public
 reason; this opens a seven-day lead-supplier response period and pauses new
 pledges, cap increases, review, voting, and settlement. The proposer may withdraw
-or confirm failure afterward. A deployment operator may bypass the delay for a
-legal, fraud, or security emergency.
+the proposal, but a deployment operator distinct from the proposer confirms
+terminal failure afterward. A deployment operator may bypass the delay for a
+legal, fraud, or security emergency. Once failure releases reservations, it
+cannot be reopened.
 Failure creates no settlement notes, releases reservations, and preserves the
 public outcome and produced open-source work.
 
