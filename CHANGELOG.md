@@ -75,6 +75,8 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ### Changed
 
+- Enforced an explicit self-only content security policy in production and
+  development security chains.
 - Simplified the proposed implementation from per-capability and adapter Gradle
   projects to `core` feature packages plus one executable `app`, with REST and
   MCP projects deferred until their interfaces are implemented.

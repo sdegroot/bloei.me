@@ -2,6 +2,7 @@ package me.bloei.devauth
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import me.bloei.runtime.OidcSecurityConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
@@ -28,6 +29,10 @@ class DevelopmentSecurityConfiguration {
             .authorizeHttpRequests {
                 it.requestMatchers("/", "/css/**", "/webjars/**", "/dev/**", "/actuator/health/**").permitAll()
                 it.anyRequest().authenticated()
+            }.headers {
+                it.contentSecurityPolicy { policy ->
+                    policy.policyDirectives(OidcSecurityConfiguration.CONTENT_SECURITY_POLICY)
+                }
             }.formLogin { it.disable() }
             .logout { it.logoutSuccessUrl("/") }
             .build()

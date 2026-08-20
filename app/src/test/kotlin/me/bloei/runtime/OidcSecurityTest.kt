@@ -33,7 +33,15 @@ class OidcSecurityTest(
 ) {
     @Test
     fun `public home does not require authentication`() {
-        mockMvc.get("/").andExpect { status { isOk() } }
+        mockMvc.get("/").andExpect {
+            status { isOk() }
+            header {
+                string(
+                    "Content-Security-Policy",
+                    OidcSecurityConfiguration.CONTENT_SECURITY_POLICY,
+                )
+            }
+        }
     }
 
     @Test

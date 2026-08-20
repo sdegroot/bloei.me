@@ -16,7 +16,15 @@ class OidcSecurityConfiguration {
             .authorizeHttpRequests {
                 it.requestMatchers("/", "/css/**", "/webjars/**", "/actuator/health/**").permitAll()
                 it.anyRequest().authenticated()
+            }.headers {
+                it.contentSecurityPolicy { policy -> policy.policyDirectives(CONTENT_SECURITY_POLICY) }
             }.oauth2Login(withDefaults())
             .logout { it.logoutSuccessUrl("/") }
             .build()
+
+    companion object {
+        const val CONTENT_SECURITY_POLICY =
+            "default-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; " +
+                "form-action 'self'; img-src 'self' data:"
+    }
 }
