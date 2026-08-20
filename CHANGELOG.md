@@ -9,6 +9,9 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ### Added
 
+- A proposed architecture decision for schema-versioned ProseMirror JSON,
+  closed Kotlin validation and server rendering, and the spike required before
+  adoption.
 - A pinned Java 25, Kotlin, Spring Boot, and two-project Gradle build foundation
   for the `core` business library and executable `app`.
 - A bilingual Thymeleaf and HTMX application shell with production OIDC,

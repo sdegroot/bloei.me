@@ -290,12 +290,16 @@ the item to the resolved log at the bottom of this document.
 
 - **Decision horizon:** Implementation gate — before user-authored descriptions
   and comments
-- **Current inclination:** Store a constrained source format and render through
-  a strict, versioned allowlist; avoid unrestricted HTML and embedded media.
-- **Why it remains open:** Markdown is portable but still needs sanitization,
-  while a structured editor can improve accessibility at greater complexity.
-- **Decision trigger:** Prototype campaign scope, acceptance criteria, comments,
-  and moderation redaction in Dutch and English.
+- **Current inclination:** Adopt the schema-versioned ProseMirror JSON and
+  closed Kotlin validator and renderer proposed by
+  [ADR-0001](adr/0001-prosemirror-json-rich-text.md). Keep server-rendered,
+  allowlisted HTML as a disposable projection.
+- **Why it remains open:** The approach avoids a production Node runtime but
+  creates browser/server schema-parity, migration, security, and accessibility
+  obligations that need executable validation.
+- **Decision trigger:** Complete the ADR-0001 spike for round-trip fidelity,
+  adversarial validation and rendering, JavaScript-free public output,
+  accessibility, and bounded resource use.
 
 ### Q-031 — What limits and tools govern evidence images?
 
