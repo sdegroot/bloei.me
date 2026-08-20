@@ -1974,3 +1974,31 @@ Two components with similar names are published and one is renamed later.
 ### Result
 
 External links remain durable while display names can evolve independently.
+
+## Scenario 81 — Visual editing preserves safe portable content
+
+### Starting point
+
+A non-technical supplier edits a delivery explanation visually, pastes styled
+content from an office document, and inserts an evidence image.
+
+### Flow
+
+1. The WYSIWYG editor offers only the formatting supported by Markdown v1 and
+   converts or removes unsupported pasted styles with clear feedback.
+2. The image enters the managed upload workflow with required alt text; the
+   document references it only after sanitation, and submission remains blocked
+   while processing is unfinished.
+3. The editor serializes paragraphs, headings, lists, emphasis, safe links,
+   code, and the managed image to restricted Markdown without persisting its
+   internal JSON or DOM.
+4. The server rejects raw HTML, unsafe URLs, external images, unsupported
+   extensions, excessive nesting, and oversized input before storage.
+5. The authoritative JVM renderer produces sanitized semantic HTML for preview
+   and publication. Reloading the stored Markdown restores the same supported
+   document structure in the editor.
+
+### Result
+
+The author receives a visual experience while Bloei.me retains portable source,
+server authority, safe managed images, and JavaScript-free public output.

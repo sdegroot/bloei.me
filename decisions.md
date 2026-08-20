@@ -1292,3 +1292,26 @@ superseded.
 - **References:** [OWASP File Upload Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html),
   [Java Image I/O](https://docs.oracle.com/en/java/javase/25/docs/api/java.desktop/javax/imageio/package-summary.html),
   and [TwelveMonkeys releases](https://github.com/haraldk/TwelveMonkeys/releases).
+
+## D-083 — Store restricted Markdown behind a WYSIWYG editor
+
+- **Date:** 2026-08-20
+- **Status:** Accepted; resolves Q-030 and accepts ADR-0001
+- **Decision:** Store versioned restricted Markdown as canonical authored
+  content and provide a constrained browser WYSIWYG editor. The editor may use
+  ProseMirror internally, but editor JSON and HTML are transient and untrusted.
+  V1 supports paragraphs, H2 through H4, block quotes, ordered and unordered
+  lists, strong and emphasis, inline and fenced code, safe links, hard breaks,
+  and sanitized Bloei.me-managed images with mandatory alt text. Disable raw
+  HTML, unknown extensions, external images, data URLs, and arbitrary paths.
+  Parse and validate on the JVM, render semantic HTML and plain text, apply a
+  final HTML allowlist, and keep generated output disposable.
+- **Why:** Bloei.me needs friendly visual editing, but its expected content is
+  formatted prose rather than a structured-document platform. Markdown keeps
+  canonical content portable and avoids a parallel Kotlin ProseMirror schema,
+  renderer, and migration system.
+- **Consequences:** Store format and schema version with each source document.
+  The visual editor exposes only constructs that round-trip without semantic
+  loss, with shared golden fixtures and authoritative server preview. Keep
+  business semantics outside prose. A future structured format requires a new
+  ADR and explicit migration or per-document coexistence policy.

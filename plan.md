@@ -1186,6 +1186,11 @@ required, and append-only audit events.
 - Process uploads asynchronously from private quarantine. Optional ClamAV
   scanning uses a generic scanner port and fails closed when enabled but
   unavailable. PDF uploads are a possible later feature, not part of v1.
+- Store authored prose as versioned restricted Markdown while presenting a
+  constrained WYSIWYG editor. Disable raw HTML; allow only paragraphs, H2-H4,
+  quotations, lists, emphasis, code, safe links, hard breaks, and managed
+  sanitized images with meaningful alt text. Render and sanitize authoritative
+  HTML on the JVM and keep that projection disposable.
 - Use an outbox-backed worker for email, funding deadlines, budget warnings,
   review and voting timers, reminders, paused countdowns, and automatic
   acceptance.

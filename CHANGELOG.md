@@ -13,9 +13,9 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   deployment and evidence storage, typed UUIDv7 identifiers, immutable public
   slugs, future local/S3 storage adapters, and bounded asynchronous JPEG/PNG
   sanitation with optional fail-closed ClamAV scanning.
-- A proposed architecture decision for schema-versioned ProseMirror JSON,
-  closed Kotlin validation and server rendering, and the spike required before
-  adoption.
+- An accepted architecture decision for versioned restricted Markdown,
+  constrained WYSIWYG editing, authoritative JVM rendering, managed inline
+  images, and disposable sanitized HTML projections.
 - A pinned Java 25, Kotlin, Spring Boot, and two-project Gradle build foundation
   for the `core` business library and executable `app`.
 - A bilingual Thymeleaf and HTMX application shell with production OIDC,

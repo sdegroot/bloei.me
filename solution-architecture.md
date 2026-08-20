@@ -650,6 +650,16 @@ allow = authenticated person
   animation, hover, or toast messages alone.
 - Render Dutch and English from message bundles. Persist user-authored content
   in its authored language and label it rather than silently translating it.
+- Store authored prose as versioned restricted Markdown. A constrained
+  WYSIWYG editor may use ProseMirror internally but persists only Markdown and
+  exposes only losslessly serializable constructs. Raw HTML is disabled.
+- Render Markdown to semantic HTML and plain text on the JVM, apply the final
+  HTML allowlist, and treat generated output as a disposable versioned
+  projection. Publication-sensitive workflows show the authoritative server
+  preview; public output remains usable without JavaScript.
+- Keep business semantics in versioned domain records rather than custom
+  Markdown syntax. Managed inline images reference only sanitized Bloei.me
+  media associated with the current content revision and require alt text.
 - Maintain a small local design system of templates, CSS tokens, forms, tables,
   timelines, status badges, callouts, and audit views.
 - Avoid exposing internal IDs, exceptions, policy details, or personal actor
@@ -827,8 +837,9 @@ Before pilot launch:
   limits for privileged work; and explicit logout;
 - set CSP, HSTS, frame restrictions, MIME-sniffing prevention, referrer policy,
   and restrictive permissions policy;
-- sanitize rich text using an allowlist and store the original only where a
-  protected moderation or evidence purpose requires it;
+- parse versioned restricted Markdown with raw HTML disabled, validate links
+  and managed media references, and sanitize the disposable rendered HTML with
+  an allowlist;
 - rate-limit login callbacks, invitations, submissions, comments, reports,
   uploads, API clients, event feeds, repository refresh, and notification-
   producing actions;
@@ -1043,18 +1054,10 @@ REST interface is introduced.
 
 ## 24. Architecture decision backlog
 
-Confirm or spike these remaining software-level choices before their named
-feature slices:
-
-1. Q-030: complete the proposed ProseMirror ADR spike.
-
-The UUIDv7, slug, identity, evidence-image, and PostgreSQL-first storage rules
-are accepted implementation constraints rather than open architecture choices.
-
-These are implementation decisions, not changes to the functional rules. Once
-accepted, update [open-questions.md](open-questions.md), record consequential
-choices as architecture decision records under `adr/`, and keep this
-document at the level of the current architecture.
+There are no open software-level choices blocking the named feature slices.
+The UUIDv7, slug, identity, Markdown/WYSIWYG, evidence-image, and PostgreSQL-
+first storage rules are accepted implementation constraints. Their acceptance
+checks still apply when each feature is built.
 
 ## 25. Readiness gates before coding
 

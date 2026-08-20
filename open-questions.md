@@ -112,24 +112,14 @@ the item to the resolved log at the bottom of this document.
 - **Decision trigger:** Measure operating cost and willingness to pay during the
   pilot.
 
-## Implementation choices
+## Resolved questions
 
 ### Q-030 — Which authoring format and sanitizer policy are used?
 
-- **Decision horizon:** Implementation gate — before user-authored descriptions
-  and comments
-- **Current inclination:** Adopt the schema-versioned ProseMirror JSON and
-  closed Kotlin validator and renderer proposed by
-  [ADR-0001](adr/0001-prosemirror-json-rich-text.md). Keep server-rendered,
-  allowlisted HTML as a disposable projection.
-- **Why it remains open:** The approach avoids a production Node runtime but
-  creates browser/server schema-parity, migration, security, and accessibility
-  obligations that need executable validation.
-- **Decision trigger:** Complete the ADR-0001 spike for round-trip fidelity,
-  adversarial validation and rendering, JavaScript-free public output,
-  accessibility, and bounded resource use.
-
-## Resolved questions
+- **Resolved:** 2026-08-20 by D-083 and ADR-0001
+- **Answer:** Store versioned restricted Markdown, provide a constrained
+  WYSIWYG editor, render and sanitize authoritatively on the JVM, and keep both
+  editor state and generated HTML disposable.
 
 ### Q-021 — What is the hosted identity configuration?
 

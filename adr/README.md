@@ -31,4 +31,4 @@ When a proposed ADR becomes accepted:
 
 | ADR | Status | Subject |
 | --- | --- | --- |
-| [ADR-0001](0001-prosemirror-json-rich-text.md) | Proposed | ProseMirror JSON and Kotlin server rendering for rich text |
+| [ADR-0001](0001-restricted-markdown-wysiwyg.md) | Accepted | Restricted Markdown with a constrained WYSIWYG editor |
