@@ -9,6 +9,10 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ### Added
 
+- Accepted technical policies for exact OIDC subject binding, PostgreSQL-first
+  deployment and evidence storage, typed UUIDv7 identifiers, immutable public
+  slugs, future local/S3 storage adapters, and bounded asynchronous JPEG/PNG
+  sanitation with optional fail-closed ClamAV scanning.
 - A proposed architecture decision for schema-versioned ProseMirror JSON,
   closed Kotlin validation and server rendering, and the spike required before
   adoption.

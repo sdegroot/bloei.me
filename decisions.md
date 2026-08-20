@@ -333,13 +333,14 @@ superseded.
 ## D-029 — Limit delivery evidence in v1
 
 - **Date:** 2026-08-01
-- **Status:** Accepted
+- **Status:** Accepted; image-format and storage details superseded by D-080
+  and D-082
 - **Decision:** Evidence supports sanitized text, external links, and raster
   images only.
 - **Why:** These formats cover the initial proof requirement while avoiding the
   security, retention, and rendering burden of arbitrary documents.
-- **Consequences:** Image uploads are decoded, re-encoded, metadata-stripped,
-  and stored in S3-compatible storage. SVG and non-images are rejected.
+- **Consequences:** Image uploads follow the bounded sanitation pipeline in
+  D-082 and use the storage model in D-080. SVG and non-images are rejected.
 
 ## D-030 — Use a Kotlin/Spring modular monolith
 
@@ -1191,3 +1192,103 @@ superseded.
   tombstones and sanitized accepted evidence follow their parent public record.
   Provider selection, lawful bases, data-subject handling, processor terms,
   and final periods remain launch legal-review items.
+
+## D-079 — Bind OIDC identities without importing authorization
+
+- **Date:** 2026-08-20
+- **Status:** Accepted; resolves Q-021
+- **Decision:** Use one standards-compliant OIDC provider per deployment, with
+  Authentik as the hosted reference provider. Identify an account only by the
+  exact `(issuer, subject)` pair and never automatically link accounts by email.
+  Bloei.me remains authoritative for organization memberships and roles.
+  Recovery starts at the identity provider, with an audited local organization-
+  control recovery path when that cannot restore access. Bootstrap the first
+  platform operator once from an exact configured issuer and subject. Require
+  MFA or recent step-up authentication for platform roles and high-impact
+  organization actions.
+- **Why:** OIDC delegates authentication without letting mutable claims silently
+  confer local authority or join separate accounts.
+- **Consequences:** Invitations bind only after authentication and explicit
+  acceptance. Email changes do not change identity. Provider configuration,
+  assurance claims, recovery, bootstrap, role changes, and step-up decisions
+  are auditable; PostgreSQL-backed sessions follow D-074.
+
+## D-080 — Keep the v1 runtime PostgreSQL-first
+
+- **Date:** 2026-08-20
+- **Status:** Accepted; resolves Q-022 and Q-032
+- **Decision:** Ship one OCI application with PostgreSQL, SMTP, and OIDC; add no
+  required Redis, broker, search service, AI service, or object store. Store v1
+  evidence bytes as PostgreSQL `bytea` behind an object-storage port. Every
+  object has an application-generated opaque ID, SHA-256 checksum, and recorded
+  storage backend. Use one configured write backend while allowing multiple
+  read adapters during migrations. Serve stable `/media/{objectId}` URLs
+  through authorization-aware application delivery. Future local-filesystem
+  and S3-compatible adapters are required capabilities, but not v1 services.
+  The hosted deployment keeps protected data in the EU/EEA, targets a one-hour
+  RPO and eight-hour RTO, and may use managed services.
+- **Why:** PostgreSQL makes media transactional and covered by the first backup
+  design while the port and per-object backend preserve a safe migration path.
+- **Consequences:** PostgreSQL backups include media. Quarantined bytes are
+  never addressable; private objects require authorization; public immutable
+  derivatives use correct MIME types, `nosniff`, and long-lived caching. Do not
+  deduplicate across objects. A backend migration copies bytes, verifies the
+  checksum, atomically switches the reference, observes a grace period, and
+  only then deletes the old copy. A local-filesystem backend is suitable only
+  for explicitly single-node/self-hosted storage, never an ephemeral or
+  replicated deployment default. The reference deployment remains Compose;
+  concrete providers and ownership are deployment configuration.
+
+## D-081 — Use UUIDv7 identities and immutable publication slugs
+
+- **Date:** 2026-08-20
+- **Status:** Accepted; resolves Q-026
+- **Decision:** Generate RFC 9562 UUIDv7 values in the application and store
+  them as native PostgreSQL `uuid`, wrapped by aggregate-specific Kotlin inline
+  value classes. Use a small generator abstraction backed initially by
+  `uuid-creator` 6.x. The embedded UUID time is not authoritative business
+  time; stored timestamps and event sequence are. Organizations, components,
+  proposals, campaigns, and any future programs receive a canonical public
+  slug at first publication or launch. Slugs are lowercase ASCII kebab-case,
+  at most 80 characters, unique within their resource type, and disambiguated
+  deterministically with `-2`, `-3`, and subsequent suffixes. They are immutable
+  in v1 and never reassigned.
+- **Why:** Typed UUIDv7 identifiers give opaque, sortable database keys without
+  coupling URLs to names. Immutable slugs avoid broken links and premature
+  redirect-history machinery.
+- **Consequences:** Clients treat IDs and slugs as opaque and follow canonical
+  links. Slug editing may be introduced later only together with permanent
+  redirect history; an old slug remains reserved forever.
+- **References:** [RFC 9562](https://www.rfc-editor.org/info/rfc9562/),
+  [uuid-creator](https://github.com/f4b6a3/uuid-creator), and
+  [PostgreSQL UUID functions](https://www.postgresql.org/docs/current/functions-uuid.html).
+
+## D-082 — Sanitize a narrow evidence-image profile
+
+- **Date:** 2026-08-20
+- **Status:** Accepted; resolves Q-031 and supersedes the storage and format
+  details of D-029
+- **Decision:** Accept only static JPEG and PNG identified from successfully
+  decoded bytes. Reject WebP, GIF, SVG, AVIF, APNG, multi-frame, malformed, and
+  disguised input. Limit a revision to 20 images; each image to 15 MiB, 24
+  megapixels, and 8192 pixels on either axis; require meaningful alt text.
+  Process asynchronously with DBOS through `quarantined`, `processing`,
+  `accepted`, or `rejected`, and block evidence submission while any referenced
+  image is unfinished. Use Java ImageIO with a pinned TwelveMonkeys 3.14.x JPEG
+  plugin, apply orientation, normalize to sRGB, remove metadata, re-encode in
+  the same format, and create both a sanitized full-resolution master and a
+  1600-pixel longest-edge preview. Provide an optional generic `ContentScanner`
+  port with ClamAV as the first adapter; when scanning is enabled but
+  unavailable, fail closed in quarantine.
+- **Why:** A deliberately small decoded format set and bounded re-encoding
+  pipeline reduce parser, metadata, decompression, and active-content risk while
+  retaining useful visual delivery evidence.
+- **Consequences:** Public pages use the preview with dimensions and lazy
+  loading and may open the sanitized master. Raw successful or rejected uploads
+  are deleted at terminal processing; abandoned upload chunks expire after 24
+  hours. Malware scanning is optional and is not a hosted-v1 dependency. PDF
+  uploads remain unsupported and require a separate validation, rendering, and
+  content-disarm decision, though they may later reuse the scanning port.
+- **References:** [OWASP File Upload Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html),
+  [Java Image I/O](https://docs.oracle.com/en/java/javase/25/docs/api/java.desktop/javax/imageio/package-summary.html),
+  and [TwelveMonkeys releases](https://github.com/haraldk/TwelveMonkeys/releases).

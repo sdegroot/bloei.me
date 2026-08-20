@@ -66,7 +66,7 @@ flowchart LR
     operator[Platform operator or moderator]
     oidc[OIDC provider\nAuthentik initially]
     mail[SMTP provider]
-    storage[S3-compatible\nobject storage]
+    storage[Future local or S3-compatible\nobject storage]
     ai[Optional AI\nmoderation provider]
     github[GitHub public API]
     external[External contracting,\ninvoicing and payment]
@@ -79,7 +79,7 @@ flowchart LR
     operator -->|verifies, moderates and operates| bloei
     bloei -->|authentication| oidc
     bloei -->|notices and reminders| mail
-    bloei -->|sanitized evidence images| storage
+    bloei -.->|future storage adapter| storage
     bloei -.->|optional classification only| ai
     bloei -->|allowlisted public metadata| github
     bloei -->|settlement information; no money movement| external
@@ -103,7 +103,7 @@ flowchart TB
     app[Bloei.me application\nSpring Boot modular monolith]
     jobs[Durable job runner\ninside the application]
     db[(PostgreSQL)]
-    objects[(S3-compatible storage)]
+    objects[(Future local or\nS3-compatible storage)]
     oidc[OIDC provider]
     smtp[SMTP]
     ai[Optional AI provider]
@@ -115,7 +115,7 @@ flowchart TB
     proxy --> app
     app -->|OIDC authorization code flow| oidc
     app --> db
-    app --> objects
+    app -.->|future adapter| objects
     app --> jobs
     jobs --> db
     jobs --> smtp
@@ -142,7 +142,7 @@ overlapping application replicas until active-active recovery is designed.
 | Database | PostgreSQL |
 | SQL access | Exposed JDBC SQL DSL; no Exposed DAO |
 | Schema changes | Flyway forward migrations |
-| Object evidence | S3-compatible storage through an internal port |
+| Object evidence | PostgreSQL `bytea` through a multi-backend storage port |
 | Durable workflows | DBOS Transact using the application PostgreSQL instance |
 | Email | SMTP through a notification port |
 | Packaging | One OCI image; Compose reference deployment |
@@ -426,8 +426,10 @@ layer.
 
 - Use opaque typed IDs in Kotlin so organization, component, campaign, pledge,
   and person identifiers cannot be mixed accidentally.
-- Prefer time-sortable UUIDs for database locality, subject to a small
-  implementation spike before accepting the exact UUID version.
+- Generate RFC 9562 UUIDv7 values in the application through a small wrapper
+  around pinned `uuid-creator` 6.x, store native PostgreSQL `uuid`, and expose
+  aggregate-specific Kotlin inline value classes. Treat stored timestamps and
+  event sequence—not the UUID timestamp—as authoritative business time.
 - Store money as ISO currency plus signed 64-bit minor units. V1 campaigns use
   EUR, but arithmetic must not assume two decimal places.
 - Store percentages as integer basis points. Never use binary floating point
@@ -594,7 +596,11 @@ Rules:
   boundary.
 - Ledger, audit, case-event, attestation, terms-version, ballot-history, and
   outbox tables are append-only to ordinary application roles.
-- Public slugs are mutable aliases with redirect history; IDs remain stable.
+- Organizations, components, proposals, campaigns, and future programs receive
+  an immutable canonical slug at publication or launch. It is lowercase ASCII
+  kebab-case, at most 80 characters, unique within its resource type, and uses
+  deterministic numeric collision suffixes. Old slugs are never reassigned;
+  later editing requires permanent redirect history as part of the same change.
 - JSONB is reserved for versioned evidence metadata, policy inputs, audit
   payloads, and provider responses. Core searchable state remains relational.
 - Flyway migrations are forward-only in deployed environments. Destructive
@@ -658,6 +664,15 @@ Authentication is an adapter behind the `identity` module's authenticated-actor
 boundary. Production uses OIDC; local development and browser tests may use a
 separate `dev-auth` adapter.
 
+The deployment accepts one OIDC issuer. A person is identified by the exact
+`(issuer, subject)` pair; email is display/contact data and never an automatic
+account-linking key. Organization membership and every Bloei.me role remain
+local authority. The identity provider is the first recovery path, followed by
+an audited organization-control recovery process when provider recovery cannot
+restore access. A one-use bootstrap configuration names the first operator by
+exact issuer and subject. Platform roles and high-impact organization actions
+require MFA or recent step-up assurance, with the decision recorded in audit.
+
 The development adapter:
 
 - lives in a separate Gradle module or source set that is absent from the
@@ -705,29 +720,49 @@ opaque cursors. It is not the audit log or a state-reconstruction mechanism.
 ```mermaid
 flowchart LR
     upload[Authenticated upload]
-    quarantine[Private quarantine]
-    decode[Decode + validate dimensions and size]
-    sanitize[Re-encode + strip metadata]
-    scan[Malware/content safety checks]
-    accepted[Private immutable object]
-    rejected[Reject + delete quarantine object]
+    quarantine[Private PostgreSQL quarantine]
+    decode[Decode JPEG or PNG + enforce bounds]
+    sanitize[Orient + sRGB + strip metadata + re-encode]
+    scan[Optional ContentScanner]
+    derivatives[Sanitized master + 1600 px preview]
+    accepted[Accepted immutable objects]
+    rejected[Rejected + raw bytes deleted]
 
-    upload --> quarantine --> decode --> sanitize --> scan
-    scan -->|pass| accepted
+    upload --> quarantine --> scan
+    scan -->|pass or disabled| decode --> sanitize --> derivatives --> accepted
     decode -->|fail| rejected
     scan -->|fail| rejected
 ```
 
-- Accept only JPEG, PNG, and WebP after successful decoding.
-- Generate object keys in the application; never trust submitted filenames or
-  content types.
-- Serve evidence through an authorization-aware application route or
-  short-lived signed URL with restrictive content headers.
-- Keep staging and accepted buckets or prefixes separate.
-- Record checksum, decoded media type, dimensions, byte size, sanitizer
-  version, uploader organization, and retention class.
-- Deletion and retention behavior depends on Q-015 and must be configurable
-  before production launch.
+- Accept only static JPEG and PNG identified from decoded bytes. Reject WebP,
+  GIF, SVG, AVIF, APNG, multiple frames, malformed input, and disguised types.
+- Limit each evidence revision to 20 images and each image to 15 MiB, 24
+  megapixels, and 8192 pixels on either axis. Require meaningful alt text.
+- Use Java ImageIO with pinned TwelveMonkeys 3.14.x JPEG support. Apply
+  orientation, normalize sRGB, strip all metadata, and re-encode in the same
+  format. Produce a sanitized full-resolution master and a 1600-pixel
+  longest-edge preview.
+- Run processing asynchronously with DBOS and explicit `quarantined`,
+  `processing`, `accepted`, and `rejected` states. Evidence cannot be submitted
+  while any referenced image is unfinished.
+- Store v1 raw and sanitized bytes as PostgreSQL `bytea` behind the storage
+  port. Assign application object IDs, record SHA-256, backend, decoded media
+  type, dimensions, byte size, sanitizer version, uploader organization, and
+  retention class. Do not deduplicate objects by checksum.
+- The generic `ContentScanner` port is optional, with ClamAV as its first
+  adapter. If configured scanning is unavailable, processing fails closed and
+  the upload stays quarantined.
+- Quarantine has no delivery route. Stable `/media/{objectId}` routes authorize
+  private content and serve public immutable previews with correct MIME,
+  `X-Content-Type-Options: nosniff`, dimensions, lazy loading, and long-lived
+  caching; the sanitized master may be opened separately.
+- Delete raw successful and rejected uploads immediately at terminal processing
+  and abandoned upload chunks after 24 hours. PDFs remain unsupported pending a
+  separate validation, rendering, and content-disarm decision.
+- The port records a backend per object and permits one write adapter plus
+  multiple read adapters. Future local-filesystem and S3-compatible migrations
+  copy, checksum-verify, atomically switch the reference, wait a grace period,
+  then delete the old copy.
 
 ## 16. Jobs and notifications
 
@@ -868,13 +903,17 @@ Internet
 TLS reverse proxy
    │
 Bloei.me application ─── PostgreSQL
-   ├──────────────────── S3-compatible object storage
    ├──────────────────── Authentik / OIDC
    └──────────────────── SMTP
 ```
 
-The reference Compose deployment provides the application, PostgreSQL, and
-S3-compatible storage. OIDC and SMTP stay configurable external dependencies.
+The reference Compose deployment provides the application and PostgreSQL;
+evidence bytes are included in PostgreSQL backup and recovery. OIDC and SMTP
+stay configurable external dependencies. A future local-filesystem adapter is
+limited to explicit single-node/self-hosted configurations. A future
+S3-compatible adapter supports hosted or replicated deployments; neither is a
+v1 runtime dependency.
+
 One application replica is sufficient initially; the job design must already
 be safe with multiple replicas.
 
@@ -883,7 +922,8 @@ be safe with multiple replicas.
 - immutable signed OCI image and declarative configuration;
 - reverse proxy with TLS and request-size limits;
 - managed or operator-owned PostgreSQL with point-in-time recovery;
-- versioned object storage with lifecycle and recovery policy;
+- tested database media backup and recovery, with checksum-verified object
+  migration before any later storage backend becomes authoritative;
 - encrypted backups with documented recovery point and time objectives;
 - rolling deployment compatible with expand/migrate/contract database changes;
 - separate staging environment with synthetic organizations and no copied
@@ -892,8 +932,9 @@ be safe with multiple replicas.
   migration failure, queue backlog, security incident, and verified platform
   outage correction.
 
-Provider, region, recovery objectives, and service ownership remain Q-018 and
-Q-022.
+Hosted protected data stays in the EU/EEA. The pilot targets RPO one hour and
+RTO eight hours. Concrete providers and service ownership remain deployment
+configuration and depend on the hosted operator in Q-018.
 
 ## 21. Testing architecture
 
@@ -1005,9 +1046,10 @@ REST interface is introduced.
 Confirm or spike these remaining software-level choices before their named
 feature slices:
 
-1. Q-026: validate the accepted UUIDv7 and public slug policy in code.
-2. Q-030: complete the proposed ProseMirror ADR spike.
-3. Q-031 and Q-032: implement the accepted evidence-image and storage policy.
+1. Q-030: complete the proposed ProseMirror ADR spike.
+
+The UUIDv7, slug, identity, evidence-image, and PostgreSQL-first storage rules
+are accepted implementation constraints rather than open architecture choices.
 
 These are implementation decisions, not changes to the functional rules. Once
 accepted, update [open-questions.md](open-questions.md), record consequential
@@ -1021,8 +1063,7 @@ an explicit temporary or final answer:
 
 - Q-008: assign the two named operating contacts and protected rota;
 - Q-015 and Q-016: initial retention and privacy-role working policies;
-- Q-018: hosted operator; and
-- Q-021 and Q-022: OIDC and infrastructure configuration.
+- Q-018: hosted operator.
 
 Not every item requires a permanent policy before the first code commit. A
 documented pilot default is sufficient where it does not misrepresent legal

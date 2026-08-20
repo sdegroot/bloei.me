@@ -90,6 +90,14 @@ Bloei.me uses one configurable OIDC provider per deployment. The hosted
 service initially uses the central Authentik deployment. Self-hosted operators
 can configure another standards-compliant OIDC provider.
 
+An account is bound only to the exact OIDC issuer and subject. Email is not an
+account-linking key, and provider claims never grant Bloei.me organization
+membership or roles. Recovery starts at the identity provider; an independently
+verified, audited organization-control procedure handles cases where provider
+recovery cannot restore access. The initial platform operator is bootstrapped
+once from an exact configured issuer and subject. Platform roles and high-impact
+organization actions require MFA or recent step-up authentication.
+
 Local development and browser tests may instead load a separate development
 authentication adapter with selectable seeded personas. That adapter is absent
 from the production runtime classpath and OCI image, displays a persistent
@@ -1167,9 +1175,17 @@ required, and append-only audit events.
 
 ### Evidence, jobs, and notifications
 
-- Store evidence images in S3-compatible object storage.
-- Accept JPEG, PNG, and WebP only after successful decoding and re-encoding.
-- Strip metadata, reject SVG and non-images, and enforce size limits.
+- Store v1 evidence bytes in PostgreSQL behind an object-storage port that can
+  later read local-filesystem and S3-compatible backends during migration.
+- Accept static JPEG and PNG only after byte-based decoding. Allow at most 20
+  images per revision and 15 MiB, 24 megapixels, and 8192 pixels per axis for
+  each image; require meaningful alt text.
+- Apply orientation, normalize sRGB, strip metadata, and re-encode a sanitized
+  full-resolution master plus a 1600-pixel preview. Reject WebP, GIF, SVG, AVIF,
+  APNG, multi-frame, malformed, and disguised input.
+- Process uploads asynchronously from private quarantine. Optional ClamAV
+  scanning uses a generic scanner port and fails closed when enabled but
+  unavailable. PDF uploads are a possible later feature, not part of v1.
 - Use an outbox-backed worker for email, funding deadlines, budget warnings,
   review and voting timers, reminders, paused countdowns, and automatic
   acceptance.
@@ -1203,8 +1219,13 @@ domain and REST contracts stabilize.
 ### Deployment
 
 - Publish one OCI image for hosted and self-hosted installations.
-- Provide a Compose deployment with PostgreSQL and S3-compatible storage.
+- Provide a PostgreSQL-first Compose deployment. Include evidence bytes in
+  database backup and recovery, targeting a one-hour RPO and eight-hour RTO for
+  the hosted pilot.
 - Keep OIDC and SMTP configurable external services.
+- Keep hosted protected data in the EU/EEA. Add local-filesystem and
+  S3-compatible storage adapters later without changing stable media URLs; the
+  filesystem adapter is only for explicit single-node/self-hosted use.
 - Include readiness and health endpoints, structured logs, metrics, database
   migrations, backup guidance, and reverse-proxy documentation.
 - Keep deployment provisioning and hosted commercial agreements operator-managed

@@ -49,7 +49,7 @@ The v1 schema permits only:
 Links may use HTTPS or a root-relative application path. Images, arbitrary
 HTML, tables, horizontal rules, embedded media, style attributes, and unknown
 nodes, marks, or attributes are not part of the rich-text schema. Evidence
-images remain separate sanitized uploads governed by Q-031 and Q-032.
+images remain separate sanitized uploads governed by D-080 and D-082.
 
 Treat the browser document as untrusted input. The server parses generic JSON,
 validates it into a closed Kotlin model, and rejects malformed structure,

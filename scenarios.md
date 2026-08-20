@@ -1886,3 +1886,91 @@ outbound webhook, private GitHub repository, GitHub write action, or MCP tool.
 
 Deferred capabilities cannot be accidentally inferred from the presence of the
 REST API or public GitHub metadata.
+
+## Scenario 77 — An email claim cannot capture an existing account
+
+### Starting point
+
+An attacker authenticates through the configured OIDC provider with an email
+address equal to an existing organization administrator's address, but with a
+different subject.
+
+### Flow
+
+1. Bloei.me compares the exact issuer and subject, not the email claim.
+2. It creates or locates only the account associated with that pair.
+3. No existing membership or role is copied to the new account.
+4. Organization-control recovery requires independent verification and an
+   audited operator decision; a high-impact grant requires recent step-up.
+5. The legitimate administrator's account and sessions remain unchanged.
+
+### Result
+
+Mutable or recycled email claims cannot link accounts or confer local authority.
+
+## Scenario 78 — An unsafe evidence image never becomes addressable
+
+### Starting point
+
+A supplier uploads a disguised, animated, oversized, or malformed image while
+ClamAV scanning is configured but temporarily unavailable.
+
+### Flow
+
+1. The raw bytes enter private PostgreSQL quarantine under an opaque object ID;
+   filenames and submitted content types are not trusted.
+2. The asynchronous workflow detects the decoded type, frame count, byte,
+   pixel, and axis limits before accepting the object.
+3. Invalid content becomes `rejected`; scanner unavailability leaves otherwise
+   valid content quarantined rather than bypassing the configured check.
+4. `/media/{objectId}` cannot deliver quarantined or rejected bytes, and the
+   evidence revision cannot be submitted while processing is unfinished.
+5. Terminal raw bytes are deleted according to policy and the reason remains
+   auditable without publishing the object.
+
+### Result
+
+Only bounded, successfully sanitized static JPEG or PNG derivatives can become
+evidence.
+
+## Scenario 79 — Evidence storage moves without changing public links
+
+### Starting point
+
+A hosted deployment introduces an S3-compatible adapter after initially storing
+sanitized evidence in PostgreSQL.
+
+### Flow
+
+1. New writes use the configured S3-compatible backend while reads retain both
+   adapters.
+2. A migration copies each PostgreSQL object using its application object ID.
+3. Bloei.me verifies SHA-256 and metadata before atomically changing that
+   object's recorded backend.
+4. The stable `/media/{objectId}` URL and authorization behavior do not change.
+5. After a monitored grace period, the old bytes are removed; failed copies
+   continue reading from PostgreSQL and are safe to retry.
+
+### Result
+
+Storage can evolve gradually without broken links, mixed partial state, or an
+all-at-once media cutover.
+
+## Scenario 80 — A published slug remains a durable name
+
+### Starting point
+
+Two components with similar names are published and one is renamed later.
+
+### Flow
+
+1. Publication assigns lowercase ASCII slugs, adding `-2` to resolve the
+   type-local collision.
+2. Their UUIDv7 identifiers remain distinct and opaque.
+3. Renaming display text in v1 does not alter either canonical slug.
+4. A future slug-editing feature must first retain permanent redirect history.
+5. A retired slug is never assigned to another resource.
+
+### Result
+
+External links remain durable while display names can evolve independently.

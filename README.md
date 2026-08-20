@@ -54,7 +54,8 @@ Authentik is available at <http://localhost:9000/if/flow/initial-setup/> on its
 first start. Configure an OAuth2/OIDC provider with callback
 `http://localhost:8080/login/oauth2/code/bloei`; the automated OIDC contract
 test uses a protocol stub and does not depend on this manual instance. S3Mock
-listens on port 9090, Mailpit SMTP on 1025, and its UI on 8025. No application
+listens on port 9090 for future storage-adapter development; v1 evidence uses
+PostgreSQL. Mailpit SMTP listens on 1025 and its UI on 8025. No application
 storage or mail client is added until a business feature requires it.
 
 ## Verification

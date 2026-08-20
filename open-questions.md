@@ -114,47 +114,6 @@ the item to the resolved log at the bottom of this document.
 
 ## Implementation choices
 
-### Q-021 — What is the hosted identity configuration?
-
-- **Decision horizon:** Launch blocker
-- **Current inclination:** Use the central Authentik deployment through OIDC,
-  with invitation and organization-membership flows implemented in Bloei.me.
-- **Why it remains open:** Login methods, assurance levels, recovery, account
-  linking, session policy, and administrator bootstrap still need configuration.
-- **Decision trigger:** Create the authentication threat model and pilot realm.
-
-### Q-022 — Which infrastructure services are used in v1?
-
-- **Decision horizon:** Launch blocker
-- **Current inclination:** PostgreSQL plus S3-compatible image evidence,
-  transactional email, background jobs, and auditable event records, using
-  existing organizational infrastructure where suitable.
-- **Why it remains open:** Providers, regions, backups, retention, monitoring,
-  and recovery objectives have not been selected.
-- **Decision trigger:** Write the deployment design and data-processing
-  inventory.
-
-### Q-024 — What does future split-budget pledging look like?
-
-- **Decision horizon:** Deferred
-- **Current inclination:** Keep the many-to-many allocation model, but expose
-  exactly one budget selection per pledge in v1.
-- **Why it remains open:** The allocation UI, amendment behavior, expiry rules,
-  and internal approvals become substantially more complex.
-- **Decision trigger:** A verified organization has a concrete need to fund one
-  pledge from multiple envelopes.
-
-### Q-026 — Which identifier and public-slug strategy is used?
-
-- **Decision horizon:** Implementation gate — before the first database
-  migration
-- **Current inclination:** Use opaque typed, time-sortable UUIDs internally and
-  mutable human-readable slugs with redirect history publicly.
-- **Why it remains open:** The exact UUID version, generator support, database
-  locality, enumeration risk, and canonical URL behavior need validation.
-- **Decision trigger:** Benchmark and test the identifier type with PostgreSQL
-  and the selected Kotlin libraries.
-
 ### Q-030 — Which authoring format and sanitizer policy are used?
 
 - **Decision horizon:** Implementation gate — before user-authored descriptions
@@ -170,30 +129,42 @@ the item to the resolved log at the bottom of this document.
   adversarial validation and rendering, JavaScript-free public output,
   accessibility, and bounded resource use.
 
+## Resolved questions
+
+### Q-021 — What is the hosted identity configuration?
+
+- **Resolved:** 2026-08-20 by D-079
+- **Answer:** Use deployment-level OIDC with exact issuer/subject identity,
+  local role authority, audited recovery and bootstrap, and step-up protection
+  for privileged actions; Authentik is the hosted reference provider.
+
+### Q-022 and Q-032 — Which infrastructure and storage model is used?
+
+- **Resolved:** 2026-08-20 by D-080
+- **Answer:** V1 is one application plus PostgreSQL, SMTP, and OIDC. Evidence
+  bytes use PostgreSQL behind a multi-backend storage port; local-filesystem and
+  S3-compatible adapters are required later migration targets.
+
+### Q-024 — What does future split-budget pledging look like?
+
+- **Resolved:** 2026-08-20 by D-028
+- **Answer:** Persist allocation rows now, enforce one complete budget
+  allocation per pledge in v1, and relax that validation only for a concrete
+  later multi-envelope need.
+
+### Q-026 — Which identifier and public-slug strategy is used?
+
+- **Resolved:** 2026-08-20 by D-081
+- **Answer:** Use typed application-generated UUIDv7 identifiers and immutable,
+  type-scoped publication slugs; introduce editing only with permanent redirect
+  history.
+
 ### Q-031 — What limits and tools govern evidence images?
 
-- **Decision horizon:** Implementation gate — before delivery evidence
-- **Current inclination:** Enforce conservative byte and dimension limits,
-  decode and re-encode JPEG, PNG, and WebP, strip metadata, and reject animated
-  or malformed content.
-- **Why it remains open:** The image library, decompression-bomb protection,
-  animation policy, malware scanning, and accessible description requirements
-  need testing.
-- **Decision trigger:** Build an adversarial image-validation spike and agree
-  pilot evidence needs.
-
-### Q-032 — Which object-storage adapters and serving model are used?
-
-- **Decision horizon:** Implementation gate — before delivery evidence
-- **Current inclination:** Use an S3-compatible port with a local test adapter,
-  private immutable objects, and authorization-aware delivery or short-lived
-  signed URLs.
-- **Why it remains open:** The pilot provider, region, encryption, versioning,
-  recovery, CORS, and retention behavior depend on Q-022 and Q-015.
-- **Decision trigger:** Select the pilot infrastructure and run backup/restore
-  plus unauthorized-access tests.
-
-## Resolved questions
+- **Resolved:** 2026-08-20 by D-082
+- **Answer:** Accept bounded static JPEG/PNG only, asynchronously sanitize a
+  master and preview, require alt text, and support optional fail-closed ClamAV
+  scanning through a generic port.
 
 ### Q-001 through Q-006 — Catalogue and proposal governance
 
