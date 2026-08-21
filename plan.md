@@ -2,7 +2,7 @@
 
 Status: Living plan
 
-Last updated: 2026-08-02
+Last updated: 2026-08-21
 
 This document describes the agreed product and implementation direction for
 Bloei.me. An interactive overview is available in
@@ -1209,17 +1209,25 @@ V1 publishes a versioned REST API with anonymous public reads and delegated-user
 OAuth parity for organization, maintainer, supplier, funder, reporting, and
 appeal-submission workflows. Platform verification, moderation decisions,
 exceptional operations, and security administration remain internal. Public
-and authorized cursor feeds support polling; service accounts, outbound
-webhooks, and dynamic OAuth client registration are deferred. The normative
-interface and GitHub behavior are defined in
+and authorized cursor feeds support polling; outbound webhooks and dynamic
+OAuth client registration are deferred.
+
+V1 also ships Streamable HTTP MCP incrementally with the domain slices. Its
+first complete write journey covers campaign drafting and publication,
+progress, work references, evidence revisions, sanitized-media association,
+final price, and delivery submission. Interactive agents use delegated-person
+OAuth. Unattended organization automation uses a separate expiring principal
+with explicitly granted campaign/delivery capabilities and component or
+campaign scope; it never inherits broad human or platform roles. The normative
+interfaces and GitHub behavior are defined in
 [api-and-integrations.md](api-and-integrations.md).
 
 Internal ports continue to isolate organization verification, notifications,
 object storage, settlement export, accounting, repository providers, and AI
 moderation. The GitHub adapter validates and refreshes allowlisted public
-metadata without an app installation or write permission. V1 has no MCP
-endpoint; a later adapter will call application services directly after the
-domain and REST contracts stabilize.
+metadata without an app installation or write permission. MCP is not a model-
+or provider-specific integration: its adapter lives in the application, calls
+application services directly, and embeds no model.
 
 ### Deployment
 
@@ -1240,15 +1248,18 @@ domain and REST contracts stabilize.
 
 1. **Foundation:** build, license, CI, changelog, database migrations, module
    boundaries, and bilingual design system.
-2. **Identity and component catalog:** OIDC, organization identity verification,
-   account control, platform participation, component identity, stewardship,
-   roles, and auditing.
+2. **Identity, component catalog, and MCP foundation:** OIDC, organization
+   identity verification, account control, platform participation, component
+   identity, stewardship, roles, organization automation principals, MCP
+   transport/authentication, the Q-036 Authentik interoperability spike, read
+   discovery, and auditing.
 3. **Budgets:** budget administration, spender authorization, ledger,
    eligibility, transactional reservations, transfers, and inline creation.
-4. **Public workflow and API:** components, repository links, GitHub public
+4. **Public workflow and interfaces:** components, repository links, GitHub public
    metadata, optional programs, private ideas, proposals,
    endorsements, campaign formation, supplier selection, comments, reporting,
-   reversible moderation, optional AI assistance, appeals, and notifications.
+   reversible moderation, optional AI assistance, appeals, notifications, and
+   matching web/MCP commands and projections.
 5. **Funding:** supplier teams, campaign versions and amendments, deadlines,
    attestations, budget-backed pledges, fair allocation, and atomic campaign
    start.
@@ -1331,6 +1342,10 @@ without explicit permission.
 - Run Dutch and English browser journeys and automated WCAG 2.2 AA checks.
 - Contract-test OpenAPI, OAuth scopes and audience, delegated authorization,
   public/private projections, ETags, idempotency, and REST/web command parity.
+- Contract-test MCP discovery, protocol negotiation, closed tool schemas,
+  resource-bound OAuth, delegated and automation authority, immediate
+  revocation, confirmation tokens, idempotency, bounded results, and web/MCP
+  command parity for campaign and delivery journeys.
 - Test public and authorized event-feed visibility, ordering, opaque cursors,
   at-least-once delivery, expiry, and resynchronization.
 - Test repository URL normalization, SSRF protection, GitHub refresh, rename,
@@ -1379,6 +1394,7 @@ The Epistola pilot must:
 - Payees, payments, invoice administration, advance or milestone invoicing, tax
   calculation, debt collection, hosted subscription billing, campaign fees,
   support management, private GitHub access, GitHub writes, outbound webhooks,
-  service accounts, and MCP are outside v1.
+  broad service accounts, and platform-administration MCP tools are outside v1.
+  Narrow organization automation for campaign and delivery workflows is in v1.
 - Component support and vulnerability handling remain in maintainer-owned
   systems; Bloei.me provides routing links only.

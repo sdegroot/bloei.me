@@ -1,6 +1,6 @@
 # Bloei.me decision register
 
-Last updated: 2026-08-20
+Last updated: 2026-08-21
 
 This register records accepted product and architecture decisions and why they
 were made. Decisions are not silently rewritten when direction changes. A
@@ -985,7 +985,8 @@ superseded.
 ## D-069 — Make REST a complete non-administrative product interface
 
 - **Date:** 2026-08-02
-- **Status:** Accepted; supersedes the no-public-API part of D-031
+- **Status:** Accepted; supersedes the no-public-API part of D-031; service-
+  account and sequencing details superseded by D-084
 - **Decision:** Publish a versioned `/api/v1` REST API. Allow anonymous reads of
   public records and delegated-user OAuth access to every organization,
   maintainer, supplier, funder, reporting, and appeal-submission workflow that
@@ -1028,8 +1029,8 @@ superseded.
 ## D-071 — Defer MCP until the domain and REST contracts stabilize
 
 - **Date:** 2026-08-02
-- **Status:** Accepted; supersedes the undifferentiated integration deferral in
-  D-031
+- **Status:** Superseded by D-084; originally superseded the undifferentiated
+  integration deferral in D-031
 - **Decision:** Do not ship an MCP endpoint or SDK dependency in v1. Preserve
   application commands, audience-aware queries, typed schemas, and OAuth
   boundaries so a later remote MCP adapter can expose Bloei.me resources and
@@ -1315,3 +1316,32 @@ superseded.
   loss, with shared golden fixtures and authoritative server preview. Keep
   business semantics outside prose. A future structured format requires a new
   ADR and explicit migration or per-document coexistence policy.
+
+## D-084 — Make read/write MCP an early v1 interface
+
+- **Date:** 2026-08-21
+- **Status:** Accepted; accepts ADR-0002, supersedes D-071, and changes the MCP
+  and service-account sequencing in D-069
+- **Decision:** Ship Streamable HTTP MCP at `/mcp` in the existing application
+  and implement it incrementally with the domain slices rather than after the
+  complete REST API. Expose explicit public and authorized resources/read tools
+  plus narrow write tools mapped directly to application commands. The first
+  useful surface covers campaign creation and management, progress, external-
+  work references, evidence revisions, sanitized-media association, final
+  price, and delivery submission/resubmission. Support delegated people through
+  authorization code with PKCE and narrowly scoped organization automation
+  principals through client credentials. Organization administrators grant the
+  latter explicit expiring campaign/delivery capabilities and optional
+  component or campaign scope.
+- **Why:** Agent-driven and unattended campaign operation is a core usability
+  requirement. Designing it with the first commands validates adapter-
+  independent application boundaries and avoids unsafe sharing of human refresh
+  tokens with automation.
+- **Consequences:** MCP never proxies REST, embeds a model, or bypasses current
+  domain authorization. Interactive high-impact actions require a short-lived
+  server confirmation token; explicitly granted unattended publication or
+  delivery actions are labelled and audited as automation. Automation cannot
+  administer identity or roles, accept terms, pledge, vote, moderate, verify,
+  or operate the platform. OAuth discovery, resource indicators, audience
+  validation, closed schemas, idempotency, rate limits, revocation, and
+  adversarial MCP tests are release gates.

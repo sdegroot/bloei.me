@@ -2,16 +2,16 @@
 
 Status: Accepted functional contract
 
-Last updated: 2026-08-20
+Last updated: 2026-08-21
 
 Implementation status: this is the accepted target contract. The initial
-technology scaffold intentionally contains no REST or MCP project, dependency,
-or endpoint; the server-rendered interface and core feature boundaries are
-being established first.
+technology scaffold contains no REST or MCP endpoint yet. MCP is implemented
+incrementally with the first domain slices and is not blocked on completion of
+the full REST surface.
 
 This document defines the v1 public REST API, provider-neutral code-repository
-model, first GitHub metadata adapter, cursor event feeds, and the boundary for a
-later MCP adapter. It applies the product rules in [plan.md](plan.md), the
+model, first GitHub metadata adapter, cursor event feeds, and the v1 read/write
+MCP adapter. It applies the product rules in [plan.md](plan.md), the
 accepted decisions in [decisions.md](decisions.md), and the module and security
 boundaries in [solution-architecture.md](solution-architecture.md).
 
@@ -21,11 +21,12 @@ Bloei.me has three inbound interface classes:
 
 1. The server-rendered web interface for people.
 2. The `/api/v1` REST interface for public reuse and delegated-user clients.
-3. A future remote MCP interface for AI-enabled clients.
+3. The `/mcp` Streamable HTTP interface for interactive agents and organization
+   automation.
 
-The web and REST adapters call the same application commands and queries. The
-web application does not call itself through HTTP. MCP is not present in v1 and
-will later call application APIs directly rather than proxying REST.
+The web, REST, and MCP adapters call the same application commands and queries.
+No adapter calls Bloei.me back through HTTP. MCP ships incrementally with the
+campaign and delivery slices rather than waiting for the complete REST API.
 
 The public REST API covers every organization, component-maintainer, supplier,
 funder, report-submission, and appeal-submission workflow available through the
@@ -38,8 +39,8 @@ web interface. It deliberately excludes:
 - exceptional campaign, identity, deadline, merge, or audit operations; and
 - management of OAuth clients, secrets, or deployment configuration.
 
-These excluded operations remain available only through protected internal
-operator or moderator interfaces.
+These operations are also excluded from MCP and remain available only through
+protected internal operator or moderator interfaces.
 
 ## 2. HTTP and representation conventions
 
@@ -126,10 +127,11 @@ must be registered by a platform operator after review of:
 - allowed browser origins where applicable; and
 - incident and removal contact.
 
-V1 supports authorization code with PKCE. Tokens must be issued for the
-`bloei-api` audience. Dynamic client registration, device flow, password grants,
-personal access tokens, client credentials, and organization service accounts
-are not supported.
+V1 supports authorization code with PKCE for delegated REST and MCP clients.
+Tokens must be issued for the exact REST or MCP resource. MCP additionally
+supports client credentials for Bloei.me-registered organization automation
+principals under ADR-0002. Broad service accounts, personal access tokens,
+password grants, and dynamic client registration remain unsupported.
 
 ### Scopes
 
@@ -138,6 +140,8 @@ are not supported.
   reporting, and appeal-submission commands.
 - `bloei:finance`: read budgets and perform budget, pledge, amendment-consent,
   and delivery-acceptance ballot commands.
+- `bloei:mcp`: connect to the MCP resource; individual read, campaign,
+  delivery, media, and finance scopes still constrain visible tools.
 
 Public reads require no token and no scope. A scope limits what the OAuth client
 may request; it never grants an application role. Every protected command also
@@ -419,23 +423,106 @@ ordinary logs.
 - Unsupported GitLab, Forgejo, and other links can be curator-published with
   `not-monitored` status; Bloei.me never fetches their arbitrary hosts in v1.
 
-## 10. MCP boundary
+## 10. MCP contract
 
-V1 contains no MCP route, advertised capability, client library, server SDK, or
-MCP-specific domain object.
+### Transport and discovery
 
-A later remote MCP adapter must:
+- Serve one Streamable HTTP endpoint at `/mcp` from the existing application.
+- Negotiate supported protocol versions and expose no legacy HTTP+SSE endpoint
+  unless a compatibility requirement is separately accepted.
+- Publish OAuth Protected Resource Metadata and authorization-server discovery.
+- Require RFC 8707 resource indicators and a token issued for the canonical MCP
+  resource. Validate authorization on every request; never rely on connection
+  state or browser cookies.
+- Validate a present HTTP `Origin` header against the deployment allowlist and
+  reject an invalid origin before processing MCP messages.
+- MCP calls application commands directly and never proxies the REST API.
 
-- use Streamable HTTP;
-- implement protected-resource discovery and audience-bound OAuth;
-- expose public and authorized Bloei.me records as resources or read-only tools;
-- map state-changing tools to the same application commands, scopes,
-  attestations, idempotency, and audit policy as REST;
-- perform current organization authorization for every tool call;
-- avoid token passthrough to GitHub or any other provider; and
-- contain no embedded model or provider-specific AI decision authority.
+### Read surface
 
-MCP receives a separate threat model and decision before implementation.
+Expose explicit resources, resource templates, and equivalent narrow read tools
+for clients that do not present resources conveniently:
+
+- `organizations.search`, `organizations.get_context`;
+- `components.search`, `components.get`;
+- `proposals.search`, `proposals.get`;
+- `campaigns.search`, `campaigns.get`, `campaigns.get_draft`;
+- `delivery.get_progress`, `delivery.get_evidence`, `review.get_status`; and
+- `settlement.get`, subject to its existing visibility policy.
+
+Names are illustrative until source-controlled MCP schemas are introduced, but
+the surface remains domain-specific. There is no generic SQL, audit-log, entity-
+store, or arbitrary-URL tool. Public projections may be anonymous only if the
+deployment deliberately exposes a public MCP connection; protected and write
+tools always require OAuth.
+
+### Initial write surface
+
+The first useful MCP release covers:
+
+- `campaigns.create_draft`, `campaigns.validate_draft`,
+  `campaigns.update_draft`, `campaigns.publish`, `campaigns.clarify`, and
+  `campaigns.cancel`;
+- supplier-team and component-target commands required by campaign formation;
+- `delivery.publish_progress`, `delivery.add_work_reference`,
+  `delivery.create_evidence_revision`, `delivery.update_evidence_revision`,
+  `delivery.declare_final_price`, `delivery.submit`, and `delivery.resubmit`;
+  and
+- media upload-session creation, status reads, and association of accepted
+  sanitized media with evidence.
+
+Binary media uses the authenticated upload endpoint returned by the upload-
+session tool. Tools do not accept unbounded base64 or instruct Bloei.me to fetch
+an arbitrary URL.
+
+Each state-changing tool maps one-to-one to an application command and has a
+closed input and output JSON Schema. Unknown fields fail. The input identifies
+the acting organization and exact reviewed resource/terms versions. Commands
+use the same domain validation, ETag-equivalent version precondition,
+idempotency, deadlines, confirmations, and audit policy as REST. A tool can
+offer validation or dry-run, but a successful dry-run never reserves authority
+or guarantees that later state will still permit execution.
+
+### Actor types
+
+**Delegated people** authenticate through authorization code with PKCE. Current
+Bloei.me membership, role, conflict, and object scope are evaluated on every
+tool call. Interactive publication, delivery submission, and other high-impact
+commands require a short-lived confirmation token issued after the person
+reviews the authoritative server preview; `confirmed: true` supplied by a model
+is insufficient.
+
+**Organization automation principals** authenticate through client credentials.
+An organization administrator creates an expiring registration for exactly one
+organization and grants named capabilities, optionally constrained to component
+or campaign IDs. Separate grants cover campaign drafting, campaign publication,
+progress, evidence editing, media upload, and delivery submission. The identity
+provisioning adapter creates or links the external credential and reveals a new
+secret only once; Bloei.me stores only the registration and exact external
+issuer/subject binding.
+
+Automation principals cannot manage organizations, membership, roles or OAuth
+clients; accept platform terms; pledge or manage budgets; vote on delivery;
+moderate; verify identity; perform exceptional corrections; or act as platform
+operators. An explicit campaign-publication or delivery-submission grant permits
+that action without per-call human interaction inside its recorded scope. The
+public history and protected audit label the actor as automation and identify
+the responsible organization and registration. Revocation, expiry, or scope
+reduction takes effect on the next call.
+
+### Result and error behavior
+
+Read and write tools return structured output conforming to declared output
+schemas plus resource links where useful. Stable domain problem codes are
+returned as tool errors without leaking protected existence or policy facts.
+Large collections use opaque cursors; tool results never dump unbounded history
+or raw audit payloads. Clients may retry only under the documented idempotency
+contract.
+
+Tool descriptions and annotations improve client presentation but are
+untrusted metadata and never authorization. The MCP server embeds no model,
+accepts no model-generated hidden reasoning, passes no inbound token to GitHub
+or another provider, and exposes no platform-administration tools.
 
 ## 11. Security and operational requirements
 
@@ -446,7 +533,8 @@ MCP receives a separate threat model and decision before implementation.
   credentials.
 - Validate token issuer, signature, expiry, audience, client, and scopes.
 - Reject all write requests with browser cookies at API routes; REST uses bearer
-  tokens while the HTML interface retains CSRF-protected sessions.
+  tokens, MCP uses resource-bound bearer tokens, and the HTML interface retains
+  CSRF-protected sessions.
 - Never make an outbound request to a user-supplied hostname or redirect outside
   the provider allowlist.
 - Limit response sizes, filter parameters, upload sizes, and external metadata
@@ -474,6 +562,11 @@ Implementation must cover:
 - GitHub success, rename, archive, `404`, rate limit, timeout, `5xx`, stale
   metadata, malformed payload, and credential-redaction tests;
 - monorepository and multi-repository associations;
-- external-work references that never drive campaign transitions; and
-- build/package tests proving no MCP endpoint, GitHub write permission, private-
-  repository credential, or public platform-admin controller exists in v1.
+- external-work references that never drive campaign transitions;
+- MCP discovery, protocol negotiation, resource and tool schemas, delegated and
+  automation authorization, immediate revocation, confirmation tokens,
+  idempotent campaign/delivery journeys, bounded results, prompt-injection data,
+  and wrong-resource token tests; and
+- build/package tests proving no separate MCP process, embedded model, GitHub
+  write permission, private-repository credential, or public platform-admin
+  tool/controller exists in v1.

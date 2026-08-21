@@ -2,7 +2,7 @@
 
 Status: Living register
 
-Last updated: 2026-08-20
+Last updated: 2026-08-21
 
 This register contains product, operational, implementation, and legal choices
 that have not been accepted yet. Accepted choices belong in
@@ -111,6 +111,25 @@ the item to the resolved log at the bottom of this document.
   community organizations require pilot cost and demand evidence.
 - **Decision trigger:** Measure operating cost and willingness to pay during the
   pilot.
+
+## Implementation choices
+
+### Q-036 — How does Authentik issue MCP person and automation tokens?
+
+- **Decision horizon:** Implementation gate — before the MCP identity
+  foundation
+- **Current inclination:** Use one stable deployment issuer and exact subjects
+  across web and delegated MCP identity, resource-bound MCP audiences, OAuth
+  discovery metadata, PKCE for people, and separately provisioned Authentik
+  service-account credentials for Bloei.me automation registrations.
+- **Why it remains open:** The reference configuration must prove stable
+  issuer/subject mapping across clients, MCP Protected Resource Metadata and
+  resource indicators, practical client onboarding without unsafe redirect
+  registration, immediate Bloei.me revocation, secret rotation, and an
+  equivalent standards-compliant self-hosted-provider path.
+- **Decision trigger:** Run an Authentik-backed end-to-end spike with one remote
+  MCP client and one organization automation principal before selecting the
+  Spring MCP/OAuth integration libraries.
 
 ## Resolved questions
 

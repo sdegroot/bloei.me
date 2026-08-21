@@ -9,6 +9,10 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ### Added
 
+- An accepted first-class read/write MCP architecture for early campaign and
+  delivery automation, with Streamable HTTP, delegated-person OAuth, narrowly
+  scoped organization automation principals, confirmation tokens, closed tool
+  schemas, idempotency, and direct application-command parity.
 - Accepted technical policies for exact OIDC subject binding, PostgreSQL-first
   deployment and evidence storage, typed UUIDv7 identifiers, immutable public
   slugs, future local/S3 storage adapters, and bounded asynchronous JPEG/PNG
@@ -76,7 +80,7 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - API and repository-integration scenarios covering delegated OAuth,
   idempotency, authority revocation, event visibility, shared repositories,
   provider failures, external work references, and deferred capabilities.
-- A normative REST, event-feed, repository, GitHub metadata, and future MCP
+- A normative REST, event-feed, repository, GitHub metadata, and v1 MCP
   contract with concrete authorization, representations, commands, failure
   semantics, security boundaries, and verification requirements.
 
@@ -91,8 +95,8 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - Enforced an explicit self-only content security policy in production and
   development security chains.
 - Simplified the proposed implementation from per-capability and adapter Gradle
-  projects to `core` feature packages plus one executable `app`, with REST and
-  MCP projects deferred until their interfaces are implemented.
+  projects to `core` feature packages plus one executable `app`; REST and MCP
+  adapters join that application with their first domain slices.
 - Selected DBOS for durable workflows, PostgreSQL 18 and server-side sessions,
   structured logs and Prometheus, and GitHub Actions supply-chain gates.
 - Replaced fixed campaign prices with an immutable maximum-price ceiling and a
@@ -146,4 +150,5 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   migration authority and repository boundaries as an escape path.
 - Replaced the blanket v1 integration deferral with a complete
   non-administrative REST API, provider-neutral repository links, read-only
-  public GitHub observations, cursor event feeds, and an explicit MCP deferral.
+  public GitHub observations, and cursor event feeds. The former MCP deferral
+  is superseded by the early read/write automation decision.

@@ -1,6 +1,6 @@
 # Bloei.me product scenarios
 
-Last updated: 2026-08-02
+Last updated: 2026-08-21
 
 These scenarios show how people and organizations use Bloei.me from initial
 registration through funding, delivery, review, and settlement. They supplement
@@ -13,6 +13,9 @@ the rules in [plan.md](plan.md) and the rationale in
 - **Delegated API client:** acts for a signed-in person through an
   operator-registered OAuth client and never gains more authority than that
   person currently has in Bloei.me.
+- **Organization automation:** an expiring non-human principal registered by an
+  organization administrator with narrow campaign or delivery capabilities and
+  optional component/campaign scope.
 - **Platform operator:** verifies identity, governs platform participation, and
   performs exceptional audited actions.
 - **Organization administrator:** manages an organization's identity and role
@@ -1871,21 +1874,22 @@ Code-hosting evidence is useful context, not an external workflow authority.
 
 ### Starting point
 
-An integration attempts to use a service account, platform-admin endpoint,
-outbound webhook, private GitHub repository, GitHub write action, or MCP tool.
+An integration attempts to use a broad service account, platform-admin
+endpoint, outbound webhook, private GitHub repository, or GitHub write action.
 
 ### Flow
 
 1. Bloei.me exposes none of those capabilities in v1.
-2. OAuth client credentials cannot substitute for a delegated person.
+2. Client credentials work only for an explicitly registered organization
+   automation principal and its narrow campaign/delivery capabilities.
 3. Operator and moderator actions remain in protected internal web tooling.
 4. Public GitHub observation has no installation token or write permission.
-5. No MCP endpoint or protocol capability is advertised.
+5. MCP advertises no platform-administration or arbitrary provider tool.
 
 ### Result
 
-Deferred capabilities cannot be accidentally inferred from the presence of the
-REST API or public GitHub metadata.
+Deferred capabilities cannot be inferred from REST, MCP, or public GitHub
+metadata.
 
 ## Scenario 77 — An email claim cannot capture an existing account
 
@@ -2002,3 +2006,64 @@ content from an office document, and inserts an evidence image.
 
 The author receives a visual experience while Bloei.me retains portable source,
 server authority, safe managed images, and JavaScript-free public output.
+
+## Scenario 82 — An agent creates and delivers a campaign through MCP
+
+### Starting point
+
+A lead supplier uses an MCP-capable assistant to prepare a campaign from an
+accepted proposal and later report and submit its delivery.
+
+### Flow
+
+1. The client discovers the `/mcp` protected resource, completes authorization
+   code with PKCE, and receives only tools allowed by the supplier's current
+   Bloei.me roles and organization context.
+2. Read tools retrieve the proposal, component, organization, and applicable
+   campaign rules. The agent creates a draft with an idempotency key and revises
+   it against explicit version preconditions.
+3. Validation returns structured omissions without publishing. The supplier
+   reviews the authoritative server preview and obtains a short-lived
+   confirmation token before the agent publishes.
+4. During delivery, the agent publishes progress and associates allowlisted
+   external work. Any image goes through the authenticated upload and sanitation
+   workflow rather than base64 or remote URL fetching.
+5. The agent creates an evidence revision, declares the final price, and shows
+   the authoritative delivery preview. A fresh confirmation authorizes
+   submission, which starts the ordinary review workflow.
+6. Public pages, REST projections, and MCP reads show the same committed domain
+   state and audit correlation.
+
+### Result
+
+MCP makes the complete campaign and delivery journey convenient without
+creating a second workflow or treating model intent as human confirmation.
+
+## Scenario 83 — Narrow automation submits delivery without a human token
+
+### Starting point
+
+A supplier wants CI to publish progress and submit delivery for one campaign
+without retaining an employee's refresh token.
+
+### Flow
+
+1. An organization administrator creates an expiring automation registration
+   scoped to the supplier organization and campaign, granting progress,
+   evidence, media-upload, and delivery-submission capabilities.
+2. The identity adapter provisions a client credential and reveals the secret
+   once. Bloei.me stores the external issuer/subject binding and grant, not the
+   secret.
+3. CI obtains a resource-bound client-credentials token and invokes only the
+   visible delivery tools with version preconditions and idempotency keys.
+4. The delivery submission succeeds without interactive confirmation because
+   the administrator explicitly granted that capability for this campaign. Its
+   public history and audit identify organization automation as the actor.
+5. A pledge, ballot, membership change, cross-campaign write, or platform tool
+   is absent or rejected. Revoking the registration blocks the next call even
+   while the access token is otherwise valid.
+
+### Result
+
+Unattended delivery is possible with narrower, more revocable authority than a
+shared human credential.

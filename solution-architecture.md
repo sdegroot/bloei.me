@@ -2,7 +2,7 @@
 
 Status: Proposed architecture
 
-Last updated: 2026-08-02
+Last updated: 2026-08-21
 
 This document translates the accepted functional design into a buildable
 software architecture. It should be read with the
@@ -63,6 +63,7 @@ flowchart LR
     visitor[Public visitor]
     member[Organization member]
     client[Delegated API client]
+    agent[MCP agent or\norganization automation]
     operator[Platform operator or moderator]
     oidc[OIDC provider\nAuthentik initially]
     mail[SMTP provider]
@@ -76,6 +77,7 @@ flowchart LR
     visitor -->|reads public records| bloei
     member -->|submits and acts for an organization| bloei
     client -->|REST reads and delegated commands| bloei
+    agent -->|MCP resources and tools| bloei
     operator -->|verifies, moderates and operates| bloei
     bloei -->|authentication| oidc
     bloei -->|notices and reminders| mail
@@ -99,6 +101,7 @@ not proxied into Bloei.me service obligations.
 flowchart TB
     browser[Browser]
     apiClient[OAuth API client]
+    mcpClient[MCP client or automation]
     proxy[Reverse proxy / TLS]
     app[Bloei.me application\nSpring Boot modular monolith]
     jobs[Durable job runner\ninside the application]
@@ -112,8 +115,9 @@ flowchart TB
 
     browser -->|HTTPS: HTML + HTMX| proxy
     apiClient -->|HTTPS: JSON + bearer token| proxy
+    mcpClient -->|Streamable HTTP + resource-bound token| proxy
     proxy --> app
-    app -->|OIDC authorization code flow| oidc
+    app -->|OIDC login and OAuth authorization| oidc
     app --> db
     app -.->|future adapter| objects
     app --> jobs
@@ -138,7 +142,8 @@ overlapping application replicas until active-active recovery is designed.
 | Module enforcement | Spring Modulith |
 | Web | Spring MVC, Thymeleaf, HTMX, local CSS and minimal JavaScript |
 | Public API | Planned as a later same-process interface; not part of the initial scaffold |
-| Authentication | Spring Security OAuth2/OIDC client |
+| Agent automation | Streamable HTTP MCP in the same application, added with the first domain slices |
+| Authentication | Spring Security OAuth2/OIDC client and OAuth resource server |
 | Database | PostgreSQL |
 | SQL access | Exposed JDBC SQL DSL; no Exposed DAO |
 | Schema changes | Flyway forward migrations |
@@ -704,7 +709,7 @@ protocol stub. A separate optional Compose profile may run Authentik for a
 production-like smoke test. The convenient local path must not become the only
 tested authentication path.
 
-### 14.2 REST and event interfaces
+### 14.2 REST, MCP, and event interfaces
 
 REST will be a separate same-process interface over core commands and
 audience-aware queries. It is deliberately not scaffolded with the initial web
@@ -720,6 +725,25 @@ person, explicit acting organization, OAuth client, scopes, versions, and
 request metadata into the same command handlers used by HTML forms. Platform-
 operator and moderator decision controllers remain outside the public API
 adapter and OpenAPI document.
+
+MCP is an early same-process adapter at `/mcp`, not a REST proxy or separate
+service. It publishes protected resource discovery, explicit audience-aware
+resources and read tools, and narrow write tools mapped one-to-one to
+application commands. The first complete tool journey covers campaign
+formation and management through progress, evidence, final price, and delivery
+submission. Closed JSON Schemas, explicit acting organization, current domain
+authorization, optimistic versions, idempotency, confirmations, rate limits,
+and audit apply at the adapter and command boundary.
+
+Interactive MCP uses delegated-person authorization code with PKCE. Unattended
+MCP uses an expiring organization automation principal with named campaign and
+delivery capabilities and optional component/campaign restrictions. It cannot
+hold platform or human administration powers. High-impact interactive actions
+require a short-lived server confirmation token; an explicitly scoped
+automation grant can authorize unattended campaign publication or delivery
+submission, which is labelled and audited as automated. Binary media continues
+through the authenticated quarantine/upload flow rather than tool-embedded
+base64 or arbitrary URL fetching.
 
 An event-feed projection consumes allowlisted durable events. It exposes a
 90-day, at-least-once public feed and an audience-filtered authorized feed using
@@ -969,6 +993,10 @@ configuration and depend on the hosted operator in Q-018.
 - OpenAPI tests cover representations, RFC 9457 problems, OAuth scopes, ETags,
   idempotency, public/private projections, and command parity with the web
   adapter.
+- MCP contract tests cover discovery, protocol negotiation, resource and tool
+  schemas, delegated and automation OAuth, capability and object scope,
+  confirmation tokens, immediate revocation, idempotency, bounded results, and
+  parity with the same application commands.
 - Repository-provider tests cover URL parsing, SSRF attempts, GitHub rename,
   archive, rate limit, deletion, timeout, malformed responses, credential
   redaction, and provider-state isolation.
@@ -1010,9 +1038,9 @@ manual review at critical milestones.
 ```
 
 Only `modules/core` and `apps/app` are production Gradle projects. Spring
-Modulith verifies feature-package boundaries inside `modules/core`. Future REST
-or MCP interfaces may be added as libraries and loaded into the same
-application, but neither project or dependency exists in the initial scaffold.
+Modulith verifies feature-package boundaries inside `modules/core`. REST and
+MCP interfaces are libraries loaded into the same application when their first
+slice is implemented; neither requires a new Gradle project or process.
 
 ## 23. Delivery slices
 
@@ -1025,7 +1053,8 @@ layer first.
      security headers, and health.
 2. **Identity-to-organization slice**
    - OIDC login, provisional organization, membership, verification case,
-     activation, public profile, protected operator view, and audit trail.
+     activation, public profile, protected operator view, organization
+     automation registration, MCP OAuth/discovery foundation, and audit trail.
 3. **Component-to-proposal slice**
    - Canonical component, stewardship assignment, private idea, curation,
      repository linking, GitHub public metadata, public API projections,
@@ -1036,28 +1065,36 @@ layer first.
      tests.
 5. **Formation-to-start slice**
    - Supplier eligibility, lead/co-supplier confirmation, campaign terms,
-     component targets, publication, deadlines, full-coverage and early start.
+     component targets, publication, deadlines, full-coverage and early start,
+     with matching campaign MCP resources and write tools.
 6. **Amendment slice**
    - Protected term versions, provisional reservation changes, unanimous
      explicit consent, timeout, failure, and audit display.
 7. **Evidence-to-acceptance slice**
    - Sanitized evidence, final price, pledge freeze, notices, review,
-     objections, responses, negative-consent voting, and acceptance.
+     objections, responses, negative-consent voting, acceptance, and the MCP
+     progress/evidence/delivery automation journey.
 8. **Settlement-to-pilot slice**
    - Budget consumption, contribution lines, payee-free notes, exports,
      lead-completed status, observability, recovery test, and pilot hardening.
 
 Each slice ends with module tests, PostgreSQL integration tests, an accessible
 browser journey, migration verification, local formatting, changelog update,
-and a Conventional Commit. REST contract tests join this gate only after the
-REST interface is introduced.
+and a Conventional Commit. MCP contract tests join with its identity foundation
+and expand with every exposed domain slice; REST tests join when REST is added.
 
 ## 24. Architecture decision backlog
 
-There are no open software-level choices blocking the named feature slices.
-The UUIDv7, slug, identity, Markdown/WYSIWYG, evidence-image, and PostgreSQL-
-first storage rules are accepted implementation constraints. Their acceptance
-checks still apply when each feature is built.
+Q-036 requires an Authentik-backed spike before the MCP identity foundation:
+prove stable person identity across web and MCP clients, Protected Resource
+Metadata and resource indicators, practical client onboarding, organization
+automation provisioning and rotation, and immediate application-level
+revocation. The MCP product boundary is accepted; this spike selects a correct
+reference OAuth configuration and compatible Spring libraries.
+
+The UUIDv7, slug, identity, Markdown/WYSIWYG, MCP product surface, evidence-
+image, and PostgreSQL-first storage rules are accepted implementation
+constraints. Their acceptance checks still apply when each feature is built.
 
 ## 25. Readiness gates before coding
 

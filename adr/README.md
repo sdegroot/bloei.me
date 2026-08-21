@@ -32,3 +32,4 @@ When a proposed ADR becomes accepted:
 | ADR | Status | Subject |
 | --- | --- | --- |
 | [ADR-0001](0001-restricted-markdown-wysiwyg.md) | Accepted | Restricted Markdown with a constrained WYSIWYG editor |
+| [ADR-0002](0002-first-class-read-write-mcp.md) | Accepted | First-class read/write MCP automation |
