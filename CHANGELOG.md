@@ -14,6 +14,9 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   delivery review, and settlement across a guided PDF/UA pilot journey.
 - Versioned local browser persistence, compressed URL-fragment sharing, guarded
   snapshot previews, and offline JSON export and import for mockup journeys.
+- Browser coverage for the complete multi-persona mockup journey, direct-file
+  offline use, Dutch and English accessibility, persistence, and snapshot
+  round-tripping.
 - An accepted first-class read/write MCP architecture for early campaign and
   delivery automation, with Streamable HTTP, delegated-person OAuth, narrowly
   scoped organization automation principals, confirmation tokens, closed tool

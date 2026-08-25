@@ -718,17 +718,17 @@
           <p class="eyebrow">${t("journeyEyebrow")}</p>
           <h1>${t("journeyTitle")}</h1>
           <p>${t("journeyIntro")}</p>
-          <div class="progress-track" aria-label="${t("journeyProgress")}"><span style="width:${completedCount / complete.length * 100}%"></span></div>
+          <div class="progress-track" role="progressbar" aria-label="${t("journeyProgress")}" aria-valuemin="0" aria-valuemax="9" aria-valuenow="${completedCount}"><span style="width:${completedCount / complete.length * 100}%"></span></div>
           <div class="progress-copy"><span>${completedCount} / ${complete.length} ${t("stepsComplete")}</span><strong>${Math.round(completedCount / complete.length * 100)}%</strong></div>
           ${next ? `<div class="next-action"><p class="eyebrow">${t("recommendedNext")}</p><strong>${t(next.label)}</strong><span>${t(next.detail)}</span><button class="button" type="button" data-switch-action="${next.id}" data-persona="${next.personaId}">${currentPersonaId === next.personaId ? t("openTask") : t("switchAndContinue")}</button></div>` : `<div class="next-action"><strong>${t("allComplete")}</strong><span>${t("allCompleteDetail")}</span><button class="button" type="button" data-view-target="campaign">${t("navCampaign")}</button></div>`}
         </article>
-        <aside class="persona-card surface">
+        <article class="persona-card surface">
           <p class="eyebrow">${t("currentPersona")}</p>
           <h2>${escapeHtml(localized(selected.label))}</h2>
           <p>${organization ? escapeHtml(localized(organization.name)) : t("noOrganization")}</p>
           <div class="role-list">${effectiveRoles(selected).length ? effectiveRoles(selected).map(role => `<span class="role-pill">${escapeHtml(localized(roleLabels[role]))}</span>`).join("") : `<span class="role-pill">${t("publicView")}</span>`}</div>
           <div class="persona-meta"><div><strong>${t("organization")}</strong><span>${organization ? escapeHtml(localized(organization.name)) : "—"}</span></div><div><strong>${t("authority")}</strong><span>${effectiveRoles(selected).length ? effectiveRoles(selected).map(role => localized(roleLabels[role])).join(" · ") : t("publicView")}</span></div></div>
-        </aside>
+        </article>
       </section>
       <section class="stage-grid" aria-label="${t("journeyProgress")}">
         ${complete.map((done, index) => `<button type="button" class="stage-card ${done ? "done" : index === complete.findIndex(value => !value) ? "current" : ""}" data-view-target="${stageView(index)}"><span class="stage-number">${index + 1}</span><strong>${copy[locale].stages[index]}</strong><span>${copy[locale].stageDescriptions[index]}</span></button>`).join("")}
@@ -763,7 +763,7 @@
       ${pageHeading("workspaceEyebrow", "workspaceTitle", "workspaceIntro")}
       <div class="workspace-grid">
         <section class="surface"><div class="section-title"><h2>${t("availableTasks")}</h2><span class="status-pill">${tasks.length}</span></div><div class="task-list">${tasks.length ? tasks.map(task => renderTask(task)).join("") : `<p class="empty">${t("noTasks")}</p>`}</div></section>
-        <aside class="surface"><div class="section-title"><h2>${t("protectedRecords")}</h2><span class="tag">${t("private")}</span></div>${budgets.length ? budgets.map(renderBudget).join("") : `<p class="empty">${t("noBudgetAccess")}</p>`}</aside>
+        <div class="surface"><div class="section-title"><h2>${t("protectedRecords")}</h2><span class="tag">${t("private")}</span></div>${budgets.length ? budgets.map(renderBudget).join("") : `<p class="empty">${t("noBudgetAccess")}</p>`}</div>
       </div>
       <section class="surface" style="margin-top:1rem"><div class="section-title"><h2>${t("activity")}</h2></div><div class="activity-list">${state.events.length ? state.events.slice(0, 8).map(renderEvent).join("") : `<p class="empty">${t("noActivity")}</p>`}</div></section>`;
   }
@@ -819,7 +819,7 @@
           <section class="surface" style="margin-top:1rem"><div class="section-title"><h2>${t("acceptanceCriteria")}</h2></div><div class="criteria-list">${campaign.criteria.map(item => `<div class="criterion"><span>✓</span><span>${escapeHtml(item)}</span></div>`).join("")}</div></section>
           ${campaign.settlementNotes?.length ? `<section class="surface" style="margin-top:1rem"><div class="section-title"><h2>${t("settlement")}</h2></div><div class="task-list">${campaign.settlementNotes.map(note => `<div class="task"><span class="task-icon">${note.status === "completed" ? "✓" : "·"}</span><div><strong>${escapeHtml(localized(organizationById(note.organizationId).name))}</strong><span>${money(note.amountMinor)}</span></div><span class="status-pill ${note.status === "completed" ? "complete" : "warn"}">${t(note.status)}</span></div>`).join("")}</div></section>` : ""}
         </div>
-        <aside class="side-panel surface"><h2>${t("campaignEyebrow")}</h2><dl><dt>${t("stage")}</dt><dd>${escapeHtml(campaignStageLabel())}</dd><dt>${t("supplierTeam")}</dt><dd>${escapeHtml(localized(organizationById(campaign.leadSupplierId).name))}<br>${escapeHtml(localized(organizationById(campaign.coSupplierId).name))}</dd><dt>${t("targetComponents")}</dt><dd>Epistola<br>Document Generator</dd><dt>${t("activity")}</dt><dd>${campaign.startedAt ? new Intl.DateTimeFormat(locale === "nl" ? "nl-NL" : "en-GB", { dateStyle: "medium" }).format(new Date(campaign.startedAt)) : "—"}</dd></dl></aside>
+        <section class="side-panel surface"><h2>${t("campaignEyebrow")}</h2><dl><dt>${t("stage")}</dt><dd>${escapeHtml(campaignStageLabel())}</dd><dt>${t("supplierTeam")}</dt><dd>${escapeHtml(localized(organizationById(campaign.leadSupplierId).name))}<br>${escapeHtml(localized(organizationById(campaign.coSupplierId).name))}</dd><dt>${t("targetComponents")}</dt><dd>Epistola<br>Document Generator</dd><dt>${t("activity")}</dt><dd>${campaign.startedAt ? new Intl.DateTimeFormat(locale === "nl" ? "nl-NL" : "en-GB", { dateStyle: "medium" }).format(new Date(campaign.startedAt)) : "—"}</dd></dl></section>
       </div>`;
   }
 
@@ -1262,6 +1262,10 @@
 
   document.addEventListener("change", event => {
     if (event.target.id === "import-file" && event.target.files?.[0]) importJson(event.target.files[0]);
+  });
+
+  window.addEventListener("hashchange", () => {
+    readShareFragment().then(render);
   });
 
   personaSelect.addEventListener("change", () => {
