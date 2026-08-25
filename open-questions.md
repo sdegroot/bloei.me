@@ -2,7 +2,7 @@
 
 Status: Living register
 
-Last updated: 2026-08-21
+Last updated: 2026-08-25
 
 This register contains product, operational, implementation, and legal choices
 that have not been accepted yet. Accepted choices belong in
@@ -59,7 +59,10 @@ the item to the resolved log at the bottom of this document.
 - **Current inclination:** Bloei.me provides transparent coordination records
   and selection rationale but no compliance label. Each pledger records a
   versioned confirmation that its organization remains responsible for its
-  procurement route, internal approvals, and legal assessment.
+  procurement route, internal approvals, and legal assessment. The possible
+  procurement-backed funding model is explored separately in
+  [public-sector-procurement.md](public-sector-procurement.md) without adopting
+  it.
 - **Why it remains open:** Aggregation, joint commissioning, subsidy, conflict,
   and tender obligations depend on the participating bodies and campaign.
 - **Decision trigger:** Legal review of the first public-sector campaign.

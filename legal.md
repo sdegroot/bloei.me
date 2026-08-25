@@ -2,7 +2,7 @@
 
 Status: Exploratory working document
 
-Last updated: 2026-08-20
+Last updated: 2026-08-25
 
 This document records the current product assumptions, known legal questions,
 and intended review work for Bloei.me. It is not legal advice and does not claim
@@ -11,7 +11,9 @@ organization or jurisdiction.
 
 The product direction remains normative in [plan.md](plan.md), accepted choices
 and their rationale are in [decisions.md](decisions.md), and concrete journeys
-are in [scenarios.md](scenarios.md).
+are in [scenarios.md](scenarios.md). A possible procurement-backed funding
+model for municipalities is evaluated in the non-normative
+[public-sector procurement discussion paper](public-sector-procurement.md).
 
 ## Initial working position
 

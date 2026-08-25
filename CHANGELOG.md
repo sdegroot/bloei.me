@@ -9,6 +9,10 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ### Added
 
+- A non-normative public-sector procurement discussion paper covering
+  open-source purchasing rules, procurement-backed funding instruments,
+  conditional commitments, shared frameworks, municipal journeys, product
+  implications, alternatives, and validation questions.
 - A bilingual, zero-backend browser mockup with seeded organizations,
   role-specific workspaces, budget-backed pledging, fair-share allocation,
   delivery review, and settlement across a guided PDF/UA pilot journey.
