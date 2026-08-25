@@ -4,6 +4,24 @@ Bloei.me is a public co-funding network where organizations reserve innovation
 budgets and collectively fund concrete open-source outcomes. This repository
 contains the product design and the executable application foundation.
 
+## Browser mockup
+
+The guided product mockup in [`mockup/index.html`](mockup/index.html) runs
+entirely in the browser. Open that file directly to use it offline; it has no
+build step, backend, API, remote font, or other network dependency.
+
+The mockup follows one editable PDF/UA pilot journey across platform,
+organization, maintainer, supplier, and funding roles. It stores progress in
+`localStorage`. The **Share** view exports a portable JSON snapshot in local-file
+mode. When the same directory is published on GitHub Pages, it can also create a
+compressed share link whose URL fragment contains the current state and is not
+sent to GitHub.
+
+To publish the files without adding a deployment workflow, configure GitHub
+Pages for the repository root and use the `/mockup/` path. The mockup contains
+fictional demonstration data only; do not enter real personal, legal, or
+financial information into a shared snapshot.
+
 ## Architecture
 
 The production build deliberately has two Gradle projects:
