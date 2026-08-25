@@ -157,9 +157,37 @@ class MockupBrowserTest {
         context.close()
     }
 
+    @Test
+    fun `lead can start early and retains the unfunded delivery share`() {
+        val context = browser.newContext(Browser.NewContextOptions().setLocale("en-GB"))
+        val page = context.newPage()
+        page.navigate(baseUrl)
+        page.evaluate("localStorage.clear()")
+        page.reload()
+        preparePublishedCampaign(page)
+
+        switchPersona(page, "rivierenstad")
+        perform(page, "pledge")
+        switchPersona(page, "lead")
+        perform(page, "startEarly")
+        switchPersona(page, "waterdam")
+        perform(page, "pledge")
+        switchPersona(page, "lead")
+        perform(page, "delivery") {
+            it.locator("#field-declaredFinalPrice").fill("90000")
+        }
+
+        openView(page, "campaign")
+        assertThat(page.locator(".campaign-hero .status-pill")).hasText("Review")
+        assertThat(page.locator(".facts")).containsText("60%")
+        assertThat(page.locator(".facts")).containsText("€36,000")
+        context.close()
+    }
+
     private fun perform(
         page: Page,
         action: String,
+        beforeSubmit: (Page) -> Unit = {},
     ) {
         val actionButton = page.locator("[data-action='$action']")
         assertEquals(1, actionButton.count(), "Expected one available $action action")
@@ -168,6 +196,7 @@ class MockupBrowserTest {
         if (confirmation.count() == 1) {
             confirmation.check()
         }
+        beforeSubmit(page)
         page.locator("#dialog-submit").click()
         assertThat(page.locator("#action-dialog")).not().isVisible()
     }
@@ -178,6 +207,25 @@ class MockupBrowserTest {
     ) {
         page.locator("#persona-select").selectOption(persona)
         openView(page, "workspace")
+    }
+
+    private fun preparePublishedCampaign(page: Page) {
+        switchPersona(page, "rivierenstad")
+        perform(page, "register")
+        switchPersona(page, "operator")
+        perform(page, "verify")
+        switchPersona(page, "rivierenstad")
+        perform(page, "terms")
+        perform(page, "budget")
+        perform(page, "idea")
+        switchPersona(page, "maintainer")
+        perform(page, "proposal")
+        switchPersona(page, "lead")
+        perform(page, "campaign")
+        switchPersona(page, "co-supplier")
+        perform(page, "coConfirm")
+        switchPersona(page, "maintainer")
+        perform(page, "publishCampaign")
     }
 
     private fun openView(
