@@ -2,6 +2,10 @@
   "use strict";
 
   const SCHEMA_VERSION = 1;
+  const PRODUCT_ID = "bloei.me-mockup";
+  const STATE_KEY = "bloei.me.mockup.v1";
+  const PREFERENCES_KEY = "bloei.me.mockup.preferences.v1";
+  const SHARE_WARNING_LENGTH = 8_000;
   const MAX_PRICE_MINOR = 10_000_000;
   const app = document.getElementById("app");
   const personaSelect = document.getElementById("persona-select");
@@ -94,7 +98,29 @@
       shareEyebrow: "Portable local state",
       shareTitle: "Share this outcome without an account.",
       shareIntro: "This section will create a compressed state link and a JSON backup. No data is uploaded.",
-      sharePending: "Sharing is added in the next implementation unit.",
+      shareLinkTitle: "Compressed share link",
+      shareLinkCopy: "The current domain snapshot is compressed into the URL fragment. GitHub Pages never receives it.",
+      createShareLink: "Create share link",
+      copyShareLink: "Copy link",
+      linkCopied: "Share link copied",
+      shareUnavailableFile: "Share links are available on GitHub Pages. A file:// address contains your private local path, so use JSON here.",
+      compressionUnavailable: "This browser cannot create compressed links. Use the JSON fallback.",
+      longLinkWarning: "This link is long and may be truncated by chat or email software. Prefer the JSON file.",
+      jsonTitle: "JSON backup",
+      jsonCopy: "Download or import the same versioned state without any network connection.",
+      exportJson: "Export JSON",
+      importJson: "Import JSON",
+      importPreview: "Shared journey preview",
+      importPreviewCopy: "Review this snapshot before it replaces the journey stored in this browser.",
+      loadSharedJourney: "Load shared journey",
+      discardImport: "Keep my journey",
+      invalidImport: "This snapshot is invalid, damaged, or from an unsupported version.",
+      snapshotStage: "Campaign stage",
+      snapshotOrganizations: "Organizations",
+      snapshotUpdated: "Last updated",
+      savedLocally: "Saved locally",
+      memoryOnly: "Memory only · export before closing",
+      demoDataWarning: "Use fictional demo data only. Shared links and files can be read by anyone who receives them.",
       registerOrg: "Register Rivierenstad",
       registerOrgDetail: "Create its provisional legal profile after checking for duplicates.",
       verifyOrg: "Verify Rivierenstad",
@@ -248,7 +274,29 @@
       shareEyebrow: "Overdraagbare lokale staat",
       shareTitle: "Deel dit resultaat zonder account.",
       shareIntro: "Hier komt een gecomprimeerde toestandslink en JSON-reservekopie. Er worden geen gegevens geüpload.",
-      sharePending: "Delen wordt in de volgende implementatiestap toegevoegd.",
+      shareLinkTitle: "Gecomprimeerde deellink",
+      shareLinkCopy: "De huidige domeintoestand wordt in het URL-fragment gecomprimeerd. GitHub Pages ontvangt deze niet.",
+      createShareLink: "Maak deellink",
+      copyShareLink: "Kopieer link",
+      linkCopied: "Deellink gekopieerd",
+      shareUnavailableFile: "Deellinks zijn beschikbaar op GitHub Pages. Een file://-adres bevat je lokale privépad; gebruik hier JSON.",
+      compressionUnavailable: "Deze browser kan geen gecomprimeerde links maken. Gebruik de JSON-reservekopie.",
+      longLinkWarning: "Deze link is lang en kan door chat- of e-mailsoftware worden afgekapt. Gebruik liever het JSON-bestand.",
+      jsonTitle: "JSON-reservekopie",
+      jsonCopy: "Download of importeer dezelfde versiegebonden toestand zonder netwerkverbinding.",
+      exportJson: "Exporteer JSON",
+      importJson: "Importeer JSON",
+      importPreview: "Voorbeeld van gedeelde reis",
+      importPreviewCopy: "Controleer deze momentopname voordat deze de reis in deze browser vervangt.",
+      loadSharedJourney: "Laad gedeelde reis",
+      discardImport: "Behoud mijn reis",
+      invalidImport: "Deze momentopname is ongeldig, beschadigd of heeft een niet-ondersteunde versie.",
+      snapshotStage: "Campagnefase",
+      snapshotOrganizations: "Organisaties",
+      snapshotUpdated: "Laatst bijgewerkt",
+      savedLocally: "Lokaal opgeslagen",
+      memoryOnly: "Alleen in geheugen · exporteer voor afsluiten",
+      demoDataWarning: "Gebruik alleen fictieve demogegevens. Iedereen die de link of het bestand ontvangt kan deze lezen.",
       registerOrg: "Registreer Rivierenstad", registerOrgDetail: "Maak na een duplicaatcontrole het voorlopige juridische profiel.",
       verifyOrg: "Verifieer Rivierenstad", verifyOrgDetail: "Bevestig juridische identiteit en zeggenschap van de aanvrager.",
       acceptTerms: "Accepteer platformvoorwaarden", acceptTermsDetail: "Activeer deelname en wijs de werkrollen van de gemeente toe.",
@@ -306,6 +354,111 @@
     "supplier-representative": { en: "Supplier representative", nl: "Leveranciersvertegenwoordiger" }
   };
 
+  function detectStorage() {
+    try {
+      const key = `${STATE_KEY}.test`;
+      localStorage.setItem(key, "1");
+      localStorage.removeItem(key);
+      return true;
+    } catch (_error) {
+      return false;
+    }
+  }
+
+  function loadStoredState() {
+    if (!storageAvailable) return null;
+    try {
+      const raw = localStorage.getItem(STATE_KEY);
+      if (!raw) return null;
+      return validateEnvelope(JSON.parse(raw)).state;
+    } catch (_error) {
+      return null;
+    }
+  }
+
+  function loadPreferences() {
+    if (!storageAvailable) return {};
+    try {
+      return JSON.parse(localStorage.getItem(PREFERENCES_KEY) || "{}");
+    } catch (_error) {
+      return {};
+    }
+  }
+
+  function saveState() {
+    if (!storageAvailable) return;
+    try {
+      localStorage.setItem(STATE_KEY, JSON.stringify(createEnvelope(state)));
+    } catch (_error) {
+      storageAvailable = false;
+    }
+  }
+
+  function savePreferences() {
+    if (!storageAvailable) return;
+    try {
+      localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ locale }));
+    } catch (_error) {
+      storageAvailable = false;
+    }
+  }
+
+  function createEnvelope(snapshot) {
+    return { product: PRODUCT_ID, schemaVersion: SCHEMA_VERSION, exportedAt: new Date().toISOString(), state: snapshot };
+  }
+
+  function validateEnvelope(envelope) {
+    if (!envelope || envelope.product !== PRODUCT_ID || envelope.schemaVersion !== SCHEMA_VERSION || !envelope.state) throw new Error("invalid-envelope");
+    const imported = structuredClone(envelope.state);
+    if (imported.schemaVersion !== SCHEMA_VERSION || !imported.rivierenstad || !Array.isArray(imported.organizations) || !Array.isArray(imported.components) || !Array.isArray(imported.budgets) || !Array.isArray(imported.events)) throw new Error("invalid-state");
+    assertUniqueIds(imported.organizations);
+    assertUniqueIds(imported.components);
+    assertUniqueIds(imported.budgets);
+    const organizationIds = new Set(imported.organizations.map(item => item.id));
+    const budgetIds = new Set(imported.budgets.map(item => item.id));
+    imported.budgets.forEach(item => {
+      if (!organizationIds.has(item.organizationId) || !Number.isInteger(item.totalMinor) || item.totalMinor < 0) throw new Error("invalid-budget");
+      item.consumedMinor = 0;
+    });
+    if (imported.campaign) validateCampaign(imported.campaign, organizationIds, budgetIds, imported.budgets);
+    imported.updatedAt = typeof imported.updatedAt === "string" ? imported.updatedAt : new Date().toISOString();
+    return { ...envelope, state: imported };
+  }
+
+  function assertUniqueIds(items) {
+    const ids = items.map(item => item && item.id);
+    if (ids.some(id => typeof id !== "string" || !id) || new Set(ids).size !== ids.length) throw new Error("invalid-identifiers");
+  }
+
+  function validateCampaign(campaign, organizationIds, budgetIds, budgets) {
+    const statuses = new Set(["draft", "funding", "delivering", "review", "accepted", "settled"]);
+    if (!statuses.has(campaign.status) || !Number.isInteger(campaign.maximumPriceMinor) || campaign.maximumPriceMinor <= 0 || !Array.isArray(campaign.pledges) || !Array.isArray(campaign.acceptances) || !Array.isArray(campaign.settlementNotes)) throw new Error("invalid-campaign");
+    if (campaign.finalPriceMinor != null && (!Number.isInteger(campaign.finalPriceMinor) || campaign.finalPriceMinor < 0 || campaign.finalPriceMinor > campaign.maximumPriceMinor)) throw new Error("invalid-price");
+    const pledgeOrganizations = new Set();
+    campaign.pledges.forEach(pledge => {
+      if (!organizationIds.has(pledge.organizationId) || !budgetIds.has(pledge.budgetId) || pledgeOrganizations.has(pledge.organizationId) || !Number.isInteger(pledge.capBps) || pledge.capBps <= 0 || pledge.capBps > 10_000) throw new Error("invalid-pledge");
+      pledgeOrganizations.add(pledge.organizationId);
+    });
+    if (campaign.acceptances.some(id => !pledgeOrganizations.has(id)) || new Set(campaign.acceptances).size !== campaign.acceptances.length) throw new Error("invalid-acceptance");
+    recomputeImportedMoney(campaign, budgets);
+  }
+
+  function recomputeImportedMoney(campaign, budgets) {
+    const shares = fairShares(campaign.pledges);
+    const coverage = Math.min(10_000, campaign.pledges.reduce((sum, pledge) => sum + pledge.capBps, 0));
+    const allocations = campaign.finalPriceMinor == null ? new Map() : allocateMoneyFor(campaign.finalPriceMinor, shares, coverage);
+    campaign.pledges.forEach(pledge => {
+      if (["funding", "delivering"].includes(campaign.status)) pledge.reservedMinor = Math.round(campaign.maximumPriceMinor * pledge.capBps / 10_000);
+      else if (campaign.status === "review") pledge.reservedMinor = allocations.get(pledge.organizationId) || 0;
+      else pledge.reservedMinor = 0;
+      if (campaign.finalPriceMinor != null) pledge.finalAllocationMinor = allocations.get(pledge.organizationId) || 0;
+      if (["accepted", "settled"].includes(campaign.status)) {
+        const budgetItem = budgets.find(item => item.id === pledge.budgetId);
+        budgetItem.consumedMinor += pledge.finalAllocationMinor || 0;
+      }
+    });
+  }
+
   function seedState() {
     return {
       schemaVersion: SCHEMA_VERSION,
@@ -342,11 +495,17 @@
     return { id, organizationId, name, costCenter, totalMinor, validUntil: "2027-12-31", consumedMinor: 0 };
   }
 
-  let state = seedState();
-  let locale = navigator.language && navigator.language.toLowerCase().startsWith("nl") ? "nl" : "en";
+  let storageAvailable = detectStorage();
+  let state = loadStoredState() || seedState();
+  const storedPreferences = loadPreferences();
+  let locale = storedPreferences.locale || (navigator.language && navigator.language.toLowerCase().startsWith("nl") ? "nl" : "en");
   let currentPersonaId = "public";
   let currentView = "overview";
   let activeAction = null;
+  let generatedShareLink = "";
+  let shareWarning = "";
+  let pendingImportedState = null;
+  let importError = "";
 
   function t(key) {
     return copy[locale][key] ?? copy.en[key] ?? key;
@@ -467,7 +626,7 @@
     proposal: { personaId: "maintainer", label: "publishProposal", detail: "publishProposalDetail", allowed: () => Boolean(state.idea && !state.proposal) },
     endorse: { personaId: null, label: "endorseProposal", detail: "endorseProposalDetail", allowed: personaId => {
       const selected = persona(personaId);
-      return Boolean(state.proposal && selected.organizationId && isActiveOrganization(selected.organizationId) && !state.proposal.endorsements.includes(selected.organizationId) && !["open-document", "accessible-software"].includes(selected.organizationId));
+      return Boolean(state.proposal && ["rivierenstad", "waterdam", "polderland"].includes(selected.organizationId) && isActiveOrganization(selected.organizationId) && !state.proposal.endorsements.includes(selected.organizationId));
     } },
     campaign: { personaId: "lead", label: "createCampaign", detail: "createCampaignDetail", allowed: () => Boolean(state.proposal && !state.campaign) },
     coConfirm: { personaId: "co-supplier", label: "confirmCoSupplier", detail: "confirmCoSupplierDetail", allowed: () => Boolean(state.campaign && state.campaign.status === "draft" && !state.campaign.coSupplierConfirmed) },
@@ -485,7 +644,7 @@
     if (!selected.organizationId || !hasPersonaRole(selected, "funding-representative") || !isActiveOrganization(selected.organizationId)) return false;
     if ([state.campaign.leadSupplierId, state.campaign.coSupplierId].includes(selected.organizationId)) return false;
     const existing = state.campaign.pledges.find(pledge => pledge.organizationId === selected.organizationId);
-    return state.campaign.status === "funding" || !existing;
+    return state.campaign.status === "funding" || !existing || existing.capBps < 10_000;
   }
 
   function hasPersonaRole(selected, role) {
@@ -531,6 +690,7 @@
     document.querySelectorAll("[data-i18n]").forEach(element => { element.textContent = t(element.dataset.i18n); });
     document.querySelectorAll("[data-i18n-aria]").forEach(element => { element.setAttribute("aria-label", t(element.dataset.i18nAria)); });
     localeToggle.textContent = locale === "en" ? "NL" : "EN";
+    document.getElementById("storage-status").textContent = `· ${t(storageAvailable ? "savedLocally" : "memoryOnly")}`;
     document.querySelector("[data-close-dialog]").setAttribute("aria-label", t("close"));
     renderPersonaSelect();
     document.querySelectorAll("[data-view-target]").forEach(button => button.setAttribute("aria-current", button.dataset.viewTarget === currentView ? "page" : "false"));
@@ -538,7 +698,7 @@
     if (currentView === "discover") app.innerHTML = renderDiscover();
     if (currentView === "workspace") app.innerHTML = renderWorkspace();
     if (currentView === "campaign") app.innerHTML = renderCampaign();
-    if (currentView === "share") app.innerHTML = renderSharePlaceholder();
+    if (currentView === "share") app.innerHTML = renderShare();
   }
 
   function renderPersonaSelect() {
@@ -669,8 +829,29 @@
     return `<div class="funder-row"><strong>${escapeHtml(localized(organization.name))}<br><small>${percentage(item.capBps)} ${t("cap")}</small></strong><div class="bar" aria-hidden="true"><span style="width:${Math.min(100, item.shareBps / 100)}%"></span></div><span class="money">${percentage(item.shareBps)}<br><small>${money(amountMinor)} ${t("projected")}</small></span></div>`;
   }
 
-  function renderSharePlaceholder() {
-    return `${pageHeading("shareEyebrow", "shareTitle", "shareIntro")}<div class="surface empty">${t("sharePending")}</div>`;
+  function renderShare() {
+    const canShareLink = location.protocol === "http:" || location.protocol === "https:";
+    return `${pageHeading("shareEyebrow", "shareTitle", "shareIntro")}
+      ${pendingImportedState ? renderImportPreview() : ""}
+      ${importError ? `<p class="form-error" role="alert">${t("invalidImport")}</p>` : ""}
+      <div class="share-grid">
+        <section class="share-card surface"><h2>${t("shareLinkTitle")}</h2><p>${t("shareLinkCopy")}</p>
+          ${generatedShareLink ? `<label class="field" for="share-link"><span>${t("shareLinkTitle")}</span><textarea id="share-link" class="share-output" readonly>${escapeHtml(generatedShareLink)}</textarea></label>` : ""}
+          <div class="share-actions"><button class="button" type="button" data-share-link${canShareLink ? "" : " disabled"}>${t("createShareLink")}</button>${generatedShareLink ? `<button class="button secondary" type="button" data-copy-link>${t("copyShareLink")}</button>` : ""}</div>
+          ${!canShareLink ? `<p class="notice warning">${t("shareUnavailableFile")}</p>` : ""}${shareWarning ? `<p class="notice warning">${t(shareWarning)}</p>` : ""}
+        </section>
+        <section class="share-card surface"><h2>${t("jsonTitle")}</h2><p>${t("jsonCopy")}</p>
+          <div class="share-actions"><button class="button" type="button" data-export-json>${t("exportJson")}</button><label class="button secondary" for="import-file">${t("importJson")}</label><input id="import-file" type="file" accept="application/json,.json" hidden></div>
+          <p class="notice">${t("demoDataWarning")}</p>
+        </section>
+      </div>`;
+  }
+
+  function renderImportPreview() {
+    const imported = pendingImportedState;
+    const campaign = imported.campaign;
+    const status = campaign ? campaign.status : "not-created";
+    return `<section class="share-card surface" style="margin-bottom:1rem"><p class="eyebrow">${t("importPreview")}</p><h2>${t("importPreviewCopy")}</h2><div class="facts"><div class="fact surface"><strong>${escapeHtml(status)}</strong><span>${t("snapshotStage")}</span></div><div class="fact surface"><strong>${imported.organizations.filter(item => item.status !== "not-registered").length}</strong><span>${t("snapshotOrganizations")}</span></div><div class="fact surface"><strong>${new Intl.DateTimeFormat(locale === "nl" ? "nl-NL" : "en-GB", { dateStyle: "medium" }).format(new Date(imported.updatedAt))}</strong><span>${t("snapshotUpdated")}</span></div></div><div class="share-actions"><button class="button" type="button" data-load-import>${t("loadSharedJourney")}</button><button class="button secondary" type="button" data-discard-import>${t("discardImport")}</button></div></section>`;
   }
 
   function pageHeading(eyebrow, title, intro) {
@@ -747,6 +928,7 @@
     const handlers = { register: registerOrganization, verify: verifyOrganization, terms: acceptTerms, budget: createBudget, idea: submitIdea, proposal: publishProposal, endorse: endorseProposal, campaign: createCampaign, coConfirm: confirmCoSupplier, publishCampaign, pledge: placePledge, startEarly, delivery: submitDelivery, accept: acceptDelivery, completeNote };
     handlers[activeAction](formData);
     recordEvent(eventKey(activeAction));
+    saveState();
     dialog.close();
     showToast(t("actionComplete"));
     render();
@@ -835,6 +1017,7 @@
     if (!budgetItem || budgetItem.organizationId !== selected.organizationId || budgetItem.validUntil < "2027-03-01") throw new Error(t("invalidValue"));
     const exposure = Math.round(state.campaign.maximumPriceMinor * capBps / 10_000);
     const existing = state.campaign.pledges.find(pledge => pledge.organizationId === selected.organizationId);
+    if (state.campaign.status === "delivering" && existing && capBps <= existing.capBps) throw new Error(t("invalidValue"));
     const previousReservation = existing?.reservedMinor || 0;
     if (budgetUsage(budgetItem).availableMinor + previousReservation < exposure) throw new Error(t("invalidValue"));
     if (existing) Object.assign(existing, { capBps, budgetId: budgetItem.id, reservedMinor: exposure });
@@ -874,10 +1057,14 @@
   }
 
   function allocateMoney(priceMinor, shares) {
+    return allocateMoneyFor(priceMinor, shares, coverageBps());
+  }
+
+  function allocateMoneyFor(priceMinor, shares, coverage) {
     const result = new Map();
     let allocated = 0;
     shares.forEach((item, index) => {
-      const amount = index === shares.length - 1 && coverageBps() >= 10_000 ? Math.max(0, priceMinor - allocated) : Math.floor(priceMinor * item.shareBps / 10_000);
+      const amount = index === shares.length - 1 && coverage >= 10_000 ? Math.max(0, priceMinor - allocated) : Math.floor(priceMinor * item.shareBps / 10_000);
       result.set(item.organizationId, amount);
       allocated += amount;
     });
@@ -917,6 +1104,130 @@
     if (state.campaign.settlementNotes.every(item => item.status === "completed")) state.campaign.status = "settled";
   }
 
+  function shareSnapshot() {
+    const snapshot = structuredClone(state);
+    snapshot.events = [];
+    return snapshot;
+  }
+
+  async function generateShareLink() {
+    shareWarning = "";
+    if (!("CompressionStream" in window)) {
+      generatedShareLink = "";
+      shareWarning = "compressionUnavailable";
+      render();
+      return;
+    }
+    const envelope = createEnvelope(shareSnapshot());
+    const compressed = await compressText(JSON.stringify(envelope));
+    const base = `${location.origin}${location.pathname}${location.search}`;
+    generatedShareLink = `${base}#share=v1.gzip.${toBase64Url(compressed)}`;
+    if (generatedShareLink.length > SHARE_WARNING_LENGTH) shareWarning = "longLinkWarning";
+    render();
+  }
+
+  async function compressText(text) {
+    const stream = new Blob([new TextEncoder().encode(text)]).stream().pipeThrough(new CompressionStream("gzip"));
+    return new Uint8Array(await new Response(stream).arrayBuffer());
+  }
+
+  async function decompressText(bytes) {
+    if (!("DecompressionStream" in window)) throw new Error("compression-unavailable");
+    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"));
+    return new Response(stream).text();
+  }
+
+  function toBase64Url(bytes) {
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += 0x8000) binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+    return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+  }
+
+  function fromBase64Url(value) {
+    const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
+    const binary = atob(normalized + "=".repeat((4 - normalized.length % 4) % 4));
+    return Uint8Array.from(binary, character => character.charCodeAt(0));
+  }
+
+  async function readShareFragment() {
+    const match = location.hash.match(/^#share=v1\.gzip\.([A-Za-z0-9_-]+)$/);
+    if (!match) return;
+    try {
+      const text = await decompressText(fromBase64Url(match[1]));
+      pendingImportedState = validateEnvelope(JSON.parse(text)).state;
+      currentView = "share";
+    } catch (_error) {
+      importError = "invalidImport";
+      currentView = "share";
+    }
+  }
+
+  function exportJson() {
+    const blob = new Blob([`${JSON.stringify(createEnvelope(state), null, 2)}\n`], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `bloei-me-journey-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  async function importJson(file) {
+    importError = "";
+    try {
+      pendingImportedState = validateEnvelope(JSON.parse(await file.text())).state;
+    } catch (_error) {
+      pendingImportedState = null;
+      importError = "invalidImport";
+    }
+    currentView = "share";
+    render();
+  }
+
+  function loadPendingImport() {
+    if (!pendingImportedState) return;
+    state = pendingImportedState;
+    pendingImportedState = null;
+    importError = "";
+    generatedShareLink = "";
+    currentPersonaId = "public";
+    currentView = "overview";
+    clearShareFragment();
+    saveState();
+    render();
+    showToast(t("actionComplete"));
+  }
+
+  function discardPendingImport() {
+    pendingImportedState = null;
+    importError = "";
+    clearShareFragment();
+    render();
+  }
+
+  function clearShareFragment() {
+    if (location.hash.startsWith("#share=")) history.replaceState(null, "", location.href.split("#")[0]);
+  }
+
+  async function copyShareLink() {
+    const output = document.getElementById("share-link");
+    if (!output) return;
+    try {
+      if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(generatedShareLink);
+      else {
+        output.focus();
+        output.select();
+        document.execCommand("copy");
+      }
+      showToast(t("linkCopied"));
+    } catch (_error) {
+      output.focus();
+      output.select();
+    }
+  }
+
   function showToast(message) {
     toast.textContent = message;
     toast.hidden = false;
@@ -942,6 +1253,15 @@
       openAction(switchTarget.dataset.switchAction);
     }
     if (event.target.closest("[data-close-dialog]")) dialog.close();
+    if (event.target.closest("[data-share-link]")) generateShareLink();
+    if (event.target.closest("[data-copy-link]")) copyShareLink();
+    if (event.target.closest("[data-export-json]")) exportJson();
+    if (event.target.closest("[data-load-import]")) loadPendingImport();
+    if (event.target.closest("[data-discard-import]")) discardPendingImport();
+  });
+
+  document.addEventListener("change", event => {
+    if (event.target.id === "import-file" && event.target.files?.[0]) importJson(event.target.files[0]);
   });
 
   personaSelect.addEventListener("change", () => {
@@ -951,6 +1271,7 @@
 
   localeToggle.addEventListener("click", () => {
     locale = locale === "en" ? "nl" : "en";
+    savePreferences();
     render();
   });
 
@@ -960,6 +1281,11 @@
       state = seedState();
       currentPersonaId = "public";
       currentView = "overview";
+      generatedShareLink = "";
+      pendingImportedState = null;
+      importError = "";
+      if (storageAvailable) localStorage.removeItem(STATE_KEY);
+      clearShareFragment();
       render();
     }
   });
@@ -976,4 +1302,5 @@
   });
 
   render();
+  readShareFragment().then(render);
 }());

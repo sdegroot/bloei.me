@@ -12,6 +12,8 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 - A bilingual, zero-backend browser mockup with seeded organizations,
   role-specific workspaces, budget-backed pledging, fair-share allocation,
   delivery review, and settlement across a guided PDF/UA pilot journey.
+- Versioned local browser persistence, compressed URL-fragment sharing, guarded
+  snapshot previews, and offline JSON export and import for mockup journeys.
 - An accepted first-class read/write MCP architecture for early campaign and
   delivery automation, with Streamable HTTP, delegated-person OAuth, narrowly
   scoped organization automation principals, confirmation tokens, closed tool
