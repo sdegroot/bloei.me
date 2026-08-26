@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Offline product mockup for Bloei.me open-source co-funding.">
+  <title>Bloei.me — Product mockup</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content" data-i18n="skip">Skip to content</a>
+  <div class="mockup-banner" role="status">
+    <span data-i18n="mockupBanner">Interactive mockup · Data stays in this browser</span>
+    <span id="storage-status" class="storage-status"></span>
+  </div>
+  <header class="site-header">
+    <div class="shell header-row">
+      <button class="brand" type="button" data-view-target="overview" aria-label="Bloei.me home">
+        <span class="brand-mark" aria-hidden="true">↗</span>
+        <span>bloei.me</span>
+      </button>
+      <nav class="primary-nav" aria-label="Primary navigation" data-i18n-aria="primaryNavigation">
+        <button type="button" data-view-target="overview" data-i18n="navJourney">Journey</button>
+        <button type="button" data-view-target="discover" data-i18n="navDiscover">Discover</button>
+        <button type="button" data-view-target="workspace" data-i18n="navWorkspace">Workspace</button>
+        <button type="button" data-view-target="campaign" data-i18n="navCampaign">Campaign</button>
+        <button type="button" data-view-target="share" data-i18n="navShare">Share</button>
+      </nav>
+      <div class="header-tools">
+        <button id="locale-toggle" class="quiet-button" type="button">NL</button>
+        <label class="persona-label" for="persona-select" data-i18n="actingAs">Act as</label>
+        <select id="persona-select" aria-label="Act as persona"></select>
+      </div>
+    </div>
+  </header>
+  <main id="main-content" class="shell app-main" tabindex="-1">
+    <div id="app" aria-live="polite"></div>
+  </main>
+  <footer class="site-footer">
+    <div class="shell footer-row">
+      <p><strong>Bloei.me</strong> · <span data-i18n="footerCopy">A browser-only product simulation.</span></p>
+      <button id="reset-button" class="link-button danger" type="button" data-i18n="resetJourney">Reset journey</button>
+    </div>
+  </footer>
+  <dialog id="action-dialog" aria-labelledby="dialog-title">
+    <form id="action-form" method="dialog">
+      <div class="dialog-header">
+        <div>
+          <p id="dialog-eyebrow" class="eyebrow"></p>
+          <h2 id="dialog-title"></h2>
+        </div>
+        <button class="icon-button" type="button" data-close-dialog aria-label="Close">×</button>
+      </div>
+      <div id="dialog-content"></div>
+      <p id="dialog-error" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button class="button secondary" type="button" data-close-dialog data-i18n="cancel">Cancel</button>
+        <button id="dialog-submit" class="button" type="submit"></button>
+      </div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
