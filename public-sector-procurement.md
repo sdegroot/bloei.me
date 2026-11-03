@@ -12,9 +12,11 @@ advice, or a claim that a funding route is compliant.
 
 The current normative direction remains in [plan.md](plan.md), accepted choices
 remain in [decisions.md](decisions.md), and the broader legal boundary remains
-in [legal.md](legal.md). If a direction in this paper is accepted, those
-documents and the affected scenarios and architecture must be changed through
-the normal decision process.
+in [legal.md](legal.md). The Dutch statutory and case-law research supporting
+this paper is recorded separately in
+[aanbestedingsrecht-onderzoek.md](aanbestedingsrecht-onderzoek.md). If a
+direction in this paper is accepted, those documents and the affected scenarios
+and architecture must be changed through the normal decision process.
 
 ## Executive summary
 

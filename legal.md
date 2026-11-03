@@ -13,7 +13,9 @@ The product direction remains normative in [plan.md](plan.md), accepted choices
 and their rationale are in [decisions.md](decisions.md), and concrete journeys
 are in [scenarios.md](scenarios.md). A possible procurement-backed funding
 model for municipalities is evaluated in the non-normative
-[public-sector procurement discussion paper](public-sector-procurement.md).
+[public-sector procurement discussion paper](public-sector-procurement.md), and
+the underlying Dutch procurement-law research is recorded in
+[aanbestedingsrecht-onderzoek.md](aanbestedingsrecht-onderzoek.md).
 
 ## Initial working position
 
