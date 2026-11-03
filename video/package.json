@@ -7,7 +7,9 @@
     "render": "remotion render BloeiSquare out/.raw-1x1.mp4 && node scripts/master.mjs out/.raw-1x1.mp4 out/bloei-me-1x1.mp4",
     "render:vertical": "remotion render BloeiVertical out/.raw-9x16.mp4 && node scripts/master.mjs out/.raw-9x16.mp4 out/bloei-me-9x16.mp4",
     "typecheck": "tsc --noEmit",
-    "voiceover": "node scripts/generate-voiceover.mjs"
+    "voiceover": "node scripts/generate-voiceover.mjs",
+    "voiceover:elevenlabs": "PROVIDER=elevenlabs node scripts/generate-voiceover.mjs",
+    "voices": "node scripts/list-voices.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.540",
