@@ -15,6 +15,11 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
   `-9x16.png`) to upload as a custom thumbnail.
 - `video/`: Remotion project for a ~90 s Dutch explainer video for LinkedIn (1:1, plus a 9:16
   variant), using Epistola auto-translation as the worked example.
+- A Dutch procurement-law research note assessing statutory routes and case law
+  for joint municipal investment in open-source components, covering threshold
+  aggregation, framework participation limits, direct award to a steward,
+  public-public cooperation, quasi in-house delivery, central purchasing bodies,
+  the research-and-development exclusion, and legislative influence options.
 - A non-normative public-sector procurement discussion paper covering
   open-source purchasing rules, procurement-backed funding instruments,
   conditional commitments, shared frameworks, municipal journeys, product
