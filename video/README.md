@@ -10,10 +10,31 @@ easy to change.
 ```sh
 mise install          # node + pnpm (see mise.toml)
 pnpm install
+pnpm voiceover        # regenerate voiceover clips from voiceover/lines.json
 pnpm studio           # live preview / scrubbing in the browser
 pnpm render           # → out/bloei-me-1x1.mp4   (1080×1080, main LinkedIn version)
 pnpm render:vertical  # → out/bloei-me-9x16.mp4  (1080×1920, Reels/Shorts)
+
+# other music track:
+npx remotion render BloeiSquare out/.raw.mp4 --props='{"music":"carefree"}' \
+  && node scripts/master.mjs out/.raw.mp4 out/bloei-me-1x1-carefree.mp4
 ```
+
+Renders are mastered to -14 LUFS / -1.5 dBTP (`scripts/master.mjs`).
+
+## Audio
+
+- **Voiceover:** `voiceover/lines.json` holds the spoken text per scene, as segments with the
+  (scene-relative) frame at which each should start, aligned with the on-screen text. The
+  generator writes `public/vo/*.mp3` and `src/voiceover.json`; scenes stretch automatically when
+  their voiceover runs longer. The current clips are a **placeholder** (macOS `say`, voice
+  Xander); swap in a real voice by replacing the clips (same file names) or the generator.
+- **Music** (ducked under the voice, fades in/out), both CC BY 4.0 — credit required in the post:
+  - "Easy Lemon" (default) — Kevin MacLeod (incompetech.com), Licensed under Creative Commons:
+    By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
+  - "Carefree" — Kevin MacLeod (incompetech.com), same license.
+
+  The end card also shows the credit.
 
 Scene order and durations live in `src/Video.tsx`; scenes in `src/scenes/`, illustrations in
 `src/illustrations.tsx`, brand colours and the example data in `src/theme.ts`.
@@ -45,4 +66,3 @@ Notes:
   How a supplier contribution interacts with fair shares is an assumption made for the video.
 - The video names procurement only as the *problem*; it deliberately does not claim bloei.me
   replaces a procurement process, since that is still an open legal question.
-- No audio yet; add music/voiceover later via `<Audio>` in `src/Video.tsx`.

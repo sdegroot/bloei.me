@@ -4,10 +4,10 @@
   "type": "module",
   "scripts": {
     "studio": "remotion studio",
-    "render": "remotion render BloeiSquare out/bloei-me-1x1.mp4",
-    "render:vertical": "remotion render BloeiVertical out/bloei-me-9x16.mp4",
-    "still": "remotion still BloeiSquare out/poster.png --frame=2550",
-    "typecheck": "tsc --noEmit"
+    "render": "remotion render BloeiSquare out/.raw-1x1.mp4 && node scripts/master.mjs out/.raw-1x1.mp4 out/bloei-me-1x1.mp4",
+    "render:vertical": "remotion render BloeiVertical out/.raw-9x16.mp4 && node scripts/master.mjs out/.raw-9x16.mp4 out/bloei-me-9x16.mp4",
+    "typecheck": "tsc --noEmit",
+    "voiceover": "node scripts/generate-voiceover.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.540",

@@ -2,6 +2,7 @@ import React from "react";
 import { interpolate, useCurrentFrame } from "remotion";
 import { Beat, Em, Headline, Scene, clamp, useAppear, usePop } from "../anim";
 import { Building, IconEasy, IconOpen, IconTogether, Logo, Plant, SupplierTeam } from "../illustrations";
+import { MUSIC } from "../audio";
 import { C, FINAL_PRICE, FONT, MAX_PRICE, ORGS, SUPPLIER_CONTRIBUTION, euro } from "../theme";
 
 const PopIn: React.FC<{ delay: number; children: React.ReactNode; origin?: string; style?: React.CSSProperties }> = ({ delay, children, origin = "center", style }) => {
@@ -108,7 +109,7 @@ export const SceneMessage: React.FC<{ duration: number }> = ({ duration }) => {
       icon: <IconTogether size={130} />,
       title: "Eén keer bouwen",
       text: "Eén gedeelde vraag, één aanbod. Ieder betaalt een eerlijk deel.",
-      delay: 45,
+      delay: 75,
     },
     {
       icon: <IconEasy size={130} />,
@@ -178,6 +179,9 @@ export const SceneCTA: React.FC<{ duration: number }> = ({ duration }) => {
       <div style={{ position: "absolute", left: 0, right: 0, top: 790, display: "flex", flexDirection: "column", alignItems: "center", gap: 18, fontFamily: FONT, opacity: contact, transform: `translateY(${(1 - contact) * 24}px)` }}>
         <div style={{ fontSize: 36, fontWeight: 800, color: C.ink }}>Reageer of praat met ons mee</div>
         <div style={{ padding: "14px 32px", borderRadius: 999, background: C.ink, color: C.surface, fontWeight: 800, fontSize: 36 }}>sander@epistola.app</div>
+      </div>
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 34, textAlign: "center", fontFamily: FONT, fontSize: 17, fontWeight: 500, color: C.muted, opacity: contact * 0.8 }}>
+        Muziek: “{MUSIC.title}” – Kevin MacLeod (incompetech.com), CC BY 4.0
       </div>
     </Scene>
   );

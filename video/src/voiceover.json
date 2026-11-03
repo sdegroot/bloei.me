@@ -1,0 +1,171 @@
+{
+  "voice": "Xander",
+  "scenes": {
+    "hook": [
+      {
+        "at": 10,
+        "file": "vo/hook-1.mp3",
+        "seconds": 2.41,
+        "text": "Gemeente Oost maakt haar brieven met Epistola."
+      },
+      {
+        "at": 130,
+        "file": "vo/hook-2.mp3",
+        "seconds": 2.86,
+        "text": "En nu wil ze die brieven ook automatisch laten vertalen."
+      }
+    ],
+    "others": [
+      {
+        "at": 25,
+        "file": "vo/others-1.mp3",
+        "seconds": 1.26,
+        "text": "Gemeente West wil dat ook."
+      },
+      {
+        "at": 75,
+        "file": "vo/others-2.mp3",
+        "seconds": 0.69,
+        "text": "Net als Zuid."
+      },
+      {
+        "at": 125,
+        "file": "vo/others-3.mp3",
+        "seconds": 0.84,
+        "text": "En het waterschap."
+      }
+    ],
+    "alone": [
+      {
+        "at": 10,
+        "file": "vo/alone-1.mp3",
+        "seconds": 1.3,
+        "text": "Maar ieder apart is het te duur."
+      },
+      {
+        "at": 118,
+        "file": "vo/alone-2.mp3",
+        "seconds": 2.52,
+        "text": "En ze weten niet eens dat de anderen hetzelfde willen."
+      },
+      {
+        "at": 190,
+        "file": "vo/alone-3.mp3",
+        "seconds": 0.95,
+        "text": "Dus blijft het liggen."
+      }
+    ],
+    "network": [
+      {
+        "at": 15,
+        "file": "vo/network-1.mp3",
+        "seconds": 1.27,
+        "text": "Op bloei.me vinden ze elkaar."
+      },
+      {
+        "at": 75,
+        "file": "vo/network-2.mp3",
+        "seconds": 2.61,
+        "text": "Iedereen kan een voorstel doen, ook een leverancier."
+      }
+    ],
+    "offer": [
+      {
+        "at": 10,
+        "file": "vo/offer-1.mp3",
+        "seconds": 7.36,
+        "text": "Een leverancier doet één concreet aanbod: wat er wordt opgeleverd, voor welke maximumprijs, en wat de leverancier zelf bijdraagt."
+      }
+    ],
+    "pledge": [
+      {
+        "at": 10,
+        "file": "vo/pledge-1.mp3",
+        "seconds": 3.84,
+        "text": "Meedoen is simpel: je zegt een maximum toe, uit je eigen budget."
+      },
+      {
+        "at": 150,
+        "file": "vo/pledge-2.mp3",
+        "seconds": 2.01,
+        "text": "Zodra het gedekt is, start de bouw."
+      }
+    ],
+    "accept": [
+      {
+        "at": 10,
+        "file": "vo/accept-1.mp3",
+        "seconds": 1.75,
+        "text": "Er wordt opgeleverd, met bewijs."
+      },
+      {
+        "at": 90,
+        "file": "vo/accept-2.mp3",
+        "seconds": 3.08,
+        "text": "Pas als het voldoet aan de afspraken, wordt het geaccepteerd."
+      }
+    ],
+    "shares": [
+      {
+        "at": 10,
+        "file": "vo/shares-1.mp3",
+        "seconds": 4.14,
+        "text": "De eindprijs valt mee. Ieder betaalt een eerlijk deel, en nooit meer dan beloofd."
+      }
+    ],
+    "open": [
+      {
+        "at": 10,
+        "file": "vo/open-1.mp3",
+        "seconds": 5.21,
+        "text": "En alles is openbaar: wie er betaalde, en wat er is gemaakt. Het resultaat is open source."
+      }
+    ],
+    "message": [
+      {
+        "at": 10,
+        "file": "vo/message-1.mp3",
+        "seconds": 1.98,
+        "text": "Samen goede producten financieren."
+      },
+      {
+        "at": 75,
+        "file": "vo/message-2.mp3",
+        "seconds": 0.85,
+        "text": "Eén keer bouwen,"
+      },
+      {
+        "at": 120,
+        "file": "vo/message-3.mp3",
+        "seconds": 0.83,
+        "text": "met weinig moeite,"
+      },
+      {
+        "at": 195,
+        "file": "vo/message-4.mp3",
+        "seconds": 1.33,
+        "text": "en volledig transparant."
+      }
+    ],
+    "cta": [
+      {
+        "at": 18,
+        "file": "vo/cta-1.mp3",
+        "seconds": 1.18,
+        "text": "Is dit iets wat we willen?"
+      },
+      {
+        "at": 55,
+        "file": "vo/cta-2.mp3",
+        "seconds": 1.42,
+        "text": "Welke uitdagingen zie jij?"
+      },
+      {
+        "at": 120,
+        "file": "vo/cta-3.mp3",
+        "seconds": 1.53,
+        "text": "Reageer, of mail ons."
+      }
+    ]
+  }
+}

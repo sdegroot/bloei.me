@@ -17,3 +17,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   slower pacing in the busier scenes (now 89.5 s).
 - Video: shows that anyone, suppliers included, can submit a proposal, and that the supplier
   co-funds (€ 10.000) visibly alongside the organisations.
+- Video: background music (CC BY 4.0, Kevin MacLeod; "Easy Lemon" or "Carefree") with
+  automatic ducking, a placeholder Dutch voiceover (macOS `say`) synced per segment to the
+  on-screen text, and loudness mastering to -14 LUFS.

@@ -5,10 +5,12 @@ import { SceneAlone, SceneHook, SceneNetwork, SceneOthers } from "./scenes/openi
 import { SceneAccept, SceneOffer, ScenePledge } from "./scenes/middle";
 import { SceneCTA, SceneMessage, SceneOpen, SceneShares } from "./scenes/closing";
 import { C, FONT } from "./theme";
+import { FPS, Soundtrack, buildTimeline } from "./audio";
 
-export const FPS = 30;
+export { FPS };
 
-const SCENES: { id: string; frames: number; C: React.FC<{ duration: number }> }[] = [
+/** Visual (minimum) scene durations; scenes stretch when their voiceover runs longer. */
+const BASE_SCENES: { id: string; frames: number; C: React.FC<{ duration: number }> }[] = [
   { id: "hook", frames: 240, C: SceneHook },
   { id: "others", frames: 195, C: SceneOthers },
   { id: "alone", frames: 255, C: SceneAlone },
@@ -22,7 +24,9 @@ const SCENES: { id: string; frames: number; C: React.FC<{ duration: number }> }[
   { id: "cta", frames: 225, C: SceneCTA },
 ];
 
-export const TOTAL_FRAMES = SCENES.reduce((n, s) => n + s.frames, 0);
+const TIMELINE = buildTimeline(BASE_SCENES);
+const SCENES = TIMELINE.scenes;
+export const TOTAL_FRAMES = TIMELINE.total;
 const END_START = TOTAL_FRAMES - SCENES[SCENES.length - 1].frames;
 
 const Background: React.FC = () => {
@@ -56,6 +60,7 @@ export const BloeiSquare: React.FC = () => (
   <AbsoluteFill>
     <Background />
     <Stage />
+    <Soundtrack segments={TIMELINE.segments} total={TOTAL_FRAMES} />
   </AbsoluteFill>
 );
 
@@ -73,6 +78,7 @@ export const BloeiVertical: React.FC = () => {
       <div style={{ position: "absolute", top: 420, left: 0 }}>
         <Stage />
       </div>
+      <Soundtrack segments={TIMELINE.segments} total={TOTAL_FRAMES} />
     </AbsoluteFill>
   );
 };
