@@ -12,6 +12,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Video: the opening now sets up the problem more slowly: "Stel je voor: Gemeente Oost maakt
+  haar brieven met Epistola. Dat werkt goed. Maar er mist één ding: automatisch vertalen." The
+  languages appear as dashed "not there yet" chips (now 93 s).
+- Video: call to action is now "Wat denk jij? Zou zo'n platform kunnen werken? Laat het weten in
+  de reacties.", with the email address as a secondary option.
+- Video: the voiceover generator reuses clips by content rather than position, so inserting a
+  line keeps the existing takes.
 - Video: "bloei.me" is now spoken as "bloei me" (soft *me*, as in *mezelf*) via a new
   `_pronounce` map in `voiceover/lines.json`; the line at ~0:51 now reads "Als het klaar is, laat
   de leverancier zien dat het werkt." for a more natural follow-up to "start de bouw".

@@ -7,16 +7,30 @@
       {
         "at": 10,
         "file": "vo/hook-1.mp3",
+        "seconds": 0.69,
+        "text": "Stel je voor.",
+        "key": "43bc26540e5389ac"
+      },
+      {
+        "at": 50,
+        "file": "vo/hook-2.mp3",
         "seconds": 2.55,
         "text": "Gemeente Oost maakt haar brieven met Epistola.",
         "key": "9f6301ffe2764b2c"
       },
       {
-        "at": 130,
-        "file": "vo/hook-2.mp3",
-        "seconds": 2.77,
-        "text": "En nu wil ze die brieven ook automatisch laten vertalen.",
-        "key": "da2f304b85b2f6dd"
+        "at": 150,
+        "file": "vo/hook-3.mp3",
+        "seconds": 0.6,
+        "text": "Dat werkt goed.",
+        "key": "a16c41d1f4fcdfb6"
+      },
+      {
+        "at": 200,
+        "file": "vo/hook-4.mp3",
+        "seconds": 2.97,
+        "text": "Maar er mist één ding: brieven automatisch vertalen.",
+        "key": "9f7e0b2be12ffaef"
       }
     ],
     "others": [
@@ -181,16 +195,16 @@
       {
         "at": 60,
         "file": "vo/cta-2.mp3",
-        "seconds": 2.64,
-        "text": "Is dit iets wat we kunnen, of zelfs zouden moeten doen?",
-        "key": "4c040da430569c75"
+        "seconds": 1.75,
+        "text": "Zou zo'n platform kunnen werken?",
+        "key": "92db74a29609a5db"
       },
       {
-        "at": 155,
+        "at": 130,
         "file": "vo/cta-3.mp3",
-        "seconds": 0.89,
-        "text": "Laat van je horen!",
-        "key": "fbd19573be0d2b3a"
+        "seconds": 1.62,
+        "text": "Laat het weten in de reacties.",
+        "key": "0e485b8f0cceeb9c"
       }
     ]
   }

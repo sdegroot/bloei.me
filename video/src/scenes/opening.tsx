@@ -1,7 +1,7 @@
 import React from "react";
 import { interpolate, useCurrentFrame } from "remotion";
 import { Beat, Em, Headline, Scene, clamp, usePop } from "../anim";
-import { AppWindow, Building, Letter, LogoMark, OrgLabel, SpeechBubble, SupplierTeam } from "../illustrations";
+import { AppWindow, Building, Check, Letter, LogoMark, OrgLabel, SpeechBubble, SupplierTeam } from "../illustrations";
 import { C, FONT, ORGS } from "../theme";
 
 export const ROW_X = [180, 420, 660, 900];
@@ -70,7 +70,7 @@ const WishBubble: React.FC = () => (
   </SpeechBubble>
 );
 
-// ── 1. Hook: one municipality, one wish ──────────────────────────────────────
+// ── 1. Hook: imagine a municipality that uses Epistola but misses one feature ─
 const LANGS = [
   { code: "EN", label: "English" },
   { code: "UK", label: "Українська" },
@@ -78,30 +78,36 @@ const LANGS = [
   { code: "PL", label: "Polski" },
   { code: "AR", label: "العربية" },
 ].map((l, i) => ({ ...l, x: 890 + (i % 2 ? 20 : -20), y: 330 + i * 96 }));
-const TRANSLATE = 130;
+// beats, aligned with the voiceover segments in voiceover/lines.json
+const INTRO = 50; // "Gemeente Oost maakt haar brieven met Epistola."
+const WORKS = 150; // "Dat werkt goed."
+const MISSING = 200; // "Maar er mist één ding: brieven automatisch vertalen."
 
 export const SceneHook: React.FC<{ duration: number }> = ({ duration }) => {
   const frame = useCurrentFrame();
-  const letterOut = interpolate(frame, [40, 80], [0, 1], { ...clamp, easing: (t) => 1 - Math.pow(1 - t, 3) });
+  const letterOut = interpolate(frame, [INTRO + 35, INTRO + 75], [0, 1], { ...clamp, easing: (t) => 1 - Math.pow(1 - t, 3) });
   return (
     <Scene duration={duration}>
-      <Beat from={4} to={TRANSLATE}>
+      <Beat from={4} to={MISSING}>
         <Headline>
-          Gemeente Oost maakt
-          <br />
-          haar brieven met <Em>Epistola.</Em>
+          <span style={{ display: "block", marginBottom: 12, fontSize: 40, fontWeight: 650, color: C.muted, letterSpacing: "-0.02em" }}>Stel je voor:</span>
+          <Beat from={INTRO - 10}>
+            Gemeente Oost maakt
+            <br />
+            haar brieven met <Em>Epistola.</Em>
+          </Beat>
         </Headline>
       </Beat>
-      <Beat from={TRANSLATE}>
+      <Beat from={MISSING}>
         <Headline>
-          Nu wil ze die brieven
+          Maar er mist één ding:
           <br />
-          ook <Em>automatisch vertalen.</Em>
+          <Em>automatisch vertalen.</Em>
         </Headline>
       </Beat>
-      <PoppingBuilding index={0} delay={10} dim={0} x={200} />
+      <PoppingBuilding index={0} delay={INTRO} dim={0} x={200} />
       <div style={{ position: "absolute", left: 360, top: 430 }}>
-        <Popper delay={22} origin="center">
+        <Popper delay={INTRO + 12} origin="center">
           <AppWindow title="Epistola" width={300}>
             <div style={{ height: 150, display: "grid", gap: 12, alignContent: "start" }}>
               <div style={{ height: 14, width: "70%", background: C.lime, borderRadius: 6 }} />
@@ -114,15 +120,21 @@ export const SceneHook: React.FC<{ duration: number }> = ({ duration }) => {
           </AppWindow>
         </Popper>
       </div>
-      {/* the generated letter slides out of the window */}
+      {/* the generated letter slides out of the window; a check shows it works */}
       <div style={{ position: "absolute", left: 520 + letterOut * 90, top: 560 + letterOut * 40, transform: `rotate(${letterOut * 8}deg)`, opacity: Math.min(1, letterOut * 3) }}>
         <Letter width={140} />
+        <div style={{ position: "absolute", right: -26, top: -26 }}>
+          <Popper delay={WORKS} origin="center">
+            <Check size={64} />
+          </Popper>
+        </div>
       </div>
+      {/* the missing feature: languages shown as dashed, faded "not there yet" chips */}
       {LANGS.map((l, i) => (
         <Positioned key={l.code} x={l.x} y={l.y}>
-          <Popper delay={TRANSLATE + 20 + i * 10} origin="center">
-            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 18px", background: C.surface, border: `4px solid ${C.ink}`, borderRadius: 999, fontFamily: FONT, fontWeight: 800, fontSize: 26, color: C.ink, whiteSpace: "nowrap" }}>
-              <span style={{ padding: "2px 8px", background: C.sun, borderRadius: 8, fontSize: 20 }}>{l.code}</span>
+          <Popper delay={MISSING + 25 + i * 10} origin="center">
+            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 18px", background: "transparent", border: `4px dashed ${C.lineStrong}`, borderRadius: 999, fontFamily: FONT, fontWeight: 800, fontSize: 26, color: C.muted, whiteSpace: "nowrap", opacity: 0.85 }}>
+              <span style={{ padding: "2px 8px", border: `3px dashed ${C.lineStrong}`, borderRadius: 8, fontSize: 20 }}>{l.code}</span>
               {l.label}
             </div>
           </Popper>

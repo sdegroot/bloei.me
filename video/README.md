@@ -53,7 +53,7 @@ little effort, transparently. Call to action: start the conversation.
 
 | # | On screen | Visual |
 |---|---|---|
-| 1 | Gemeente Oost maakt haar brieven met *Epistola.* → Nu wil ze die brieven ook *automatisch vertalen.* | Town hall, Epistola window produces a letter, language chips appear |
+| 1 | Stel je voor: Gemeente Oost maakt haar brieven met *Epistola.* ("Dat werkt goed.") → Maar er mist één ding: *automatisch vertalen.* | Town hall, Epistola window produces a letter with a check; dashed, faded language chips (not there yet) |
 | 2 | Gemeente West wil dat ook. En Zuid. *En het waterschap.* | Three more organisations with the same wish |
 | 3 | Ieder apart is het *te duur.* / Eigen budget, eigen inkooptraject, eigen offerte. → Maar ze weten niet eens *dat de rest het ook wil.* / Dus blijft het liggen. | A € 100.000 price tag over each one; then walls and question marks, everything greys out |
 | 4 | Op bloei.me *vinden ze elkaar.* / Iedereen kan een voorstel doen, ook een leverancier. | Network to the logo, a supplier joins too; proposal card, four endorsements |
@@ -63,7 +63,7 @@ little effort, transparently. Call to action: start the conversation.
 | 8 | Ieder betaalt *een eerlijk deel.* / Nooit meer dan beloofd. | € 100.000 → € 80.000; 18k / 18k / 18k / 16k + supplier 10k |
 | 9 | En iedereen *kan meekijken.* / Wie financierde en wat er is opgeleverd: openbaar. | Public campaign page, plant blooms |
 | 10 | Samen *goede producten* financieren. / **Eén keer bouwen** — Eén gedeelde vraag, één aanbod. Ieder betaalt een eerlijk deel. / **Weinig moeite** — Sluit aan bij een campagne en zeg een maximum toe. Meer hoeft niet. / **Transparant** — Wie betaalt, wat er wordt gemaakt en wat het kost: voor iedereen zichtbaar. | Three rows with icons, one at a time |
-| 11 | Wat denk *jij?* / Is dit iets wat we kunnen, of zelfs zouden moeten doen? / **Laat van je horen!** — sander@epistola.app, of reageer op dit bericht | End card |
+| 11 | Wat denk *jij?* / Zou zo’n platform kunnen werken? / **Laat het weten in de reacties.** — of mail naar sander@epistola.app | End card |
 
 Notes:
 

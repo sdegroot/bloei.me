@@ -11,7 +11,7 @@ export { FPS };
 
 /** Visual (minimum) scene durations; scenes stretch when their voiceover runs longer. */
 const BASE_SCENES: { id: string; frames: number; C: React.FC<{ duration: number }> }[] = [
-  { id: "hook", frames: 240, C: SceneHook },
+  { id: "hook", frames: 340, C: SceneHook },
   { id: "others", frames: 195, C: SceneOthers },
   { id: "alone", frames: 255, C: SceneAlone },
   { id: "network", frames: 285, C: SceneNetwork },

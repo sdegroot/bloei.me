@@ -1,7 +1,7 @@
 {
   "_doc": "Per scene: [startFrame (scene-relative, 30 fps), text]. A segment starts at its frame, or right after the previous segment if that is still speaking. _pronounce: written → spoken spelling.",
   "_pronounce": { "bloei.me": "bloei me" },
-  "hook": [[10, "Gemeente Oost maakt haar brieven met Epistola."], [130, "En nu wil ze die brieven ook automatisch laten vertalen."]],
+  "hook": [[10, "Stel je voor."], [50, "Gemeente Oost maakt haar brieven met Epistola."], [150, "Dat werkt goed."], [200, "Maar er mist één ding: brieven automatisch vertalen."]],
   "others": [[25, "Gemeente West wil dat ook."], [75, "Net als Zuid."], [125, "En het waterschap."]],
   "alone": [[10, "Maar ieder apart is het te duur."], [118, "En ze weten niet eens dat de anderen hetzelfde willen."], [190, "Dus blijft het liggen."]],
   "network": [[15, "Op bloei.me vinden ze elkaar."], [75, "Iedereen kan een voorstel doen, ook een leverancier."]],
@@ -11,5 +11,5 @@
   "shares": [[10, "De eindprijs valt mee. Ieder betaalt een eerlijk deel, en nooit meer dan beloofd."]],
   "open": [[10, "En alles is openbaar: wie er betaalde, en wat er is gemaakt. Het resultaat is open source."]],
   "message": [[10, "Samen goede producten financieren."], [75, "Eén keer bouwen,"], [120, "met weinig moeite,"], [195, "en volledig transparant."]],
-  "cta": [[18, "Wat denk jij?"], [60, "Is dit iets wat we kunnen, of zelfs zouden moeten doen?"], [155, "Laat van je horen!"]]
+  "cta": [[18, "Wat denk jij?"], [60, "Zou zo'n platform kunnen werken?"], [130, "Laat het weten in de reacties."]]
 }

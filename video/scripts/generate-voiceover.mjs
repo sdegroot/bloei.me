@@ -9,8 +9,9 @@
 //   ELEVENLABS_VOICE_ID=...           required (see scripts/list-voices.mjs)
 //   ELEVENLABS_MODEL=eleven_multilingual_v2   optional
 //
-// Unchanged segments (same spoken text, provider, voice, model) are reused, so editing one line only
-// regenerates that line. Use FORCE=1 to regenerate everything.
+// Unchanged segments (same spoken text, provider, voice, model) are reused, also when they moved
+// to another position, so editing or inserting one line only generates that line.
+// Use FORCE=1 to regenerate everything.
 //
 // Pronunciation: "_pronounce" in lines.json maps a written word to how the voice should say it
 // (e.g. "Epistola" → "Eepistola"). Only the spoken text changes; the lines stay readable.
@@ -46,6 +47,19 @@ const settings =
     : { voice: process.env.VOICE ?? "Xander", model: `say-r${process.env.RATE ?? "170"}` };
 
 // flat list so every segment knows its neighbours (for natural ElevenLabs intonation)
+// Snapshot previous clips by key first: a reused clip may move to a file name that a new clip
+// overwrites earlier in this run (e.g. inserting a line shifts hook-1 → hook-2).
+const reusable = new Map();
+for (const segs of Object.values(previous.scenes ?? {})) {
+  for (const old of segs) {
+    const src = join(root, "public", old.file);
+    if (!old.key || reusable.has(old.key) || !existsSync(src)) continue;
+    const copy = join(tmp, `prev-${old.key}.mp3`);
+    execFileSync("cp", [src, copy]);
+    reusable.set(old.key, { copy, seconds: old.seconds });
+  }
+}
+
 const flat = Object.entries(scenes).flatMap(([scene, segs]) =>
   segs.map(([at, text], i) => ({ scene, i, at, text, spoken: pronounce(text) })),
 );
@@ -59,15 +73,15 @@ try {
     const file = `vo/${seg.scene}-${seg.i + 1}.mp3`;
     const abs = join(root, "public", file);
     const key = hash([provider, settings.voice, settings.model, seg.spoken]);
-    const old = previous.scenes?.[seg.scene]?.[seg.i];
+    const old = reusable.get(key);
     let seconds;
-    if (!process.env.FORCE && old?.key === key && existsSync(abs)) {
+    if (!process.env.FORCE && old) {
       seconds = old.seconds;
-      if (Math.abs(loudness(abs) - TARGET_LUFS) > 1) {
-        const copy = join(tmp, `${seg.scene}-${seg.i}-old.mp3`);
-        execFileSync("cp", [abs, copy]);
-        level(copy, abs);
+      if (Math.abs(loudness(old.copy) - TARGET_LUFS) > 1) {
+        level(old.copy, abs);
         relevelled++;
+      } else {
+        execFileSync("cp", [old.copy, abs]);
       }
     } else {
       const raw = join(tmp, `${seg.scene}-${seg.i}.${provider === "elevenlabs" ? "mp3" : "aiff"}`);
