@@ -40,12 +40,16 @@ export type Org = {
 export const FINAL_PRICE = 80_000;
 export const MAX_PRICE = 100_000;
 
-// Fictional organisations. Shares follow the site's fairShares() for €80.000:
-// equal 20k each → Waterschap capped at 16k → Zuid capped at 20k → rest 22k each.
+/** The lead supplier carries part of the cost itself; shown publicly as its own contribution. */
+export const SUPPLIER_CONTRIBUTION = 10_000;
+
+// Fictional organisations. Shares follow the site's water-filling fairShares() over the part
+// the funders carry (€ 80.000 − € 10.000 supplier = € 70.000), caps as % of the final price
+// (40k / 24k / 20k / 16k): equal 17.5k each → Waterschap capped at 16k → rest 18k each.
 export const ORGS: Org[] = [
-  { name: "Gemeente Oost", facade: C.lime, accent: C.leaf, variant: "town", cap: 50, share: 22_000 },
-  { name: "Gemeente West", facade: C.sky, accent: "#3b8b9a", variant: "town", cap: 30, share: 22_000 },
-  { name: "Gemeente Zuid", facade: "#fbefd2", accent: "#d9982a", variant: "town", cap: 25, share: 20_000 },
+  { name: "Gemeente Oost", facade: C.lime, accent: C.leaf, variant: "town", cap: 50, share: 18_000 },
+  { name: "Gemeente West", facade: C.sky, accent: "#3b8b9a", variant: "town", cap: 30, share: 18_000 },
+  { name: "Gemeente Zuid", facade: "#fbefd2", accent: "#d9982a", variant: "town", cap: 25, share: 18_000 },
   { name: "Waterschap", facade: "#dde8f6", accent: "#4f7fc0", variant: "water", cap: 20, share: 16_000 },
 ];
 

@@ -2,7 +2,7 @@ import React from "react";
 import { interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { Em, Headline, Scene, clamp, useAppear, usePop } from "../anim";
 import { Building, Check, Plant, SupplierTeam } from "../illustrations";
-import { C, FONT, MAX_PRICE, ORGS, euro } from "../theme";
+import { C, FONT, MAX_PRICE, ORGS, SUPPLIER_CONTRIBUTION, euro } from "../theme";
 
 const Abs: React.FC<{ x: number; y: number; w?: number; children?: React.ReactNode; style?: React.CSSProperties }> = ({ x, y, w, children, style }) => (
   <div style={{ position: "absolute", left: x, top: y, width: w, ...style }}>{children}</div>
@@ -71,9 +71,15 @@ export const SceneOffer: React.FC<{ duration: number }> = ({ duration }) => {
                 </div>
               ))}
             </div>
-            <div style={{ marginTop: 24, paddingTop: 20, borderTop: `3px dashed ${C.line}`, opacity: interpolate(frame, [150, 165], [0, 1], clamp) }}>
-              <div style={{ fontSize: 22, fontWeight: 700, color: C.muted }}>Maximumprijs</div>
-              <div style={{ fontSize: 64, fontWeight: 800, letterSpacing: "-0.04em" }}>{euro(MAX_PRICE)}</div>
+            <div style={{ marginTop: 24, paddingTop: 20, borderTop: `3px dashed ${C.line}`, display: "flex", justifyContent: "space-between", alignItems: "end" }}>
+              <div style={{ opacity: interpolate(frame, [140, 155], [0, 1], clamp) }}>
+                <div style={{ fontSize: 22, fontWeight: 700, color: C.muted }}>Maximumprijs</div>
+                <div style={{ fontSize: 54, fontWeight: 800, letterSpacing: "-0.04em" }}>{euro(MAX_PRICE)}</div>
+              </div>
+              <div style={{ opacity: interpolate(frame, [185, 200], [0, 1], clamp), textAlign: "right" }}>
+                <div style={{ fontSize: 22, fontWeight: 700, color: C.muted }}>Draagt zelf bij</div>
+                <div style={{ fontSize: 40, fontWeight: 800, letterSpacing: "-0.03em", color: C.leaf }}>{euro(SUPPLIER_CONTRIBUTION)}</div>
+              </div>
             </div>
           </Card>
         </PopIn>
@@ -83,15 +89,21 @@ export const SceneOffer: React.FC<{ duration: number }> = ({ duration }) => {
 };
 
 // ── 5. Everyone pledges a maximum ────────────────────────────────────────────
-const PLEDGE_AT = [35, 75, 115, 200];
-const BAR = { x: 80, y: 800, w: 920, scale: 125 };
+// Supplier first (already committed in its offer), then the four organisations.
+const PLEDGE_AT = [15, 50, 85, 120, 205];
+const BAR = { x: 80, y: 830, w: 920, scale: 135 };
+const SUPPLIER_PCT = (SUPPLIER_CONTRIBUTION / MAX_PRICE) * 100;
+const FUNDERS = [
+  { key: "supplier", name: "Leverancier", pct: SUPPLIER_PCT, accent: C.ink, pill: `${euro(SUPPLIER_CONTRIBUTION)} zelf` },
+  ...ORGS.map((o) => ({ key: o.name, name: o.name, pct: o.cap, accent: o.accent, pill: `max ${o.cap}%` })),
+];
 
 export const ScenePledge: React.FC<{ duration: number }> = ({ duration }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const progress = PLEDGE_AT.map((d) => spring({ frame: frame - d - 10, fps, config: { damping: 200 } }));
-  const coverage = ORGS.reduce((sum, org, i) => sum + org.cap * progress[i], 0);
-  const fullAt = useAppear(PLEDGE_AT[2] + 30, 12);
+  const coverage = FUNDERS.reduce((sum, f, i) => sum + f.pct * progress[i], 0);
+  const fullAt = useAppear(PLEDGE_AT[3] + 30, 12);
   let left = 0;
   return (
     <Scene duration={duration}>
@@ -101,22 +113,24 @@ export const ScenePledge: React.FC<{ duration: number }> = ({ duration }) => {
         <Em>Zeg een maximum toe.</Em>
       </Headline>
 
-      {ORGS.map((org, i) => (
-        <Abs key={org.name} x={80} y={340 + i * 100} w={560}>
+      {FUNDERS.map((f, i) => (
+        <Abs key={f.key} x={80} y={318 + i * 84} w={590}>
           <PopIn delay={PLEDGE_AT[i]} slide={-80}>
-            <div style={{ display: "flex", alignItems: "center", gap: 18, fontFamily: FONT }}>
-              <Building org={org} width={62} />
-              <div style={{ flex: 1, fontSize: 30, fontWeight: 700, color: C.ink }}>{org.name}</div>
-              <div style={{ padding: "8px 18px", borderRadius: 999, background: org.accent, color: C.surface, fontSize: 28, fontWeight: 800, border: `3px solid ${C.ink}` }}>
-                max {org.cap}%
+            <div style={{ display: "flex", alignItems: "center", gap: 18, fontFamily: FONT, height: 70 }}>
+              <div style={{ width: 62, display: "flex", justifyContent: "center" }}>
+                {i === 0 ? <SupplierTeam width={62} /> : <Building org={ORGS[i - 1]} width={52} />}
+              </div>
+              <div style={{ flex: 1, fontSize: 30, fontWeight: 700, color: C.ink }}>{f.name}</div>
+              <div style={{ padding: "6px 16px", borderRadius: 999, background: f.accent, color: C.surface, fontSize: 26, fontWeight: 800, border: `3px solid ${C.ink}` }}>
+                {f.pill}
               </div>
             </div>
           </PopIn>
         </Abs>
       ))}
 
-      <Abs x={700} y={250}>
-        <Plant growth={0.08 + (coverage / 125) * 0.5} width={260} />
+      <Abs x={720} y={250}>
+        <Plant growth={0.08 + (coverage / BAR.scale) * 0.5} width={250} />
       </Abs>
 
       {/* coverage bar */}
@@ -125,9 +139,9 @@ export const ScenePledge: React.FC<{ duration: number }> = ({ duration }) => {
         <span style={{ color: coverage >= 100 ? C.leaf : C.ink }}>{Math.round(coverage)}%</span>
       </Abs>
       <Abs x={BAR.x} y={BAR.y} w={BAR.w} style={{ height: 44, borderRadius: 999, background: "#e8eee9", border: `4px solid ${C.ink}`, overflow: "hidden" }}>
-        {ORGS.map((org, i) => {
-          const w = (org.cap * progress[i] * BAR.w) / BAR.scale;
-          const el = <div key={org.name} style={{ position: "absolute", top: 0, bottom: 0, left, width: w, background: org.accent, borderRight: w > 2 ? `3px solid ${C.ink}` : undefined }} />;
+        {FUNDERS.map((f, i) => {
+          const w = (f.pct * progress[i] * BAR.w) / BAR.scale;
+          const el = <div key={f.key} style={{ position: "absolute", top: 0, bottom: 0, left, width: w, background: f.accent, borderRight: w > 2 ? `3px solid ${C.ink}` : undefined }} />;
           left += w;
           return el;
         })}
@@ -136,7 +150,7 @@ export const ScenePledge: React.FC<{ duration: number }> = ({ duration }) => {
       <Abs x={BAR.x + (100 * BAR.w) / BAR.scale - 40} y={BAR.y + 62} w={80} style={{ textAlign: "center", fontFamily: FONT, fontSize: 22, fontWeight: 700, color: C.muted }}>
         100%
       </Abs>
-      <Abs x={0} y={940} w={1080} style={{ display: "flex", justifyContent: "center" }}>
+      <Abs x={0} y={950} w={1080} style={{ display: "flex", justifyContent: "center" }}>
         <div style={{ transform: `scale(${fullAt})`, padding: "14px 28px", borderRadius: 999, background: C.leaf, color: C.surface, fontFamily: FONT, fontSize: 30, fontWeight: 800 }}>
           Volledig gedekt → de bouw start!
         </div>

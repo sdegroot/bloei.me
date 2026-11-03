@@ -15,3 +15,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Video: scene 3 now frames the problem as cost plus not knowing others want the same; the
   closing message explains "Eén keer bouwen / Weinig moeite / Transparant" in a sentence each;
   slower pacing in the busier scenes (now 89.5 s).
+- Video: shows that anyone, suppliers included, can submit a proposal, and that the supplier
+  co-funds (€ 10.000) visibly alongside the organisations.

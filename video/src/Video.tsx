@@ -9,17 +9,17 @@ import { C, FONT } from "./theme";
 export const FPS = 30;
 
 const SCENES: { id: string; frames: number; C: React.FC<{ duration: number }> }[] = [
-  { id: "hook", frames: 255, C: SceneHook },
+  { id: "hook", frames: 240, C: SceneHook },
   { id: "others", frames: 195, C: SceneOthers },
-  { id: "alone", frames: 270, C: SceneAlone },
-  { id: "network", frames: 255, C: SceneNetwork },
-  { id: "offer", frames: 225, C: SceneOffer },
+  { id: "alone", frames: 255, C: SceneAlone },
+  { id: "network", frames: 285, C: SceneNetwork },
+  { id: "offer", frames: 255, C: SceneOffer },
   { id: "pledge", frames: 300, C: ScenePledge },
   { id: "accept", frames: 255, C: SceneAccept },
   { id: "shares", frames: 195, C: SceneShares },
-  { id: "open", frames: 225, C: SceneOpen },
+  { id: "open", frames: 210, C: SceneOpen },
   { id: "message", frames: 270, C: SceneMessage },
-  { id: "cta", frames: 240, C: SceneCTA },
+  { id: "cta", frames: 225, C: SceneCTA },
 ];
 
 export const TOTAL_FRAMES = SCENES.reduce((n, s) => n + s.frames, 0);

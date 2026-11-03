@@ -1,7 +1,7 @@
 import React from "react";
 import { interpolate, useCurrentFrame } from "remotion";
 import { Beat, Em, Headline, Scene, clamp, usePop } from "../anim";
-import { AppWindow, Building, Letter, LogoMark, OrgLabel, SpeechBubble } from "../illustrations";
+import { AppWindow, Building, Letter, LogoMark, OrgLabel, SpeechBubble, SupplierTeam } from "../illustrations";
 import { C, FONT, ORGS } from "../theme";
 
 export const ROW_X = [180, 420, 660, 900];
@@ -209,15 +209,17 @@ export const SceneAlone: React.FC<{ duration: number }> = ({ duration }) => {
   );
 };
 
-// ── 4. bloei.me bundles the demand ──────────────────────────────────────────
+// ── 4. bloei.me: they find each other ──────────────────────────────────────
+const SUPPLIER = { x: 950 };
+
 export const SceneNetwork: React.FC<{ duration: number }> = ({ duration }) => {
   const frame = useCurrentFrame();
   const hub = { x: 540, y: 600 };
-  const CARD = 110;
+  const CARD = 120;
   const endorse = [CARD + 30, CARD + 44, CARD + 58, CARD + 72];
   return (
     <Scene duration={duration}>
-      <Headline>
+      <Headline sub={<Beat from={70}>Iedereen kan een voorstel doen, ook een leverancier.</Beat>}>
         Op bloei.me
         <br />
         <Em>vinden ze elkaar.</Em>
@@ -231,7 +233,12 @@ export const SceneNetwork: React.FC<{ duration: number }> = ({ duration }) => {
           );
         })}
         {(() => {
-          const len = 90;
+          const len = SUPPLIER.x - 70 - hub.x;
+          const draw = interpolate(frame, [70, 100], [len, 0], clamp);
+          return <line x1={hub.x} y1={hub.y} x2={hub.x + len} y2={hub.y} stroke={C.leaf} strokeWidth={6} strokeLinecap="round" strokeDasharray={len} strokeDashoffset={draw} />;
+        })()}
+        {(() => {
+          const len = 60;
           const draw = interpolate(frame, [CARD - 16, CARD + 8], [len, 0], clamp);
           return <line x1={hub.x} y1={hub.y} x2={hub.x} y2={hub.y - len} stroke={C.leaf} strokeWidth={6} strokeLinecap="round" strokeDasharray={len} strokeDashoffset={draw} />;
         })()}
@@ -244,11 +251,19 @@ export const SceneNetwork: React.FC<{ duration: number }> = ({ duration }) => {
           </div>
         </Popper>
       </Positioned>
-      <Positioned x={540} y={262}>
+      <Positioned x={SUPPLIER.x} y={hub.y - 62}>
+        <Popper delay={80} origin="center">
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+            <SupplierTeam width={140} />
+            <div style={{ fontFamily: FONT, fontSize: 22, fontWeight: 700, color: C.ink }}>Leverancier</div>
+          </div>
+        </Popper>
+      </Positioned>
+      <Positioned x={540} y={318}>
         <Popper delay={CARD} origin="bottom center">
           <div
             style={{
-              width: 680,
+              width: 640,
               padding: "24px 32px",
               background: C.surface,
               border: `4px solid ${C.ink}`,

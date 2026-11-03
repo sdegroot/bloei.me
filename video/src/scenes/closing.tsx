@@ -1,12 +1,12 @@
 import React from "react";
 import { interpolate, useCurrentFrame } from "remotion";
 import { Beat, Em, Headline, Scene, clamp, useAppear, usePop } from "../anim";
-import { Building, IconEasy, IconOpen, IconTogether, Logo, Plant } from "../illustrations";
-import { C, FINAL_PRICE, FONT, MAX_PRICE, ORGS, euro } from "../theme";
+import { Building, IconEasy, IconOpen, IconTogether, Logo, Plant, SupplierTeam } from "../illustrations";
+import { C, FINAL_PRICE, FONT, MAX_PRICE, ORGS, SUPPLIER_CONTRIBUTION, euro } from "../theme";
 
-const PopIn: React.FC<{ delay: number; children: React.ReactNode; origin?: string }> = ({ delay, children, origin = "center" }) => {
+const PopIn: React.FC<{ delay: number; children: React.ReactNode; origin?: string; style?: React.CSSProperties }> = ({ delay, children, origin = "center", style }) => {
   const p = usePop(delay);
-  return <div style={{ transform: `scale(${Math.max(0, p)})`, transformOrigin: origin }}>{children}</div>;
+  return <div style={{ transform: `scale(${Math.max(0, p)})`, transformOrigin: origin, ...style }}>{children}</div>;
 };
 
 // ── 8. Fair share, in one beat ──────────────────────────────────────────────
@@ -30,14 +30,17 @@ export const SceneShares: React.FC<{ duration: number }> = ({ duration }) => {
           {euro(FINAL_PRICE)}
         </div>
       </div>
-      <div style={{ position: "absolute", left: 80, right: 80, top: 560, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 22 }}>
-        {ORGS.map((org, i) => (
-          <PopIn key={org.name} delay={60 + i * 12}>
-            <div style={{ display: "flex", alignItems: "center", gap: 16, padding: "18px 22px", background: C.surface, border: `4px solid ${C.ink}`, borderRadius: 22, fontFamily: FONT }}>
-              <Building org={org} width={56} />
+      <div style={{ position: "absolute", left: 80, right: 80, top: 520, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+        {[
+          ...ORGS.map((org) => ({ key: org.name, name: org.name, amount: org.share, icon: <Building org={org} width={50} /> })),
+          { key: "supplier", name: "Leverancier (zelf)", amount: SUPPLIER_CONTRIBUTION, icon: <SupplierTeam width={58} /> },
+        ].map((f, i) => (
+          <PopIn key={f.key} delay={60 + i * 12} style={i === 4 ? { gridColumn: "1 / -1", justifySelf: "center", width: "calc(50% - 9px)" } : undefined}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16, padding: "14px 22px", background: C.surface, border: `4px solid ${C.ink}`, borderRadius: 22, fontFamily: FONT }}>
+              <div style={{ width: 58, display: "flex", justifyContent: "center" }}>{f.icon}</div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 24, fontWeight: 700, color: C.muted }}>{org.name}</div>
-                <div style={{ fontSize: 40, fontWeight: 800, color: C.ink, letterSpacing: "-0.03em" }}>{euro(org.share)}</div>
+                <div style={{ fontSize: 24, fontWeight: 700, color: C.muted }}>{f.name}</div>
+                <div style={{ fontSize: 38, fontWeight: 800, color: C.ink, letterSpacing: "-0.03em" }}>{euro(f.amount)}</div>
               </div>
             </div>
           </PopIn>
@@ -81,6 +84,9 @@ export const SceneOpen: React.FC<{ duration: number }> = ({ duration }) => {
                       {o.name}
                     </span>
                   ))}
+                  <span style={{ padding: "4px 12px", borderRadius: 999, background: C.surface, border: `3px solid ${C.ink}`, fontSize: 20, fontWeight: 700 }}>
+                    Leverancier
+                  </span>
                 </div>
               </div>
               <div style={{ ...row(3), display: "flex", alignItems: "center", gap: 12, fontSize: 24, fontWeight: 700 }}>
