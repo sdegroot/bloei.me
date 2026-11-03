@@ -1,16 +1,19 @@
 import React from "react";
-import { AbsoluteFill, Series, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Series, interpolate, useCurrentFrame } from "remotion";
 import { LogoMark } from "./illustrations";
 import { SceneAlone, SceneHook, SceneNetwork, SceneOthers } from "./scenes/opening";
 import { SceneAccept, SceneOffer, ScenePledge } from "./scenes/middle";
 import { SceneCTA, SceneMessage, SceneOpen, SceneShares } from "./scenes/closing";
 import { C, FONT } from "./theme";
+import { Background } from "./background";
+import { COVER_FRAMES, SceneCover } from "./Cover";
 import { FPS, Soundtrack, buildTimeline } from "./audio";
 
 export { FPS };
 
 /** Visual (minimum) scene durations; scenes stretch when their voiceover runs longer. */
 const BASE_SCENES: { id: string; frames: number; C: React.FC<{ duration: number }> }[] = [
+  { id: "cover", frames: COVER_FRAMES, C: SceneCover }, // frame 0 = cover, so previews look right
   { id: "hook", frames: 340, C: SceneHook },
   { id: "others", frames: 195, C: SceneOthers },
   { id: "alone", frames: 255, C: SceneAlone },
@@ -28,20 +31,6 @@ const TIMELINE = buildTimeline(BASE_SCENES);
 const SCENES = TIMELINE.scenes;
 export const TOTAL_FRAMES = TIMELINE.total;
 const END_START = TOTAL_FRAMES - SCENES[SCENES.length - 1].frames;
-
-export const Background: React.FC = () => {
-  const frame = useCurrentFrame();
-  const drift = Math.sin(frame / 90) * 40;
-  return (
-    <AbsoluteFill
-      style={{
-        background: `radial-gradient(circle at ${8 + drift / 20}% ${4 + drift / 30}%, rgba(184,217,139,.42), transparent 520px),
-          radial-gradient(circle at ${94 - drift / 25}% ${88 + drift / 40}%, rgba(220,239,235,.9), transparent 620px),
-          ${C.paper}`,
-      }}
-    />
-  );
-};
 
 /** The 1080×1080 story; every scene is laid out on this square stage. */
 const Stage: React.FC = () => (
@@ -67,7 +56,9 @@ export const BloeiSquare: React.FC = () => (
 /** 9:16 version: same stage centred, with a brand header for Reels/Shorts/TikTok. */
 export const BloeiVertical: React.FC = () => {
   const frame = useCurrentFrame();
-  const headerOpacity = frame < END_START ? 1 : Math.max(0, 1 - (frame - END_START) / 10);
+  // hidden while the cover (which has its own logo) is on screen, and on the end card
+  const headerIn = interpolate(frame, [COVER_FRAMES, COVER_FRAMES + 12], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const headerOpacity = Math.min(headerIn, frame < END_START ? 1 : Math.max(0, 1 - (frame - END_START) / 10));
   return (
     <AbsoluteFill>
       <Background />

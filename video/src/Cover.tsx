@@ -1,17 +1,19 @@
 import React from "react";
-import { AbsoluteFill } from "remotion";
+import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
 import { Em } from "./anim";
 import { Logo, Plant } from "./illustrations";
 import { TownRow } from "./scenes/opening";
 import { C, FONT } from "./theme";
-import { Background } from "./Video";
+import { Background } from "./background";
 
 /**
- * Thumbnail / cover image (render with `pnpm cover`). The video itself fades in from an empty
- * background, so platforms that use the first frame as preview show nothing useful; upload this
- * image as the custom thumbnail instead.
+ * Cover / thumbnail. It is also the first scene of the video (fully visible on frame 0, so
+ * platforms that use the first frame as preview show it), and `pnpm cover` renders it as an image
+ * to upload as a custom thumbnail.
  */
-const CoverStage: React.FC = () => (
+export const COVER_FRAMES = 30; // holds for 15 frames, then fades out
+
+export const CoverStage: React.FC = () => (
   <div style={{ position: "relative", width: 1080, height: 1080, overflow: "hidden" }}>
     <div style={{ position: "absolute", top: 96, left: 0, right: 0, display: "flex", justifyContent: "center" }}>
       <Logo size={72} />
@@ -44,3 +46,14 @@ export const CoverVertical: React.FC = () => (
     </div>
   </AbsoluteFill>
 );
+
+/** First scene of the video: the cover, fully opaque at frame 0, then fading into the hook. */
+export const SceneCover: React.FC<{ duration: number }> = ({ duration }) => {
+  const frame = useCurrentFrame();
+  const opacity = interpolate(frame, [duration / 2, duration], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  return (
+    <AbsoluteFill style={{ opacity }}>
+      <CoverStage />
+    </AbsoluteFill>
+  );
+};

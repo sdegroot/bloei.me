@@ -7,8 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- Video: cover images for use as custom thumbnail (`pnpm cover` → `out/bloei-me-cover-1x1.png`
-  and `-9x16.png`), since the video's first frame is an empty background.
+- Video: the cover ("Wat als we software samen financieren?") is now the first frame of the video,
+  held for half a second before fading into the opening, so previews that use the first frame look
+  right (now 94 s). `pnpm cover` also renders it as an image (`out/bloei-me-cover-1x1.png` and
+  `-9x16.png`) to upload as a custom thumbnail.
 - `video/`: Remotion project for a ~90 s Dutch explainer video for LinkedIn (1:1, plus a 9:16
   variant), using Epistola auto-translation as the worked example.
 
