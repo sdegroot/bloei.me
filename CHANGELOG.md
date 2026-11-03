@@ -104,6 +104,10 @@ and this project uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 ### Changed
 
+- Website is now published by a GitHub Actions workflow (`.github/workflows/pages.yml`) that
+  deploys only `index.html` and `mockup/`.
+- A `.gitleaks.toml` allowlists the voiceover clip cache keys, which matched the generic API key
+  rule.
 - Merged the public website repository (bloei.me site, explainer video) into this repository, so
   product sources, website and video live in one place.
 - Video: the opening now sets up the problem more slowly: "Stel je voor: Gemeente Oost maakt
