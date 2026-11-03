@@ -1,196 +1,196 @@
 {
-  "provider": "say",
-  "voice": "Xander",
-  "model": "say-r170",
+  "provider": "elevenlabs",
+  "voice": "7qdUFMklKPaaAVMsBTBt",
+  "model": "eleven_multilingual_v2",
   "scenes": {
     "hook": [
       {
         "at": 10,
         "file": "vo/hook-1.mp3",
-        "seconds": 2.41,
+        "seconds": 2.55,
         "text": "Gemeente Oost maakt haar brieven met Epistola.",
-        "key": "556a8d79acaca937"
+        "key": "9f6301ffe2764b2c"
       },
       {
         "at": 130,
         "file": "vo/hook-2.mp3",
-        "seconds": 2.86,
+        "seconds": 2.77,
         "text": "En nu wil ze die brieven ook automatisch laten vertalen.",
-        "key": "3a11356c653c3444"
+        "key": "da2f304b85b2f6dd"
       }
     ],
     "others": [
       {
         "at": 25,
         "file": "vo/others-1.mp3",
-        "seconds": 1.26,
+        "seconds": 1.51,
         "text": "Gemeente West wil dat ook.",
-        "key": "d31df1724efeab72"
+        "key": "a49bdca7b51ab901"
       },
       {
         "at": 75,
         "file": "vo/others-2.mp3",
-        "seconds": 0.69,
+        "seconds": 0.68,
         "text": "Net als Zuid.",
-        "key": "b2df587a73aba8c2"
+        "key": "ae0b4d386a1b4ce5"
       },
       {
         "at": 125,
         "file": "vo/others-3.mp3",
-        "seconds": 0.84,
+        "seconds": 0.89,
         "text": "En het waterschap.",
-        "key": "f94b03dd87d38a2e"
+        "key": "66477a15026703d8"
       }
     ],
     "alone": [
       {
         "at": 10,
         "file": "vo/alone-1.mp3",
-        "seconds": 1.3,
+        "seconds": 1.47,
         "text": "Maar ieder apart is het te duur.",
-        "key": "a9a1df076726154a"
+        "key": "2ba56e9ec0327b64"
       },
       {
         "at": 118,
         "file": "vo/alone-2.mp3",
-        "seconds": 2.52,
+        "seconds": 2.46,
         "text": "En ze weten niet eens dat de anderen hetzelfde willen.",
-        "key": "06c0a769cec470fc"
+        "key": "c25c2521194ac766"
       },
       {
         "at": 190,
         "file": "vo/alone-3.mp3",
-        "seconds": 0.95,
+        "seconds": 0.9,
         "text": "Dus blijft het liggen.",
-        "key": "fd4ffb3f0f99ff23"
+        "key": "7f070ef22bc6397e"
       }
     ],
     "network": [
       {
         "at": 15,
         "file": "vo/network-1.mp3",
-        "seconds": 1.27,
+        "seconds": 1.64,
         "text": "Op bloei.me vinden ze elkaar.",
-        "key": "9ff971379d136df1"
+        "key": "496934b83d4547e2"
       },
       {
         "at": 75,
         "file": "vo/network-2.mp3",
-        "seconds": 2.61,
+        "seconds": 2.53,
         "text": "Iedereen kan een voorstel doen, ook een leverancier.",
-        "key": "c22dfd29c7d985cc"
+        "key": "559a3a4671386e99"
       }
     ],
     "offer": [
       {
         "at": 10,
         "file": "vo/offer-1.mp3",
-        "seconds": 7.36,
+        "seconds": 7.14,
         "text": "Een leverancier doet één concreet aanbod: wat er wordt opgeleverd, voor welke maximumprijs, en wat de leverancier zelf bijdraagt.",
-        "key": "0ae094e63ed83234"
+        "key": "03beb2bbd4c613ae"
       }
     ],
     "pledge": [
       {
         "at": 10,
         "file": "vo/pledge-1.mp3",
-        "seconds": 3.84,
+        "seconds": 3.75,
         "text": "Meedoen is simpel: je zegt een maximum toe, uit je eigen budget.",
-        "key": "239a228d3e334b25"
+        "key": "70b8d7639ad50691"
       },
       {
         "at": 150,
         "file": "vo/pledge-2.mp3",
-        "seconds": 2.01,
+        "seconds": 1.93,
         "text": "Zodra het gedekt is, start de bouw.",
-        "key": "0632b2be572eea99"
+        "key": "8d6e278bf468d5d7"
       }
     ],
     "accept": [
       {
         "at": 10,
         "file": "vo/accept-1.mp3",
-        "seconds": 1.75,
+        "seconds": 1.83,
         "text": "Er wordt opgeleverd, met bewijs.",
-        "key": "2c08d8c251ea74ee"
+        "key": "ee6113894d40fd9f"
       },
       {
         "at": 90,
         "file": "vo/accept-2.mp3",
-        "seconds": 3.08,
+        "seconds": 2.79,
         "text": "Pas als het voldoet aan de afspraken, wordt het geaccepteerd.",
-        "key": "1d7afb55b2f85264"
+        "key": "03aad5ea93a7ab46"
       }
     ],
     "shares": [
       {
         "at": 10,
         "file": "vo/shares-1.mp3",
-        "seconds": 4.14,
+        "seconds": 4.15,
         "text": "De eindprijs valt mee. Ieder betaalt een eerlijk deel, en nooit meer dan beloofd.",
-        "key": "9f25f0de233b1b2c"
+        "key": "f92f2d1ba546c07e"
       }
     ],
     "open": [
       {
         "at": 10,
         "file": "vo/open-1.mp3",
-        "seconds": 5.21,
+        "seconds": 6.05,
         "text": "En alles is openbaar: wie er betaalde, en wat er is gemaakt. Het resultaat is open source.",
-        "key": "a8d6a277689d3242"
+        "key": "0a90edf6faefde7e"
       }
     ],
     "message": [
       {
         "at": 10,
         "file": "vo/message-1.mp3",
-        "seconds": 1.98,
+        "seconds": 1.82,
         "text": "Samen goede producten financieren.",
-        "key": "2dcfd9bcf3325d92"
+        "key": "cedb2e1594eaadf2"
       },
       {
         "at": 75,
         "file": "vo/message-2.mp3",
-        "seconds": 0.85,
+        "seconds": 0.73,
         "text": "Eén keer bouwen,",
-        "key": "9ef7c2ba3184af37"
+        "key": "fbc02ca693a0a6d9"
       },
       {
         "at": 120,
         "file": "vo/message-3.mp3",
-        "seconds": 0.83,
+        "seconds": 0.94,
         "text": "met weinig moeite,",
-        "key": "6c35a19582da9817"
+        "key": "783e4a8bbcf7c381"
       },
       {
         "at": 195,
         "file": "vo/message-4.mp3",
-        "seconds": 1.33,
+        "seconds": 1.12,
         "text": "en volledig transparant.",
-        "key": "282f8a3547108a6e"
+        "key": "edeea9bccb7fd98b"
       }
     ],
     "cta": [
       {
         "at": 18,
         "file": "vo/cta-1.mp3",
-        "seconds": 1.18,
-        "text": "Is dit iets wat we willen?",
-        "key": "08bd2ac73e8f4999"
+        "seconds": 0.74,
+        "text": "Wat denk jij?",
+        "key": "10ffd26c2d985f4d"
       },
       {
-        "at": 55,
+        "at": 60,
         "file": "vo/cta-2.mp3",
-        "seconds": 1.42,
-        "text": "Welke uitdagingen zie jij?",
-        "key": "2b83e9bf5dd0a9ea"
+        "seconds": 2.64,
+        "text": "Is dit iets wat we kunnen, of zelfs zouden moeten doen?",
+        "key": "4c040da430569c75"
       },
       {
-        "at": 120,
+        "at": 155,
         "file": "vo/cta-3.mp3",
-        "seconds": 1.53,
-        "text": "Reageer, of mail ons.",
-        "key": "79c6e5ed6f7ac975"
+        "seconds": 0.89,
+        "text": "Laat van je horen!",
+        "key": "fbd19573be0d2b3a"
       }
     ]
   }

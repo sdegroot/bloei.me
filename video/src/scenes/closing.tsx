@@ -154,31 +154,36 @@ const Row: React.FC<{ delay: number; children: React.ReactNode }> = ({ delay, ch
   return <div style={{ opacity: p, transform: `translateX(${(1 - p) * -60}px)` }}>{children}</div>;
 };
 
-// ── 11. Call to action: start the conversation ────────────────────────────────
+// ── 11. Call to action: what do you think? ──────────────────────────────────
+const ASK = 60;
+const REACH_OUT = 155;
+
 export const SceneCTA: React.FC<{ duration: number }> = ({ duration }) => {
   const logo = usePop(6);
-  const contact = useAppear(120);
+  const contact = useAppear(REACH_OUT);
   return (
     <Scene duration={duration}>
       <div style={{ position: "absolute", top: 110, left: 0, right: 0, display: "flex", justifyContent: "center", transform: `scale(${logo})` }}>
         <Logo size={84} />
       </div>
-      <div style={{ position: "absolute", left: 80, right: 80, top: 300, textAlign: "center", fontFamily: FONT, color: C.ink }}>
+      <div style={{ position: "absolute", left: 80, right: 80, top: 290, textAlign: "center", fontFamily: FONT, color: C.ink }}>
         <Beat from={18}>
-          <div style={{ fontSize: 84, fontWeight: 800, letterSpacing: "-0.05em", lineHeight: 1.04 }}>
-            Is dit iets
-            <br />
-            wat <Em>we willen?</Em>
+          <div style={{ fontSize: 104, fontWeight: 800, letterSpacing: "-0.05em", lineHeight: 1 }}>
+            Wat denk <Em>jij?</Em>
           </div>
         </Beat>
-        <div style={{ marginTop: 34, fontSize: 38, fontWeight: 600, color: C.muted, lineHeight: 1.35 }}>
-          <Beat from={55}>Welke uitdagingen zie jij?</Beat>
-          <Beat from={80}>Hoe lossen we die op?</Beat>
-        </div>
+        <Beat from={ASK}>
+          <div style={{ marginTop: 30, fontSize: 42, fontWeight: 600, color: C.muted, lineHeight: 1.3 }}>
+            Is dit iets wat we kunnen,
+            <br />
+            of zelfs zouden moeten doen?
+          </div>
+        </Beat>
       </div>
-      <div style={{ position: "absolute", left: 0, right: 0, top: 790, display: "flex", flexDirection: "column", alignItems: "center", gap: 18, fontFamily: FONT, opacity: contact, transform: `translateY(${(1 - contact) * 24}px)` }}>
-        <div style={{ fontSize: 36, fontWeight: 800, color: C.ink }}>Reageer of praat met ons mee</div>
-        <div style={{ padding: "14px 32px", borderRadius: 999, background: C.ink, color: C.surface, fontWeight: 800, fontSize: 36 }}>sander@epistola.app</div>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 690, display: "flex", flexDirection: "column", alignItems: "center", gap: 20, fontFamily: FONT, opacity: contact, transform: `translateY(${(1 - contact) * 24}px)` }}>
+        <div style={{ fontSize: 64, fontWeight: 800, color: C.leaf, letterSpacing: "-0.04em" }}>Laat van je horen!</div>
+        <div style={{ padding: "14px 32px", borderRadius: 999, background: C.ink, color: C.surface, fontWeight: 800, fontSize: 38 }}>sander@epistola.app</div>
+        <div style={{ fontSize: 28, fontWeight: 600, color: C.muted }}>of reageer op dit bericht</div>
       </div>
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 34, textAlign: "center", fontFamily: FONT, fontSize: 17, fontWeight: 500, color: C.muted, opacity: contact * 0.8 }}>
         Muziek: “{MUSIC.title}” – Kevin MacLeod (incompetech.com), CC BY 4.0

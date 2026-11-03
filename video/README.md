@@ -27,8 +27,10 @@ Renders are mastered to -14 LUFS / -1.5 dBTP (`scripts/master.mjs`).
 - **Voiceover:** `voiceover/lines.json` holds the spoken text per scene, as segments with the
   (scene-relative) frame at which each should start, aligned with the on-screen text. The
   generator writes `public/vo/*.mp3` and `src/voiceover.json`; scenes stretch automatically when
-  their voiceover runs longer. The current clips are a **placeholder** (macOS `say`, voice
-  Xander); swap in a real voice by replacing the clips (same file names) or the generator.
+  their voiceover runs longer. Current clips: ElevenLabs, voice "Roos" (shared library,
+  `7qdUFMklKPaaAVMsBTBt`), model `eleven_multilingual_v2`. Regenerate with
+  `pnpm voiceover:elevenlabs` (needs `ELEVENLABS_API_KEY` and `ELEVENLABS_VOICE_ID` in
+  `video/.env`); unchanged lines are reused. `pnpm voiceover` falls back to macOS `say`.
 - **Music** (ducked under the voice, fades in/out), both CC BY 4.0 — credit required in the post:
   - "Easy Lemon" (default) — Kevin MacLeod (incompetech.com), Licensed under Creative Commons:
     By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
@@ -56,7 +58,7 @@ little effort, transparently. Call to action: start the conversation.
 | 8 | Ieder betaalt *een eerlijk deel.* / Nooit meer dan beloofd. | € 100.000 → € 80.000; 18k / 18k / 18k / 16k + supplier 10k |
 | 9 | En iedereen *kan meekijken.* / Wie financierde en wat er is opgeleverd: openbaar. | Public campaign page, plant blooms |
 | 10 | Samen *goede producten* financieren. / **Eén keer bouwen** — Eén gedeelde vraag, één aanbod. Ieder betaalt een eerlijk deel. / **Weinig moeite** — Sluit aan bij een campagne en zeg een maximum toe. Meer hoeft niet. / **Transparant** — Wie betaalt, wat er wordt gemaakt en wat het kost: voor iedereen zichtbaar. | Three rows with icons, one at a time |
-| 11 | Is dit iets wat *we willen?* / Welke uitdagingen zie jij? Hoe lossen we die op? / Reageer of praat met ons mee — sander@epistola.app | End card |
+| 11 | Wat denk *jij?* / Is dit iets wat we kunnen, of zelfs zouden moeten doen? / **Laat van je horen!** — sander@epistola.app, of reageer op dit bericht | End card |
 
 Notes:
 
