@@ -222,7 +222,7 @@
       authority: "Bevoegdheid",
       publicView: "Alleen openbare informatie",
       noOrganization: "Geen handelende organisatie",
-      discoverEyebrow: "Eén canoniek netwerk",
+      discoverEyebrow: "Eén netwerk voor iedereen",
       discoverTitle: "Ontdek gedeelde behoeften en gefinancierde resultaten.",
       discoverIntro: "Componenten, organisaties, voorstellen en campagnes hebben één openbare identiteit. Budgetten en persoonlijke bevoegdheid blijven privé.",
       components: "Componenten",
