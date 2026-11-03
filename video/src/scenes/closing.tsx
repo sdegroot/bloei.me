@@ -16,7 +16,7 @@ export const SceneShares: React.FC<{ duration: number }> = ({ duration }) => {
   const final = usePop(36);
   return (
     <Scene duration={duration}>
-      <Headline sub={<Beat from={95}>Nooit meer dan beloofd.</Beat>}>
+      <Headline sub={<Beat from={110}>Nooit meer dan beloofd.</Beat>}>
         Ieder betaalt
         <br />
         <Em>een eerlijk deel.</Em>
@@ -32,7 +32,7 @@ export const SceneShares: React.FC<{ duration: number }> = ({ duration }) => {
       </div>
       <div style={{ position: "absolute", left: 80, right: 80, top: 560, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 22 }}>
         {ORGS.map((org, i) => (
-          <PopIn key={org.name} delay={55 + i * 9}>
+          <PopIn key={org.name} delay={60 + i * 12}>
             <div style={{ display: "flex", alignItems: "center", gap: 16, padding: "18px 22px", background: C.surface, border: `4px solid ${C.ink}`, borderRadius: 22, fontFamily: FONT }}>
               <Building org={org} width={56} />
               <div style={{ flex: 1 }}>
@@ -98,31 +98,53 @@ export const SceneOpen: React.FC<{ duration: number }> = ({ duration }) => {
 // ── 10. The message ───────────────────────────────────────────────────────────
 export const SceneMessage: React.FC<{ duration: number }> = ({ duration }) => {
   const items = [
-    { icon: <IconTogether size={150} />, label: "Samen", delay: 40 },
-    { icon: <IconEasy size={150} />, label: "Weinig moeite", delay: 60 },
-    { icon: <IconOpen size={150} />, label: "Transparant", delay: 80 },
+    {
+      icon: <IconTogether size={130} />,
+      title: "Eén keer bouwen",
+      text: "Eén gedeelde vraag, één aanbod. Ieder betaalt een eerlijk deel.",
+      delay: 45,
+    },
+    {
+      icon: <IconEasy size={130} />,
+      title: "Weinig moeite",
+      text: "Sluit aan bij een campagne en zeg een maximum toe. Meer hoeft niet.",
+      delay: 120,
+    },
+    {
+      icon: <IconOpen size={130} />,
+      title: "Transparant",
+      text: "Wie betaalt, wat er wordt gemaakt en wat het kost: voor iedereen zichtbaar.",
+      delay: 195,
+    },
   ];
   return (
     <Scene duration={duration}>
-      <div style={{ position: "absolute", left: 80, right: 80, top: 210, textAlign: "center", fontFamily: FONT, color: C.ink, fontSize: 82, fontWeight: 800, letterSpacing: "-0.05em", lineHeight: 1.04 }}>
-        <Beat from={4}>
-          Samen <Em>goede producten</Em>
-          <br />
-          financieren.
-        </Beat>
-      </div>
-      <div style={{ position: "absolute", left: 80, right: 80, top: 540, display: "flex", justifyContent: "space-around" }}>
+      <Headline>
+        Samen <Em>goede producten</Em>
+        <br />
+        financieren.
+      </Headline>
+      <div style={{ position: "absolute", left: 80, right: 80, top: 330, display: "grid", gap: 44 }}>
         {items.map((it) => (
-          <PopIn key={it.label} delay={it.delay}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 20, fontFamily: FONT, fontSize: 34, fontWeight: 800, color: C.ink }}>
-              {it.icon}
-              {it.label}
+          <Row key={it.title} delay={it.delay}>
+            <div style={{ display: "flex", alignItems: "center", gap: 34, fontFamily: FONT, color: C.ink }}>
+              <div style={{ flex: "none" }}>{it.icon}</div>
+              <div>
+                <div style={{ fontSize: 46, fontWeight: 800, letterSpacing: "-0.03em" }}>{it.title}</div>
+                <div style={{ marginTop: 6, fontSize: 30, fontWeight: 500, color: C.muted, lineHeight: 1.3 }}>{it.text}</div>
+              </div>
             </div>
-          </PopIn>
+          </Row>
         ))}
       </div>
     </Scene>
   );
+};
+
+/** Row that slides in from the left. */
+const Row: React.FC<{ delay: number; children: React.ReactNode }> = ({ delay, children }) => {
+  const p = useAppear(delay);
+  return <div style={{ opacity: p, transform: `translateX(${(1 - p) * -60}px)` }}>{children}</div>;
 };
 
 // ── 11. Call to action: start the conversation ────────────────────────────────

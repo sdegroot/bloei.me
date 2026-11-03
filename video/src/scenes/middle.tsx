@@ -148,8 +148,8 @@ export const ScenePledge: React.FC<{ duration: number }> = ({ duration }) => {
 // ── 7. Evidence first, then acceptance ─────────────────────────────────────
 export const SceneAccept: React.FC<{ duration: number }> = ({ duration }) => {
   const frame = useCurrentFrame();
-  const growth = interpolate(frame, [0, 150], [0.58, 0.92], clamp);
-  const stamp = usePop(150);
+  const growth = interpolate(frame, [0, 180], [0.58, 0.92], clamp);
+  const stamp = usePop(180);
   return (
     <Scene duration={duration}>
       <Headline>
@@ -179,10 +179,10 @@ export const SceneAccept: React.FC<{ duration: number }> = ({ duration }) => {
         </PopIn>
         <div style={{ marginTop: 34, display: "flex", justifyContent: "space-between" }}>
           {ORGS.map((org, i) => (
-            <div key={org.name} style={{ position: "relative", opacity: interpolate(frame, [60, 75], [0, 1], clamp) }}>
+            <div key={org.name} style={{ position: "relative", opacity: interpolate(frame, [70, 85], [0, 1], clamp) }}>
               <Building org={org} width={96} />
               <div style={{ position: "absolute", right: -12, top: -8 }}>
-                <PopIn delay={80 + i * 14}>
+                <PopIn delay={95 + i * 16}>
                   <Check size={50} />
                 </PopIn>
               </div>

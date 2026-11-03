@@ -226,25 +226,6 @@ export const AppWindow: React.FC<{ width?: number; title: string; children?: Rea
   </div>
 );
 
-/** Pile of paperwork; `sheets` sheets high. */
-export const PaperStack: React.FC<{ sheets: number; width?: number }> = ({ sheets, width = 90 }) => {
-  const step = 11;
-  const h = sheets * step + 30;
-  return (
-    <svg width={width} height={(h * width) / 90} viewBox={`0 0 90 ${h}`} style={{ overflow: "visible" }}>
-      {Array.from({ length: sheets }).map((_, i) => {
-        const y = h - 14 - i * step;
-        const r = ((i * 37) % 9) - 4;
-        return (
-          <g key={i} transform={`rotate(${r} 45 ${y})`}>
-            <rect x={6} y={y - 10} width={78} height={14} rx={2} fill={i % 3 === 0 ? C.sand : C.surface} stroke={C.ink} strokeWidth={3} />
-          </g>
-        );
-      })}
-    </svg>
-  );
-};
-
 const iconBox = (children: React.ReactNode, size: number, bg: string) => (
   <svg width={size} height={size} viewBox="0 0 100 100">
     <circle cx={50} cy={50} r={46} fill={bg} stroke={C.ink} strokeWidth={4} />

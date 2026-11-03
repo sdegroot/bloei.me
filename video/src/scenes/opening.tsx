@@ -1,7 +1,7 @@
 import React from "react";
 import { interpolate, useCurrentFrame } from "remotion";
 import { Beat, Em, Headline, Scene, clamp, usePop } from "../anim";
-import { AppWindow, Building, Letter, LogoMark, OrgLabel, PaperStack, SpeechBubble } from "../illustrations";
+import { AppWindow, Building, Letter, LogoMark, OrgLabel, SpeechBubble } from "../illustrations";
 import { C, FONT, ORGS } from "../theme";
 
 export const ROW_X = [180, 420, 660, 900];
@@ -133,7 +133,7 @@ export const SceneHook: React.FC<{ duration: number }> = ({ duration }) => {
 };
 
 // ── 2. Others want the same ──────────────────────────────────────────────────
-const JOIN = [0, 20, 60, 100];
+const JOIN = [0, 25, 75, 125];
 
 export const SceneOthers: React.FC<{ duration: number }> = ({ duration }) => (
   <Scene duration={duration}>
@@ -155,35 +155,56 @@ export const SceneOthers: React.FC<{ duration: number }> = ({ duration }) => (
   </Scene>
 );
 
-// ── 3. Alone it's a lot of work ─────────────────────────────────────────────
-const STALL = 160;
+// ── 3. Alone it's too expensive, and nobody knows about the others ──────────
+const UNAWARE = 125;
 
 export const SceneAlone: React.FC<{ duration: number }> = ({ duration }) => {
   const frame = useCurrentFrame();
-  const dim = interpolate(frame, [STALL, STALL + 35], [0, 1], clamp);
+  const apart = interpolate(frame, [UNAWARE, UNAWARE + 30], [0, 1], clamp);
+  const dim = interpolate(frame, [UNAWARE + 60, UNAWARE + 90], [0, 0.7], clamp);
   return (
     <Scene duration={duration}>
-      <Beat from={0} to={STALL}>
-        <Headline sub="Eigen aanvraag, eigen inkooptraject, eigen offerte — voor precies hetzelfde.">
-          Ieder apart is <Em color={C.rose}>een flinke klus.</Em>
+      <Beat from={0} to={UNAWARE}>
+        <Headline sub="Eigen budget, eigen inkooptraject, eigen offerte.">
+          Ieder apart is het <Em color={C.rose}>te duur.</Em>
         </Headline>
       </Beat>
-      <Beat from={STALL}>
-        <Headline>
-          Dus blijft het <Em color={C.rose}>liggen.</Em>
+      <Beat from={UNAWARE}>
+        <Headline sub={<Beat from={UNAWARE + 65}>Dus blijft het liggen.</Beat>}>
+          Maar ze weten niet eens
+          <br />
+          <Em color={C.rose}>dat de rest het ook wil.</Em>
         </Headline>
       </Beat>
+      {/* walls between the organisations */}
+      <svg width={1080} height={1080} style={{ position: "absolute", inset: 0, opacity: apart }}>
+        {[300, 540, 780].map((x) => (
+          <line key={x} x1={x} y1={ROW_TOP - 170 + (1 - apart) * 60} x2={x} y2={ROW_BOTTOM + 50} stroke={C.lineStrong} strokeWidth={5} strokeDasharray="14 12" strokeLinecap="round" />
+        ))}
+      </svg>
       <TownRow dim={dim} />
-      {ROW_X.map((x, i) => {
-        const sheets = Math.round(interpolate(frame, [30 + i * 8, 140 + i * 8], [0, 13 + (i % 2) * 3], clamp));
-        return (
-          <Positioned key={x} x={x} y={ROW_TOP - 10} anchor="bottom">
-            <div style={{ opacity: 1 - dim * 0.5, transform: `rotate(${dim * (i % 2 ? 4 : -4)}deg)` }}>
-              {sheets > 0 ? <PaperStack sheets={sheets} width={96} /> : null}
+      {ROW_X.map((x, i) => (
+        <React.Fragment key={x}>
+          {/* each one sees the full price */}
+          <Positioned x={x} y={ROW_TOP - 30} anchor="bottom">
+            <div style={{ opacity: 1 - apart }}>
+              <Popper delay={20 + i * 10}>
+                <div style={{ padding: "10px 16px", borderRadius: 14, background: C.rose, border: `4px solid ${C.ink}`, color: C.surface, fontFamily: FONT, fontWeight: 800, fontSize: 28, whiteSpace: "nowrap", transform: `rotate(${i % 2 ? 4 : -4}deg)` }}>
+                  € 100.000
+                </div>
+              </Popper>
             </div>
           </Positioned>
-        );
-      })}
+          {/* …and has no idea the others want it too */}
+          <Positioned x={x} y={ROW_TOP - 26} anchor="bottom">
+            <Popper delay={UNAWARE + 20 + i * 8}>
+              <div style={{ width: 64, height: 64, borderRadius: "50%", background: C.surface, border: `4px solid ${C.ink}`, display: "grid", placeItems: "center", fontFamily: FONT, fontWeight: 800, fontSize: 38, color: C.muted }}>
+                ?
+              </div>
+            </Popper>
+          </Positioned>
+        </React.Fragment>
+      ))}
     </Scene>
   );
 };
@@ -199,7 +220,7 @@ export const SceneNetwork: React.FC<{ duration: number }> = ({ duration }) => {
       <Headline>
         Op bloei.me
         <br />
-        <Em>bundel je die vraag.</Em>
+        <Em>vinden ze elkaar.</Em>
       </Headline>
       <svg width={1080} height={1080} style={{ position: "absolute", inset: 0 }}>
         {ROW_X.map((x, i) => {
