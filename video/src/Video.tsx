@@ -29,7 +29,7 @@ const SCENES = TIMELINE.scenes;
 export const TOTAL_FRAMES = TIMELINE.total;
 const END_START = TOTAL_FRAMES - SCENES[SCENES.length - 1].frames;
 
-const Background: React.FC = () => {
+export const Background: React.FC = () => {
   const frame = useCurrentFrame();
   const drift = Math.sin(frame / 90) * 40;
   return (

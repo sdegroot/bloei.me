@@ -14,6 +14,7 @@ pnpm voiceover        # regenerate voiceover clips from voiceover/lines.json
 pnpm studio           # live preview / scrubbing in the browser
 pnpm render           # → out/bloei-me-1x1.mp4   (1080×1080, main LinkedIn version)
 pnpm render:vertical  # → out/bloei-me-9x16.mp4  (1080×1920, Reels/Shorts)
+pnpm cover            # → out/bloei-me-cover-{1x1,9x16}.png  (upload as custom thumbnail)
 
 # other music track:
 npx remotion render BloeiSquare out/.raw.mp4 --props='{"music":"carefree"}' \

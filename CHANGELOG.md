@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Video: cover images for use as custom thumbnail (`pnpm cover` → `out/bloei-me-cover-1x1.png`
+  and `-9x16.png`), since the video's first frame is an empty background.
 - `video/`: Remotion project for a ~90 s Dutch explainer video for LinkedIn (1:1, plus a 9:16
   variant), using Epistola auto-translation as the worked example.
 

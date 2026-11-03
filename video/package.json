@@ -6,6 +6,7 @@
     "studio": "remotion studio",
     "render": "remotion render BloeiSquare out/.raw-1x1.mp4 && node scripts/master.mjs out/.raw-1x1.mp4 out/bloei-me-1x1.mp4",
     "render:vertical": "remotion render BloeiVertical out/.raw-9x16.mp4 && node scripts/master.mjs out/.raw-9x16.mp4 out/bloei-me-9x16.mp4",
+    "cover": "remotion still CoverSquare out/bloei-me-cover-1x1.png && remotion still CoverVertical out/bloei-me-cover-9x16.png",
     "typecheck": "tsc --noEmit",
     "voiceover": "node scripts/generate-voiceover.mjs",
     "voiceover:elevenlabs": "PROVIDER=elevenlabs node scripts/generate-voiceover.mjs",
