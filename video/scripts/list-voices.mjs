@@ -14,27 +14,30 @@ if (existsSync(envPath)) {
 const key = process.env.ELEVENLABS_API_KEY;
 if (!key) throw new Error("ELEVENLABS_API_KEY is not set (put it in video/.env)");
 
+// Scoped API keys may lack some read permissions; report and continue instead of failing.
 const get = async (path) => {
   const res = await fetch(`https://api.elevenlabs.io${path}`, { headers: { "xi-api-key": key } });
-  if (!res.ok) throw new Error(`${path} → ${res.status}: ${await res.text()}`);
-  return res.json();
+  if (res.ok) return res.json();
+  const body = await res.json().catch(() => ({}));
+  console.log(`  (skipped ${path}: ${res.status} ${body?.detail?.message ?? ""})`);
+  return null;
 };
 
-const models = await get("/v1/models");
 console.log("Models (TTS, with Dutch):");
+const models = (await get("/v1/models")) ?? [];
 for (const m of models.filter((m) => m.can_do_text_to_speech && m.languages?.some((l) => l.language_id === "nl"))) {
   console.log(`  ${m.model_id.padEnd(28)} ${m.name}`);
 }
 
-const mine = await get("/v2/voices?page_size=100");
 console.log("\nYour voices:");
-for (const v of mine.voices) {
+const mine = await get("/v2/voices?page_size=100");
+for (const v of mine?.voices ?? []) {
   const l = v.labels ?? {};
   console.log(`  ${v.voice_id}  ${v.name.padEnd(28)} ${[l.gender, l.age, l.accent, l.use_case].filter(Boolean).join(", ")}`);
 }
 
-const shared = await get("/v1/shared-voices?language=nl&page_size=25&sort=usage_character_count_7d");
-console.log("\nShared library, Dutch (most used this week):");
-for (const v of shared.voices) {
+console.log("\nShared library, Dutch (most used this year):");
+const shared = await get("/v1/shared-voices?language=nl&page_size=25&sort=usage_character_count_1y");
+for (const v of shared?.voices ?? []) {
   console.log(`  ${v.voice_id}  ${v.name.padEnd(28)} ${[v.gender, v.age, v.accent, v.use_case].filter(Boolean).join(", ")}`);
 }
