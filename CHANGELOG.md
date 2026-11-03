@@ -44,6 +44,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Website: removed the links to the design documents (plan, besluiten, API, voorbeelden,
+  juridisch, open vragen, incl. "Bekijk alle vragen"). Those documents are not published, so every
+  link returned 404.
 - Video: voiceover clips are now levelled reliably (measure → gain → limiter). Short clips were
   up to 8 dB too quiet with single-pass `loudnorm` (e.g. "Er wordt opgeleverd" at -25 LUFS); all
   clips now sit within about 1 LU of -17 LUFS.
