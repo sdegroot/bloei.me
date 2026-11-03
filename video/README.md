@@ -31,6 +31,11 @@ Renders are mastered to -14 LUFS / -1.5 dBTP (`scripts/master.mjs`).
   `7qdUFMklKPaaAVMsBTBt`), model `eleven_multilingual_v2`. Regenerate with
   `pnpm voiceover:elevenlabs` (needs `ELEVENLABS_API_KEY` and `ELEVENLABS_VOICE_ID` in
   `video/.env`); unchanged lines are reused. `pnpm voiceover` falls back to macOS `say`.
+  - Pronunciation: `_pronounce` in `lines.json` maps a written word to how it should be spoken
+    (`"bloei.me": "bloei me"`, so it sounds like *bloei mə*, the "me" from *mezelf*). Only the audio
+    changes; lines and on-screen text keep the normal spelling.
+  - Loudness: every clip is levelled to -17 LUFS (measure → gain → limiter). Reused clips more than
+    1 LU off are re-levelled in place without a new TTS call.
 - **Music** (ducked under the voice, fades in/out), both CC BY 4.0 — credit required in the post:
   - "Easy Lemon" (default) — Kevin MacLeod (incompetech.com), Licensed under Creative Commons:
     By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/

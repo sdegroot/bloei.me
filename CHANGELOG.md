@@ -12,6 +12,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Video: "bloei.me" is now spoken as "bloei me" (soft *me*, as in *mezelf*) via a new
+  `_pronounce` map in `voiceover/lines.json`; the line at ~0:51 now reads "Als het klaar is, laat
+  de leverancier zien dat het werkt." for a more natural follow-up to "start de bouw".
 - Website (`index.html`): rewrote all text in plain Dutch (B1 level) for civil servants. Jargon such
   as "canoniek netwerk", "verrekeningsnota", "maximale blootstelling", "max-min eerlijk" and
   "idempotentie" is replaced with everyday words; "scenario's" are now "voorbeelden". Structure and
@@ -27,3 +30,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   on-screen text, and loudness mastering to -14 LUFS.
 - Video: voiceover generated with ElevenLabs (Dutch voice "Roos"); new call to action
   "Wat denk jij? … Laat van je horen!".
+
+### Fixed
+
+- Video: voiceover clips are now levelled reliably (measure → gain → limiter). Short clips were
+  up to 8 dB too quiet with single-pass `loudnorm` (e.g. "Er wordt opgeleverd" at -25 LUFS); all
+  clips now sit within about 1 LU of -17 LUFS.

@@ -9,9 +9,16 @@
 //   ELEVENLABS_VOICE_ID=...           required (see scripts/list-voices.mjs)
 //   ELEVENLABS_MODEL=eleven_multilingual_v2   optional
 //
-// Unchanged segments (same text, provider, voice, model) are reused, so editing one line only
+// Unchanged segments (same spoken text, provider, voice, model) are reused, so editing one line only
 // regenerates that line. Use FORCE=1 to regenerate everything.
-import { execFileSync } from "node:child_process";
+//
+// Pronunciation: "_pronounce" in lines.json maps a written word to how the voice should say it
+// (e.g. "Epistola" → "Eepistola"). Only the spoken text changes; the lines stay readable.
+//
+// Loudness: every clip is levelled to TARGET_LUFS (measure → gain → peak limiter). Single-pass
+// loudnorm cannot do this reliably for clips under ~3 s, which left some lines far too quiet.
+// Reused clips that are more than 1 LU off target are re-levelled in place (no new TTS call).
+import { execFileSync, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -21,7 +28,9 @@ const root = new URL("..", import.meta.url).pathname;
 loadEnv(join(root, ".env"));
 
 const provider = process.env.PROVIDER ?? "say";
-const { _doc, ...scenes } = JSON.parse(readFileSync(join(root, "voiceover/lines.json"), "utf8"));
+const TARGET_LUFS = -17;
+const PEAK_DB = -1.5;
+const { _doc, _pronounce = {}, ...scenes } = JSON.parse(readFileSync(join(root, "voiceover/lines.json"), "utf8"));
 const manifestPath = join(root, "src/voiceover.json");
 const previous = existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, "utf8")) : { scenes: {} };
 const outDir = join(root, "public/vo");
@@ -37,47 +46,90 @@ const settings =
     : { voice: process.env.VOICE ?? "Xander", model: `say-r${process.env.RATE ?? "170"}` };
 
 // flat list so every segment knows its neighbours (for natural ElevenLabs intonation)
-const flat = Object.entries(scenes).flatMap(([scene, segs]) => segs.map(([at, text], i) => ({ scene, i, at, text })));
+const flat = Object.entries(scenes).flatMap(([scene, segs]) =>
+  segs.map(([at, text], i) => ({ scene, i, at, text, spoken: pronounce(text) })),
+);
 
 const result = {};
 let total = 0;
 let generated = 0;
+let relevelled = 0;
 try {
   for (const [k, seg] of flat.entries()) {
     const file = `vo/${seg.scene}-${seg.i + 1}.mp3`;
     const abs = join(root, "public", file);
-    const key = hash([provider, settings.voice, settings.model, seg.text]);
+    const key = hash([provider, settings.voice, settings.model, seg.spoken]);
     const old = previous.scenes?.[seg.scene]?.[seg.i];
     let seconds;
     if (!process.env.FORCE && old?.key === key && existsSync(abs)) {
       seconds = old.seconds;
+      if (Math.abs(loudness(abs) - TARGET_LUFS) > 1) {
+        const copy = join(tmp, `${seg.scene}-${seg.i}-old.mp3`);
+        execFileSync("cp", [abs, copy]);
+        level(copy, abs);
+        relevelled++;
+      }
     } else {
       const raw = join(tmp, `${seg.scene}-${seg.i}.${provider === "elevenlabs" ? "mp3" : "aiff"}`);
       if (provider === "elevenlabs") {
-        await elevenlabs(seg.text, flat[k - 1]?.text, flat[k + 1]?.text, raw);
+        await elevenlabs(seg.spoken, flat[k - 1]?.spoken, flat[k + 1]?.spoken, raw);
       } else {
-        execFileSync("say", ["-v", settings.voice, "-r", settings.model.replace("say-r", ""), "-o", raw, seg.text]);
+        execFileSync("say", ["-v", settings.voice, "-r", settings.model.replace("say-r", ""), "-o", raw, seg.spoken]);
       }
-      // trim leading/trailing silence, normalise speech loudness, encode
+      // trim leading/trailing silence, then level loudness and encode
+      const trimmed = join(tmp, `${seg.scene}-${seg.i}.wav`);
       execFileSync("ffmpeg", [
         "-loglevel", "error", "-y", "-i", raw,
-        "-af", "silenceremove=start_periods=1:start_threshold=-50dB,areverse,silenceremove=start_periods=1:start_threshold=-50dB,areverse,loudnorm=I=-16:TP=-1.5:LRA=11",
-        "-ar", "44100", "-ac", "1", "-b:a", "160k", abs,
+        "-af", "silenceremove=start_periods=1:start_threshold=-50dB,areverse,silenceremove=start_periods=1:start_threshold=-50dB,areverse",
+        "-ar", "44100", "-ac", "1", trimmed,
       ]);
+      level(trimmed, abs);
       seconds = Number(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", abs]).toString().trim());
       seconds = Math.round(seconds * 100) / 100;
       generated++;
     }
     total += seconds;
     (result[seg.scene] ??= []).push({ at: seg.at, file, seconds, text: seg.text, key });
-    console.log(`${file.padEnd(20)} ${seconds.toFixed(2)}s`);
+    console.log(`${file.padEnd(20)} ${seconds.toFixed(2)}s  ${loudness(abs).toFixed(1)} LUFS`);
   }
 } finally {
   rmSync(tmp, { recursive: true, force: true });
 }
 
 writeFileSync(manifestPath, JSON.stringify({ provider, ...settings, scenes: result }, null, 2) + "\n");
-console.log(`${generated} generated, ${flat.length - generated} reused · total speech ${total.toFixed(1)}s`);
+console.log(`${generated} generated, ${flat.length - generated} reused (${relevelled} re-levelled) · total speech ${total.toFixed(1)}s`);
+
+function pronounce(text) {
+  return Object.entries(_pronounce).reduce((t, [written, said]) => t.split(written).join(said), text);
+}
+
+/** Integrated loudness (LUFS) of a file. */
+function loudness(file) {
+  // ebur128 reports on stderr
+  const { stderr: log } = spawnSync("ffmpeg", ["-hide_banner", "-nostats", "-i", file, "-af", "ebur128", "-f", "null", "-"], {
+    encoding: "utf8",
+  });
+  const matches = [...log.matchAll(/^\s+I:\s+(-?[\d.]+) LUFS/gm)];
+  return Number(matches[matches.length - 1][1]);
+}
+
+/**
+ * Gain to TARGET_LUFS, then a limiter so peaks stay below PEAK_DB; encodes to mp3. The limiter
+ * takes some loudness off peaky clips, so a second pass corrects the gain by what was lost.
+ */
+function level(input, out) {
+  let gain = TARGET_LUFS - loudness(input);
+  for (let pass = 0; pass < 2; pass++) {
+    execFileSync("ffmpeg", [
+      "-loglevel", "error", "-y", "-i", input,
+      "-af", `volume=${gain.toFixed(2)}dB,alimiter=limit=${Math.pow(10, PEAK_DB / 20).toFixed(4)}:level=false:attack=2:release=40`,
+      "-ar", "44100", "-ac", "1", "-b:a", "160k", out,
+    ]);
+    const miss = TARGET_LUFS - loudness(out);
+    if (Math.abs(miss) < 0.3) break;
+    gain += miss;
+  }
+}
 
 async function elevenlabs(text, previousText, nextText, out) {
   const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${settings.voice}?output_format=mp3_44100_128`, {
