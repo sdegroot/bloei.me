@@ -1,0 +1,95 @@
+services:
+  app:
+    image: bloei-me:dev
+    build:
+      context: .
+      dockerfile: apps/app/Containerfile.dev
+    environment:
+      BLOEI_DATABASE_URL: jdbc:postgresql://postgres:5432/bloei
+      BLOEI_DATABASE_USERNAME: bloei
+      BLOEI_DATABASE_PASSWORD: bloei
+      BLOEI_DBOS_EXECUTOR_ID: bloei-local
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8080:8080"
+
+  postgres:
+    image: postgres:18.0
+    environment:
+      POSTGRES_DB: bloei
+      POSTGRES_USER: bloei
+      POSTGRES_PASSWORD: bloei
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bloei -d bloei"]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+    volumes:
+      - postgres-data:/var/lib/postgresql
+
+  authentik-postgres:
+    image: postgres:16-alpine
+    profiles: ["oidc"]
+    environment:
+      POSTGRES_DB: authentik
+      POSTGRES_USER: authentik
+      POSTGRES_PASSWORD: authentik-local
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U authentik -d authentik"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - authentik-postgres-data:/var/lib/postgresql/data
+
+  authentik-server:
+    image: ghcr.io/goauthentik/server:2026.5.6
+    profiles: ["oidc"]
+    command: server
+    environment: &authentik-environment
+      AUTHENTIK_POSTGRESQL__HOST: authentik-postgres
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: authentik-local
+      AUTHENTIK_SECRET_KEY: bloei-local-authentik-secret-key-not-for-production
+    depends_on:
+      authentik-postgres:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:9000:9000"
+    volumes:
+      - authentik-data:/data
+
+  authentik-worker:
+    image: ghcr.io/goauthentik/server:2026.5.6
+    profiles: ["oidc"]
+    command: worker
+    environment: *authentik-environment
+    depends_on:
+      authentik-postgres:
+        condition: service_healthy
+    user: root
+    volumes:
+      - authentik-data:/data
+
+  s3mock:
+    image: adobe/s3mock:5.1.0
+    profiles: ["object-storage"]
+    environment:
+      COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS: bloei-local
+    ports:
+      - "127.0.0.1:9090:9090"
+
+  mailpit:
+    image: axllent/mailpit:v1.30.3
+    profiles: ["mail"]
+    ports:
+      - "127.0.0.1:1025:1025"
+      - "127.0.0.1:8025:8025"
+
+volumes:
+  postgres-data:
+  authentik-postgres-data:
+  authentik-data:

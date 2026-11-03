@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Development personas · Bloei.me</title>
+  <link rel="stylesheet" href="/css/bloei.css">
+</head>
+<body>
+  <div th:replace="~{fragments/shell :: dev-banner}"></div>
+  <main class="shell workspace">
+    <p class="eyebrow">Local development only</p>
+    <h1>Choose a persona</h1>
+    <div class="cards">
+      <article th:each="persona : ${personas}">
+        <h2 th:text="${persona.name}">Persona</h2>
+        <p th:text="${#strings.listJoin(persona.roles, ', ')}">Roles</p>
+        <form action="/dev/login" method="post">
+          <input type="hidden" name="persona" th:value="${persona.id}">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+          <button class="button" type="submit">Continue</button>
+        </form>
+      </article>
+    </div>
+  </main>
+</body>
+</html>

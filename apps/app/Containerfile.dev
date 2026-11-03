@@ -1,0 +1,12 @@
+FROM eclipse-temurin:25-jdk AS build
+WORKDIR /workspace
+COPY . .
+RUN ./gradlew --no-daemon :apps:app:bootDevJar
+
+FROM eclipse-temurin:25-jre
+RUN useradd --system --uid 10001 --create-home bloei
+WORKDIR /app
+COPY --from=build /workspace/apps/app/build/libs/*-dev.jar /app/bloei-me.jar
+USER 10001
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app/bloei-me.jar", "--spring.profiles.active=dev-personas"]

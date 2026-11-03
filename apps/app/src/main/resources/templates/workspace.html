@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="nl" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="|#{nav.workspace} · #{site.name}|">Mijn Bloei.me</title>
+  <link rel="stylesheet" href="/css/bloei.css">
+  <script defer src="/webjars/htmx.org/2.0.10/dist/htmx.min.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+  <div th:replace="~{fragments/shell :: dev-banner}"></div>
+  <div th:replace="~{fragments/shell :: header}"></div>
+  <main id="content" class="shell workspace">
+    <p class="eyebrow" th:text="#{workspace.eyebrow}">Persoonlijke werkruimte</p>
+    <h1 th:text="#{workspace.title(${principalName})}">Welkom</h1>
+    <p class="lede" th:text="#{workspace.intro}">Hier komt je werk samen.</p>
+  </main>
+  <div th:replace="~{fragments/shell :: footer}"></div>
+</body>
+</html>
